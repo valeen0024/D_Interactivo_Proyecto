@@ -859,9 +859,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -6.4, y: 121.6}
-  m_SizeDelta: {x: 336.5162, y: 50}
-  m_Pivot: {x: 0.53863573, y: 0.49999994}
+  m_AnchoredPosition: {x: -5.171, y: 117.576}
+  m_SizeDelta: {x: 346.5761, y: 41.9521}
+  m_Pivot: {x: 0.52654713, y: 0.49999997}
 --- !u!114 &452336662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -882,8 +882,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "               \nIvan Andrey Castellanos Rojas\nLiliana Marcela Daza Benitez\nCarlos
-    Andres Ochoa Daza\nValentina Preciado Nu\xF1ez"
+  m_text: "              \nEvenli Dayana Diaz Alba\nDavid Alfonso Silva Arenas\nValentina
+    Preciado Nu\xF1ez"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7eb88246da67dc94394a3c96f0b428b1, type: 2}
   m_sharedMaterial: {fileID: -1702599975230750239, guid: 7eb88246da67dc94394a3c96f0b428b1, type: 2}
@@ -910,8 +910,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
-  m_fontSizeBase: 28
+  m_fontSize: 35
+  m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -949,7 +949,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -34.670746, w: -270.86554}
+  m_margin: {x: 0, y: -14.063171, z: -24.151062, w: -271.24164}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
