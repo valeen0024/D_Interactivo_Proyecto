@@ -44,9 +44,32 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void Update()
     {
+        // 1. SALIR (Tecla Esc) - Funciona siempre, incluso si ya se confirmó
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ExitToMainMenu();
+            return;
+        }
+
+        // Si el jugador ya confirmó, bloqueamos el resto de las teclas
         if (!inputEnabled)
             return;
 
+        // 2. CONFIRMAR (Enter o Enter del teclado numérico)
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            ConfirmSelection();
+            return; // Evita que se ejecuten otras teclas en el mismo frame
+        }
+
+        // 3. ALEATORIO (Shift Izquierdo o Derecho)
+        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+        {
+            RandomSelection();
+            return;
+        }
+
+        // 4. MOVIMIENTO (Flechas)
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             MoveRight();
