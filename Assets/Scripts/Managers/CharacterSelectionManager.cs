@@ -189,4 +189,22 @@ public class CharacterSelectionManager : MonoBehaviour
     {
         SceneManager.LoadScene("MainMenu");
     }
+
+    // ==========================================
+    // NUEVA FUNCIÓN PARA EL CLIC DEL MOUSE
+    // ==========================================
+    public void SeleccionarPorMouse(int index)
+    {
+        // Si el jugador ya confirmó o la entrada está bloqueada, no hace nada
+        if (playerConfirmed || !inputEnabled)
+            return;
+
+        // Verificamos que el índice esté dentro del rango
+        if (index >= 0 && index < colorPoints.Length)
+        {
+            currentSelection = index;
+            UpdatePlayerBorder();
+            Debug.Log("Selección por mouse: " + index);
+        }
+    }
 }
