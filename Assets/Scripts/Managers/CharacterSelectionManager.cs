@@ -19,6 +19,9 @@ public class CharacterSelectionManager : MonoBehaviour
     [SerializeField] private float cpuMoveSpeed = 0.08f;
     [SerializeField] private float cpuThinkingTime = 1.2f;
 
+    [Header("Vista Previa del Carro")]
+    [SerializeField] private Image imagenCarroUI; 
+    [SerializeField] private Sprite[] spritesCarro; 
 
     private int currentSelection = 0;
 
@@ -44,22 +47,22 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void Update()
     {
-        // 1. SALIR (Tecla Esc) - Funciona siempre, incluso si ya se confirmÛ
+        // 1. SALIR (Tecla Esc) - Funciona siempre, incluso si ya se confirm√≥
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ExitToMainMenu();
             return;
         }
 
-        // Si el jugador ya confirmÛ, bloqueamos el resto de las teclas
+        // Si el jugador ya confirm√≥, bloqueamos el resto de las teclas
         if (!inputEnabled)
             return;
 
-        // 2. CONFIRMAR (Enter o Enter del teclado numÈrico)
+        // 2. CONFIRMAR (Enter o Enter del teclado num√©rico)
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             ConfirmSelection();
-            return; // Evita que se ejecuten otras teclas en el mismo frame
+            return; 
         }
 
         // 3. ALEATORIO (Shift Izquierdo o Derecho)
@@ -135,7 +138,14 @@ public class CharacterSelectionManager : MonoBehaviour
     {
         Debug.Log("Current Selection: " + currentSelection);
 
+        // Mueve el borde de selecci√≥n
         playerBorder.position = colorPoints[currentSelection].position;
+
+        // Cambia el sprite del carro
+        if (imagenCarroUI != null && spritesCarro != null && spritesCarro.Length > currentSelection)
+        {
+            imagenCarroUI.sprite = spritesCarro[currentSelection];
+        }
     }
 
     public void ConfirmSelection()
@@ -155,17 +165,53 @@ public class CharacterSelectionManager : MonoBehaviour
         StartCoroutine(CPUSelectionRoutine());
     }
 
+    // ==========================================
+    // AJUSTE: ALEATORIO CON EFECTO "RULETA"
+    // ==========================================
     public void RandomSelection()
     {
-        if (playerConfirmed)
+        if (playerConfirmed || !inputEnabled)
             return;
 
-        currentSelection = Random.Range(0, colorPoints.Length);
+        // Bloqueamos la entrada temporalmente para que no se interrumpa la animaci√≥n
+        inputEnabled = false;
+        StartCoroutine(RandomSelectionRoutine());
+    }
 
+    private IEnumerator RandomSelectionRoutine()
+    {
+        float timer = 0f;
+        float duration = 1.0f; // Cu√°nto dura el efecto de giro
+        float speed = 0.05f;   // Velocidad de cambio
+
+        // Elegimos el √≠ndice final desde el principio
+        int finalSelection = Random.Range(0, colorPoints.Length);
+
+        // Bucle de animaci√≥n
+        while (timer < duration)
+        {
+            currentSelection++;
+            if (currentSelection >= colorPoints.Length)
+                currentSelection = 0;
+
+            UpdatePlayerBorder(); // Esto actualiza el borde Y el carro
+
+            timer += speed;
+            yield return new WaitForSeconds(speed);
+        }
+
+        // Lo forzamos a caer en el elegido al azar
+        currentSelection = finalSelection;
         UpdatePlayerBorder();
 
+        yield return new WaitForSeconds(0.2f); // Peque√±a pausa antes de confirmar
+
+        // Restauramos la entrada y confirmamos
+        inputEnabled = true; 
         ConfirmSelection();
     }
+    // ==========================================
+
     private IEnumerator CPUSelectionRoutine()
     {
         do
@@ -199,7 +245,7 @@ public class CharacterSelectionManager : MonoBehaviour
         GameData.PlayerSelection = playerSelection;
         GameData.CpuSelection = cpuSelection;
 
-        Debug.Log("LleguÈ al final de la Coroutine");
+        Debug.Log("Llegu√© al final de la Coroutine");
 
         yield return new WaitForSeconds(0.8f);
 
@@ -214,20 +260,20 @@ public class CharacterSelectionManager : MonoBehaviour
     }
 
     // ==========================================
-    // NUEVA FUNCI”N PARA EL CLIC DEL MOUSE
+    // NUEVA FUNCI√ìN PARA EL CLIC DEL MOUSE
     // ==========================================
     public void SeleccionarPorMouse(int index)
     {
-        // Si el jugador ya confirmÛ o la entrada est· bloqueada, no hace nada
+        // Si el jugador ya confirm√≥ o la entrada est√° bloqueada, no hace nada
         if (playerConfirmed || !inputEnabled)
             return;
 
-        // Verificamos que el Ìndice estÈ dentro del rango
+        // Verificamos que el √≠ndice est√© dentro del rango
         if (index >= 0 && index < colorPoints.Length)
         {
             currentSelection = index;
             UpdatePlayerBorder();
-            Debug.Log("SelecciÛn por mouse: " + index);
+            Debug.Log("Selecci√≥n por mouse: " + index);
         }
     }
 }
