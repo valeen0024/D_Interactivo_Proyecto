@@ -5,16 +5,17 @@ using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
-    [Header("Options")]
-    public Slider volumeFX;
+    [Header("Options UI Elements")]
     public Slider volumeMaster;
-    public Toggle mute;
-    public AudioMixer mixer; // Referencia al AudioMixer del video
+    public Slider volumeFX;
+    public Toggle muteToggle;
+    public TMPro.TMP_Dropdown qualityDropdown;
+    public AudioMixer mixer;
 
     [Header("Panels")]
     public GameObject mainPanel;
     public GameObject optionsPanel;
-    public GameObject levelSelectPanel;
+    public GameObject creditsPanel;
 
     [Header("Scenes")]
     [SerializeField] private string characterSelectionScene = "CharacterSelection";
@@ -24,48 +25,58 @@ public class MainMenuManager : MonoBehaviour
         // Estado inicial de los paneles
         if (mainPanel != null) mainPanel.SetActive(true);
         if (optionsPanel != null) optionsPanel.SetActive(false);
-        if (levelSelectPanel != null) levelSelectPanel.SetActive(false);
+        if (creditsPanel != null) creditsPanel.SetActive(false);
 
-        // Inicializar la barra en 100 por defecto si existe
+        // Cargar valores guardados al iniciar
+        LoadSavedPreferences();
+    }
+
+    private void LoadSavedPreferences()
+    {
+        float savedMasterVol = PlayerPrefs.GetFloat("MasterVolume", 100f);
         if (volumeMaster != null)
         {
-            volumeMaster.SetValueWithoutNotify(100f);
+            volumeMaster.SetValueWithoutNotify(savedMasterVol);
+            ChangeVolumeMaster(savedMasterVol);
+        }
+
+        float savedFXVol = PlayerPrefs.GetFloat("FXVolume", 100f);
+        if (volumeFX != null)
+        {
+            volumeFX.SetValueWithoutNotify(savedFXVol);
+            ChangeVolumeFX(savedFXVol);
+        }
+
+        bool savedMute = PlayerPrefs.GetInt("GameMuted", 0) == 1;
+        if (muteToggle != null)
+        {
+            muteToggle.SetIsOnWithoutNotify(savedMute);
+        }
+
+        int savedQuality = PlayerPrefs.GetInt("QualityLevel", QualitySettings.GetQualityLevel());
+        if (qualityDropdown != null)
+        {
+            qualityDropdown.SetValueWithoutNotify(savedQuality);
+            QualitySettings.SetQualityLevel(savedQuality);
         }
     }
 
-    // Método universal del video para cambiar de paneles
-    public void OpenPanel(GameObject panel)
-    {
-        if (mainPanel != null) mainPanel.SetActive(false);
-        if (optionsPanel != null) optionsPanel.SetActive(false);
-        if (levelSelectPanel != null) levelSelectPanel.SetActive(false);
-
-        if (panel != null) panel.SetActive(true);
-    }
-
-    public void StartGame()
-    {
-        SceneManager.LoadScene(characterSelectionScene);
-    }
-
     // ==========================================
-    // CONTROL DE VOLUMEN MAESTRO CON AUDIOMIXER
+    // CONTROL DE VOLUMEN CON AUDIOMIXER
     // ==========================================
     public void ChangeVolumeMaster(float sliderValue)
     {
-        // Convertimos el valor de la barra (0 a 100) a decibelios reales (-80dB a 0dB)
-        // Esto evita que el volumen se apague bruscamente y le da una escala suave al jugador
         float volumeIndB = sliderValue > 0 ? Mathf.Log10(sliderValue / 100f) * 20f : -80f;
 
         if (mixer != null)
         {
             mixer.SetFloat("VolMaster", volumeIndB);
         }
+
+        PlayerPrefs.SetFloat("MasterVolume", sliderValue);
+        PlayerPrefs.Save();
     }
 
-    // ==========================================
-    // CONTROL DE VOLUMEN FX CON AUDIOMIXER
-    // ==========================================
     public void ChangeVolumeFX(float sliderValue)
     {
         float volumeIndB = sliderValue > 0 ? Mathf.Log10(sliderValue / 100f) * 20f : -80f;
@@ -74,29 +85,102 @@ public class MainMenuManager : MonoBehaviour
         {
             mixer.SetFloat("VolFX", volumeIndB);
         }
+
+        PlayerPrefs.SetFloat("FXVolume", sliderValue);
+        PlayerPrefs.Save();
     }
 
     // ==========================================
-    // CONTROL DE MUTE
+    // CONTROL DE MUTE GLOBAL
     // ==========================================
     public void SetMute(bool isMuted)
     {
+        // 1. Silenciar o activar el MusicManager global
         if (MusicManager.Instance != null)
         {
-            AudioSource source = MusicManager.Instance.GetComponent<AudioSource>();
-            if (source != null)
-            {
-                source.mute = isMuted;
-            }
+            MusicManager.Instance.SetMute(isMuted);
         }
+
+        // 2. Opcional pero recomendado: Bajar el AudioMixer a -80dB si se mutea, o restaurarlo a 0dB si se desmutea
+        if (mixer != null)
+        {
+            float targetdB = isMuted ? -80f : 0f;
+            mixer.SetFloat("MasterVolume", targetdB);
+        }
+
+        // Guardar la preferencia
+        PlayerPrefs.SetInt("GameMuted", isMuted ? 1 : 0);
+        PlayerPrefs.Save();
     }
 
     // ==========================================
-    // CALIDAD GRÁFICA
+    // CALIDAD GRÁFICA (Baja, Media, Alta)
     // ==========================================
     public void SetQuality(int qualityIndex)
     {
+        // 1. Cambiar el nivel de calidad global de Unity
         QualitySettings.SetQualityLevel(qualityIndex);
+
+        // 2. Ajustar texturas y resolución según la calidad seleccionada para forzar el cambio visual
+        if (qualityIndex == 0) // Baja
+        {
+            QualitySettings.globalTextureMipmapLimit = 1; // Baja la resolución de texturas a la mitad
+            QualitySettings.vSyncCount = 0;              // Desactiva VSync para ganar rendimiento
+        }
+        else if (qualityIndex == 1) // Media
+        {
+            QualitySettings.globalTextureMipmapLimit = 0;
+            QualitySettings.vSyncCount = 1;
+        }
+        else if (qualityIndex == 2) // Alta
+        {
+            QualitySettings.globalTextureMipmapLimit = 0;
+            QualitySettings.vSyncCount = 1;
+        }
+
+        PlayerPrefs.SetInt("QualityLevel", qualityIndex);
+        PlayerPrefs.Save();
+
+        Debug.Log("Calidad cambiada a índice: " + qualityIndex);
+    }
+
+    // GESTIÓN DE PANELES Y ESCENAS
+    // ==========================================
+    public void OpenOptions()
+    {
+        if (mainPanel != null) mainPanel.SetActive(false);
+        if (optionsPanel != null) optionsPanel.SetActive(true);
+
+        // Forzar a que el slider lea el valor actual de las preferencias al abrir el panel
+        if (volumeMaster != null)
+        {
+            float currentVol = PlayerPrefs.GetFloat("MasterVolume", 100f);
+            volumeMaster.SetValueWithoutNotify(currentVol);
+        }
+    }
+
+    public void OpenMainPanel()
+    {
+        if (mainPanel != null) mainPanel.SetActive(true);
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+    }
+
+    public void ToggleCredits()
+    {
+        if (creditsPanel != null)
+        {
+            creditsPanel.SetActive(!creditsPanel.activeSelf);
+        }
+    }
+
+    public void CloseCredits()
+    {
+        if (creditsPanel != null) creditsPanel.SetActive(false);
+    }
+
+    public void StartGame()
+    {
+        SceneManager.LoadScene(characterSelectionScene);
     }
 
     public void ExitGame()

@@ -18,14 +18,15 @@ public class MusicManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             audioSource = GetComponent<AudioSource>();
-            if (audioSource == null)
-            {
-                audioSource = gameObject.AddComponent<AudioSource>();
-            }
 
-            audioSource.volume = 1f;
-            audioSource.mute = false;
-            audioSource.loop = true;
+            if (audioSource != null)
+            {
+                audioSource.volume = 1f;
+
+                // Cargar el estado de Mute guardado previamente (global para todas las escenas)
+                bool isMuted = PlayerPrefs.GetInt("GameMuted", 0) == 1;
+                audioSource.mute = isMuted;
+            }
 
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -37,11 +38,7 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
-        // Forzamos la reproducción inmediata al iniciar
-        if (menuMusic != null)
-        {
-            PlayMusic(menuMusic);
-        }
+        PlayMusic(menuMusic);
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -56,7 +53,7 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    public void PlayMusic(AudioClip clip)
+    void PlayMusic(AudioClip clip)
     {
         if (audioSource == null || clip == null) return;
 
@@ -65,6 +62,17 @@ public class MusicManager : MonoBehaviour
 
         audioSource.clip = clip;
         audioSource.Play();
+    }
+
+    // Método público que llamará tu MainMenuManager para mutear/desmutear globalmente
+    public void SetMute(bool isMuted)
+    {
+        if (audioSource != null)
+        {
+            audioSource.mute = isMuted;
+            PlayerPrefs.SetInt("GameMuted", isMuted ? 1 : 0);
+            PlayerPrefs.Save();
+        }
     }
 
     private void OnDestroy()
