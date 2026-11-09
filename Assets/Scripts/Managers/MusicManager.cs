@@ -18,6 +18,14 @@ public class MusicManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+
+            audioSource.volume = 1f;
+            audioSource.mute = false;
+            audioSource.loop = true;
 
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -29,7 +37,11 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
-        PlayMusic(menuMusic);
+        // Forzamos la reproducción inmediata al iniciar
+        if (menuMusic != null)
+        {
+            PlayMusic(menuMusic);
+        }
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -44,9 +56,11 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    void PlayMusic(AudioClip clip)
+    public void PlayMusic(AudioClip clip)
     {
-        if (audioSource.clip == clip)
+        if (audioSource == null || clip == null) return;
+
+        if (audioSource.clip == clip && audioSource.isPlaying)
             return;
 
         audioSource.clip = clip;
