@@ -249,9 +249,9 @@ public class CharacterSelectionManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.8f);
 
-        Debug.Log("Voy a cargar Gameplay");
+        Debug.Log("Voy a cargar Gameplay_Tutorial");
 
-        SceneManager.LoadScene("Gameplay");
+        SceneManager.LoadScene("Gameplay_Tutorial");
     }
 
     public void ExitToMainMenu()

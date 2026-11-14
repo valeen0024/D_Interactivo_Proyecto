@@ -79,6 +79,11 @@ public class KartLaneController : MonoBehaviour
     private bool isSliding = false;
     private bool isBoosting = false;
 
+
+    public bool HasUsedTurbo => hasUsedTurbo;
+    public bool canUseTurbo = true;
+
+
     // Stores the initial X coordinate of the kart set in the Scene
     private float startXPosition; 
 
@@ -120,12 +125,16 @@ public class KartLaneController : MonoBehaviour
 
 
 
+
     private void Update()
     {
         if (!canMove) return;
 
-        // Detect single-use boost input (Key Code 'W' or 'Up Arrow')
-        if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) && !hasUsedTurbo)
+        // Detect single-use boost input
+        if (canUseTurbo &&
+            !hasUsedTurbo &&
+            (Input.GetKeyDown(KeyCode.UpArrow) ||
+             Input.GetKeyDown(KeyCode.W)))
         {
             ActivateTurbo();
         }
@@ -396,6 +405,7 @@ public class KartLaneController : MonoBehaviour
     /// <summary>
     /// Coroutine managing speed reduction and recovery duration when slipping on oil.
     /// </summary>
+
     private IEnumerator OilSlowRoutine(float duration)
     {
         isSliding = true;
@@ -406,4 +416,10 @@ public class KartLaneController : MonoBehaviour
         isSliding = false;
         Debug.Log("Normal speed recovered.");
     }
+
+    public void SetForwardSpeed(float newSpeed)
+    {
+        baseForwardSpeed = Mathf.Max(0f, newSpeed);
+    }
 }
+

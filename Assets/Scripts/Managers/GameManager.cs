@@ -15,9 +15,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject uiPlay;
     [SerializeField] private GameObject uiWin;
 
-    [SerializeField]
-    [Range(1f, 5f)]
-    private float instructionsTime = 3f;
 
     public enum GameState
     {
@@ -70,8 +67,48 @@ public class GameManager : MonoBehaviour
             cpuCtrl.canMove = false;
         }
 
-        StartCoroutine(ShowInstructionsRoutine());
+
+        if (uiInstructions != null)
+        {
+            uiInstructions.SetActive(false);
+        }
+
+        if (uiPlay != null)
+        {
+            uiPlay.SetActive(true);
+        }
+
+        if (uiWin != null)
+        {
+            uiWin.SetActive(false);
+        }
+
+        StartGame();
+
     }
+
+    private bool continueInstructions = false;
+    private int currentInstruction = 0;
+
+    [SerializeField] private TMPro.TextMeshProUGUI instructionText;
+    [SerializeField] private TMPro.TextMeshProUGUI continueButtonText;
+    [SerializeField] private TMPro.TextMeshProUGUI progressText;
+    [SerializeField] private UnityEngine.UI.Button previousButton;
+
+
+    private string[] tutorialMessages =
+    {
+    "Usa las flechas IZQUIERDA y DERECHA para cambiar de carril.",
+
+    "Recoge los BIDONES para recuperar COMBUSTIBLE y seguir avanzando.",
+
+    "Evita las MANCHAS DE ACEITE porque reducen la velocidad del vehículo.",
+
+    "Presiona la flecha ARRIBA para activar el propulsor.",
+
+    "¡Todo listo! Llega a la meta y consigue la mayor distancia posible."
+};
+
 
     private IEnumerator ShowInstructionsRoutine()
     {
@@ -86,7 +123,20 @@ public class GameManager : MonoBehaviour
         if (uiInstructions != null)
             uiInstructions.SetActive(true);
 
-        yield return new WaitForSeconds(instructionsTime);
+        currentInstruction = 0;
+        instructionText.text = tutorialMessages[currentInstruction];
+
+        if (previousButton != null)
+            previousButton.interactable = false;
+
+        if (progressText != null)
+            progressText.text = "1 de " + tutorialMessages.Length;
+
+        if (continueButtonText != null)
+            continueButtonText.text = "CONTINUAR";
+
+        continueInstructions = false;
+        yield return new WaitUntil(() => continueInstructions);
 
         if (uiInstructions != null)
             uiInstructions.SetActive(false);
@@ -95,6 +145,78 @@ public class GameManager : MonoBehaviour
             uiPlay.SetActive(true);
 
         StartGame();
+    }
+
+
+    public void ContinueInstructions()
+    {
+        if (gameState != GameState.Waiting)
+            return;
+
+        currentInstruction++;
+
+        if (previousButton != null)
+            previousButton.interactable = currentInstruction > 0;
+
+        if (currentInstruction < tutorialMessages.Length)
+        {
+            instructionText.text = tutorialMessages[currentInstruction];
+
+            if (progressText != null)
+            {
+                progressText.text =
+                    (currentInstruction + 1) + " de " + tutorialMessages.Length;
+            }
+
+            if (continueButtonText != null)
+            {
+                continueButtonText.text =
+                    currentInstruction == tutorialMessages.Length - 1
+                    ? "COMENZAR"
+                    : "CONTINUAR";
+            }
+        }
+        else
+        {
+            continueInstructions = true;
+        }
+    }
+
+
+    public void PreviousInstruction()
+    {
+        if (gameState != GameState.Waiting)
+            return;
+
+        if (currentInstruction <= 0)
+            return;
+
+        currentInstruction--;
+
+        if (previousButton != null)
+            previousButton.interactable = currentInstruction > 0;
+
+        instructionText.text = tutorialMessages[currentInstruction];
+
+        if (progressText != null)
+        {
+            progressText.text =
+                (currentInstruction + 1) + " de " + tutorialMessages.Length;
+        }
+
+        if (continueButtonText != null)
+        {
+            continueButtonText.text = "CONTINUAR";
+        }
+    }
+
+
+    public void SkipTutorial()
+    {
+        if (gameState != GameState.Waiting)
+            return;
+
+        continueInstructions = true;
     }
 
 
