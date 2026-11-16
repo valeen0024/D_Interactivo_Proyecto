@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro; // NUEVO: Necesario para TextMeshPro
 
 public class CharacterSelectionManager : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class CharacterSelectionManager : MonoBehaviour
     [SerializeField] private Image imagenCarroUI; 
     [SerializeField] private Sprite[] spritesCarro; 
 
+    [Header("UI Jugador")]
+    [SerializeField] private TextMeshProUGUI playerNameText; // NUEVO: Referencia al texto de la UI
+
     private int currentSelection = 0;
 
     private bool playerConfirmed = false;
@@ -35,6 +39,19 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void Start()
     {
+        // NUEVO: Mostrar el nombre del jugador en la UI
+        if (playerNameText != null)
+        {
+            if (!string.IsNullOrEmpty(GameData.PlayerName))
+            {
+                playerNameText.text = GameData.PlayerName;
+            }
+            else
+            {
+                playerNameText.text = "Jugador 1"; // Por defecto si no hay nombre
+            }
+        }
+
         cpuBorder.gameObject.SetActive(false);
 
         for (int i = 0; i < lockOverlays.Length; i++)
