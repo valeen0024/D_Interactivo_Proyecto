@@ -18,7 +18,8 @@ public class MainMenuManager : MonoBehaviour
     public GameObject creditsPanel;
 
     [Header("Scenes")]
-    [SerializeField] private string characterSelectionScene = "CharacterSelection";
+    // CAMBIO AQUÍ: Ahora por defecto carga la escena del nombre
+    [SerializeField] private string nameInputScene = "NameInput";
 
     private void Start()
     {
@@ -180,7 +181,8 @@ public class MainMenuManager : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene(characterSelectionScene);
+        // CAMBIO AQUÍ: Carga la escena guardada en la variable
+        SceneManager.LoadScene(nameInputScene);
     }
 
     public void ExitGame()
