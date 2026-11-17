@@ -2,14 +2,14 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainMenuManager : MonoBehaviour
 {
     [Header("Options UI Elements")]
     public Slider volumeMaster;
-    public Slider volumeFX;
     public Toggle muteToggle;
-    public TMPro.TMP_Dropdown qualityDropdown;
+    public TMP_Dropdown qualityDropdown;
     public AudioMixer mixer;
 
     [Header("Panels")]
@@ -18,7 +18,6 @@ public class MainMenuManager : MonoBehaviour
     public GameObject creditsPanel;
 
     [Header("Scenes")]
-    // CAMBIO AQUÍ: Ahora por defecto carga la escena del nombre
     [SerializeField] private string nameInputScene = "NameInput";
 
     private void Start()
@@ -28,24 +27,18 @@ public class MainMenuManager : MonoBehaviour
         if (optionsPanel != null) optionsPanel.SetActive(false);
         if (creditsPanel != null) creditsPanel.SetActive(false);
 
-        // Cargar valores guardados al iniciar
+        // Cargar valores guardados al iniciar el juego
         LoadSavedPreferences();
     }
 
     private void LoadSavedPreferences()
     {
-        float savedMasterVol = PlayerPrefs.GetFloat("MasterVolume", 100f);
+        // Por defecto lo ponemos en 0 (volumen máximo/normal en decibelios) o el valor guardado
+        float savedMasterVol = PlayerPrefs.GetFloat("MasterVolume", 0f);
         if (volumeMaster != null)
         {
             volumeMaster.SetValueWithoutNotify(savedMasterVol);
             ChangeVolumeMaster(savedMasterVol);
-        }
-
-        float savedFXVol = PlayerPrefs.GetFloat("FXVolume", 100f);
-        if (volumeFX != null)
-        {
-            volumeFX.SetValueWithoutNotify(savedFXVol);
-            ChangeVolumeFX(savedFXVol);
         }
 
         bool savedMute = PlayerPrefs.GetInt("GameMuted", 0) == 1;
@@ -62,89 +55,78 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // CONTROL DE VOLUMEN CON AUDIOMIXER
-    // ==========================================
     public void ChangeVolumeMaster(float sliderValue)
     {
-        float volumeIndB = sliderValue > 0 ? Mathf.Log10(sliderValue / 100f) * 20f : -80f;
-
         if (mixer != null)
         {
-            mixer.SetFloat("VolMaster", volumeIndB);
+            mixer.SetFloat("MasterVolume", sliderValue);
         }
 
         PlayerPrefs.SetFloat("MasterVolume", sliderValue);
         PlayerPrefs.Save();
     }
 
-    public void ChangeVolumeFX(float sliderValue)
-    {
-        float volumeIndB = sliderValue > 0 ? Mathf.Log10(sliderValue / 100f) * 20f : -80f;
-
-        if (mixer != null)
-        {
-            mixer.SetFloat("VolFX", volumeIndB);
-        }
-
-        PlayerPrefs.SetFloat("FXVolume", sliderValue);
-        PlayerPrefs.Save();
-    }
-
     // ==========================================
-    // CONTROL DE MUTE GLOBAL
+    // 2. CONTROL DE MUTE GLOBAL
     // ==========================================
     public void SetMute(bool isMuted)
     {
-        // 1. Silenciar o activar el MusicManager global
         if (MusicManager.Instance != null)
         {
             MusicManager.Instance.SetMute(isMuted);
         }
 
-        // 2. Opcional pero recomendado: Bajar el AudioMixer a -80dB si se mutea, o restaurarlo a 0dB si se desmutea
         if (mixer != null)
         {
             float targetdB = isMuted ? -80f : 0f;
             mixer.SetFloat("MasterVolume", targetdB);
         }
 
-        // Guardar la preferencia
         PlayerPrefs.SetInt("GameMuted", isMuted ? 1 : 0);
         PlayerPrefs.Save();
     }
 
     // ==========================================
+    // 3. CALIDAD GRÁFICA (Baja, Media, Alta)
+    // ==========================================
+    // ==========================================
     // CALIDAD GRÁFICA (Baja, Media, Alta)
     // ==========================================
     public void SetQuality(int qualityIndex)
     {
-        // 1. Cambiar el nivel de calidad global de Unity
-        QualitySettings.SetQualityLevel(qualityIndex);
+        // Cambia el nivel de calidad global de Unity y fuerza su aplicación
+        QualitySettings.SetQualityLevel(qualityIndex, true);
 
-        // 2. Ajustar texturas y resolución según la calidad seleccionada para forzar el cambio visual
-        if (qualityIndex == 0) // Baja
+        // Aplicamos cambios reales y perceptibles según la opción elegida
+        switch (qualityIndex)
         {
-            QualitySettings.globalTextureMipmapLimit = 1; // Baja la resolución de texturas a la mitad
-            QualitySettings.vSyncCount = 0;              // Desactiva VSync para ganar rendimiento
-        }
-        else if (qualityIndex == 1) // Media
-        {
-            QualitySettings.globalTextureMipmapLimit = 0;
-            QualitySettings.vSyncCount = 1;
-        }
-        else if (qualityIndex == 2) // Alta
-        {
-            QualitySettings.globalTextureMipmapLimit = 0;
-            QualitySettings.vSyncCount = 1;
+            case 0: // Baja
+                QualitySettings.vSyncCount = 0;           // Desactiva sincronización vertical
+                QualitySettings.antiAliasing = 0;         // Sin suavizado de bordes (mejora rendimiento, bordes más pixelados)
+                Application.targetFrameRate = 30;         // Limita a 30 FPS para ahorrar recursos
+                break;
+
+            case 1: // Media
+                QualitySettings.vSyncCount = 1;           // Activa VSync estándar
+                QualitySettings.antiAliasing = 2;         // Suavizado de bordes medio (2x)
+                Application.targetFrameRate = 60;         // Limita a 60 FPS estables
+                break;
+
+            case 2: // Alta
+                QualitySettings.vSyncCount = 1;           // Activa VSync
+                QualitySettings.antiAliasing = 4;         // Suavizado de bordes alto (4x, máxima definición)
+                Application.targetFrameRate = -1;         // Sin límite de FPS (máxima fluidez)
+                break;
         }
 
+        // Guardar la preferencia en el equipo
         PlayerPrefs.SetInt("QualityLevel", qualityIndex);
         PlayerPrefs.Save();
 
-        Debug.Log("Calidad cambiada a índice: " + qualityIndex);
+        Debug.Log("Calidad cambiada a índice: " + qualityIndex + " (AntiAliasing y FPS ajustados)");
     }
 
+    // ==========================================
     // GESTIÓN DE PANELES Y ESCENAS
     // ==========================================
     public void OpenOptions()
@@ -152,7 +134,6 @@ public class MainMenuManager : MonoBehaviour
         if (mainPanel != null) mainPanel.SetActive(false);
         if (optionsPanel != null) optionsPanel.SetActive(true);
 
-        // Forzar a que el slider lea el valor actual de las preferencias al abrir el panel
         if (volumeMaster != null)
         {
             float currentVol = PlayerPrefs.GetFloat("MasterVolume", 100f);
@@ -181,13 +162,11 @@ public class MainMenuManager : MonoBehaviour
 
     public void StartGame()
     {
-        // CAMBIO AQUÍ: Carga la escena guardada en la variable
         SceneManager.LoadScene(nameInputScene);
     }
 
     public void ExitGame()
     {
-        Debug.Log("Cerrando juego...");
         Application.Quit();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
