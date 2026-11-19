@@ -20,6 +20,13 @@ public class TutorialManager : MonoBehaviour
     [Header("Fuel Exercise")]
     [SerializeField] private GameObject tutorialFuelBarrel;
     [SerializeField] private KartFuelSystem playerFuelSystem;
+    [SerializeField] private float fuelSpawnDistance = 15f;
+    [SerializeField] private int minRandomLane = -1;
+    [SerializeField] private int maxRandomLane = 2;
+
+    private Vector3 originalFuelPosition;
+    private int selectedFuelLane;
+
 
     [Header("Tutorial Movement")]
     [SerializeField] private float tutorialForwardSpeed = 4f;
@@ -27,20 +34,133 @@ public class TutorialManager : MonoBehaviour
     [Header("Oil Exercise")]
     [SerializeField] private GameObject tutorialOilSpill;
     [SerializeField] private TutorialOilDetector oilDetector;
+    [SerializeField] private float oilSpawnDistance = 18f;
+
+    private int selectedOilLane;
+
 
     [Header("Completion UI")]
     [SerializeField] private GameObject completionPanel;
     [SerializeField] private GameObject instructionsPanel;
 
+    [Header("HUD Introduction")]
+    [SerializeField] private GameObject hudTutorialPanel;
+
     private float initialX;
     private int currentExercise = 0;
     private bool correctKeyPressed = false;
     private bool transitioning = false;
+    private bool fuelRetryInProgress = false;
     private float fuelBeforeCollection;
+
+    private Vector3 fuelExerciseStartPosition;
+    private Quaternion fuelExerciseStartRotation;
+    private int fuelExerciseStartLane;
     private Vector3 oilExerciseStartPosition;
+    private int oilExerciseStartLane;
     private Quaternion oilExerciseStartRotation;
 
     private bool turboExerciseCompleted = false;
+
+
+    private void PositionFuelBarrelRandomly()
+    {
+        if (tutorialFuelBarrel == null || playerController == null)
+            return;
+
+        selectedFuelLane = Random.Range(minRandomLane, maxRandomLane + 1);
+
+        float randomX = playerController.GetLaneWorldX(selectedFuelLane);
+
+        Vector3 newPosition = tutorialFuelBarrel.transform.position;
+
+        newPosition.x = randomX;
+        newPosition.z = playerController.transform.position.z + fuelSpawnDistance;
+
+        tutorialFuelBarrel.transform.position = newPosition;
+
+        Debug.Log("TUTORIAL: Fuel barrel placed in random lane: " + selectedFuelLane);
+    }
+
+    private bool HasMissedFuelBarrel()
+    {
+        if (tutorialFuelBarrel == null ||
+            playerController == null ||
+            !tutorialFuelBarrel.activeInHierarchy)
+        {
+            return false;
+        }
+
+        float playerZ = playerController.transform.position.z;
+        float barrelZ = tutorialFuelBarrel.transform.position.z;
+
+        return playerZ > barrelZ + 3f;
+    }
+
+    private void PositionOilSpillRandomly()
+    {
+        if (tutorialOilSpill == null || playerController == null)
+            return;
+
+        selectedOilLane = Random.Range(minRandomLane, maxRandomLane + 1);
+
+        float randomX = playerController.GetLaneWorldX(selectedOilLane);
+
+        Vector3 newPosition = tutorialOilSpill.transform.position;
+
+        newPosition.x = randomX;
+        newPosition.z = playerController.transform.position.z + oilSpawnDistance;
+
+        tutorialOilSpill.transform.position = newPosition;
+
+        Debug.Log("TUTORIAL: Oil spill placed in random lane: " + selectedOilLane);
+    }
+
+    private IEnumerator RetryFuelExercise()
+    {
+        fuelRetryInProgress = true;
+        transitioning = true;
+
+        playerController.canMove = false;
+        playerController.SetForwardSpeed(0f);
+
+        UpdateUI(
+            "¡No recogiste el combustible! Inténtalo de nuevo.",
+            "PASO 3 DE 5"
+        );
+
+        yield return new WaitForSeconds(messageDelay);
+
+        playerController.RestoreTutorialLane(fuelExerciseStartLane);
+        playerController.transform.SetPositionAndRotation(
+            fuelExerciseStartPosition,
+            fuelExerciseStartRotation
+        );
+
+        if (tutorialFuelBarrel != null)
+        {
+            tutorialFuelBarrel.SetActive(false);
+            PositionFuelBarrelRandomly();
+            tutorialFuelBarrel.SetActive(true);
+        }
+
+        if (playerFuelSystem != null)
+        {
+            fuelBeforeCollection = playerFuelSystem.GetFuelNormalized();
+        }
+
+        initialX = playerController.transform.position.x;
+        transitioning = false;
+        fuelRetryInProgress = false;
+
+        UpdateUI(
+            "¡Recoge el bidón de combustible!",
+            "PASO 3 DE 5"
+        );
+
+        playerController.SetForwardSpeed(tutorialForwardSpeed);
+        playerController.canMove = true;
+    }
 
 
     private void Start()
@@ -52,13 +172,33 @@ public class TutorialManager : MonoBehaviour
             return;
         }
 
+        playerController.canMove = false;
+        playerController.canUseTurbo = false;
+        playerController.SetForwardSpeed(0f);
+
+        if (hudTutorialPanel != null)
+        {
+            hudTutorialPanel.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("Tutorial: HUD panel is not assigned.");
+            BeginTutorialExercises();
+        }
+    }
+
+    public void BeginTutorialExercises()
+    {
+        if (hudTutorialPanel != null)
+        {
+            hudTutorialPanel.SetActive(false);
+        }
 
         playerController.canMove = true;
         playerController.canUseTurbo = false;
         playerController.SetForwardSpeed(0f);
 
         StartExercise(0);
-
     }
 
     private void StartExercise(int exercise)
@@ -85,6 +225,11 @@ public class TutorialManager : MonoBehaviour
 
         else if (exercise == 2)
         {
+
+            fuelExerciseStartPosition = playerController.transform.position;
+            fuelExerciseStartRotation = playerController.transform.rotation;
+            fuelExerciseStartLane = playerController.CurrentLane;
+
             UpdateUI(
                 "¡Recoge el bidón de combustible!",
                 "PASO 3 DE 5"
@@ -97,6 +242,7 @@ public class TutorialManager : MonoBehaviour
 
             if (tutorialFuelBarrel != null)
             {
+                PositionFuelBarrelRandomly();
                 tutorialFuelBarrel.SetActive(true);
             }
 
@@ -109,6 +255,7 @@ public class TutorialManager : MonoBehaviour
 
             oilExerciseStartPosition = playerController.transform.position;
             oilExerciseStartRotation = playerController.transform.rotation;
+            oilExerciseStartLane = playerController.CurrentLane;
 
             UpdateUI(
                 "¡Esquiva la mancha de aceite cambiando de carril!",
@@ -122,6 +269,7 @@ public class TutorialManager : MonoBehaviour
 
             if (tutorialOilSpill != null)
             {
+                PositionOilSpillRandomly();
                 tutorialOilSpill.SetActive(true);
             }
 
@@ -182,6 +330,7 @@ public class TutorialManager : MonoBehaviour
                 StartCoroutine(CompleteExercise());
             }
         }
+
         else if (currentExercise == 2)
         {
             if (playerFuelSystem != null)
@@ -194,7 +343,15 @@ public class TutorialManager : MonoBehaviour
                     StartCoroutine(CompleteFuelExercise());
                 }
             }
+
+            if (!transitioning &&
+                !fuelRetryInProgress &&
+                HasMissedFuelBarrel())
+            {
+                StartCoroutine(RetryFuelExercise());
+            }
         }
+
 
 
         else if (currentExercise == 3)
@@ -327,6 +484,7 @@ public class TutorialManager : MonoBehaviour
                 tutorialOilSpill.SetActive(false);
             }
 
+            playerController.RestoreTutorialLane(oilExerciseStartLane);
             playerController.transform.SetPositionAndRotation(
                 oilExerciseStartPosition,
                 oilExerciseStartRotation
