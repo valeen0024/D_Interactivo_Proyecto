@@ -35,6 +35,8 @@ public class KartLaneController : MonoBehaviour
     [Header("Current State")]
     [Tooltip("Current lane index (-1, 0, 1, 2).")]
     [SerializeField] private int currentLane = 0;
+    public int CurrentLane => currentLane;
+
 
     [Header("Turbo / Boost Settings")]
     [Tooltip("Speed multiplier during the boost.")]
@@ -215,7 +217,22 @@ public class KartLaneController : MonoBehaviour
 
     /// <summary>
     /// Handles forward movement and lane changes using MoveTowards to guarantee precision.
-    /// </summary>
+    /// </summary> 
+
+
+    public void RestoreTutorialLane(int lane)
+    {
+        currentLane = Mathf.Clamp(lane, minLane, maxLane);
+    }
+
+
+    public float GetLaneWorldX(int lane)
+    {
+        int safeLane = Mathf.Clamp(lane, minLane, maxLane);
+        return startXPosition + (safeLane * laneOffset);
+    }
+
+
     private void MoveKart()
     {
         // Calculate target X position based on the offset and current lane index
