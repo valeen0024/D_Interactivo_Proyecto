@@ -38,7 +38,7 @@ public class NameInputManager : MonoBehaviour
             if (textAyuda != null)
             {
                 textAyuda.text = "El nombre debe tener al menos " + minCharacters + " caracteres.";
-                textAyuda.color = Color.red; // Cambiamos el color a rojo
+                textAyuda.color = Color.white;
             }
             return; // Detenemos la función para que no avance de escena
         }

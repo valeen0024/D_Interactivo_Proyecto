@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using TMPro; // NUEVO: Necesario para TextMeshPro
+using TMPro;
 
 public class CharacterSelectionManager : MonoBehaviour
 {
@@ -25,7 +25,8 @@ public class CharacterSelectionManager : MonoBehaviour
     [SerializeField] private Sprite[] spritesCarro; 
 
     [Header("UI Jugador")]
-    [SerializeField] private TextMeshProUGUI playerNameText; // NUEVO: Referencia al texto de la UI
+    [SerializeField] private TextMeshProUGUI playerNameText;       // El texto que está afuera (opcional)
+    [SerializeField] private TextMeshProUGUI playerBorderNameText; // NUEVO: El texto que va DENTRO del borde
 
     private int currentSelection = 0;
 
@@ -39,17 +40,19 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void Start()
     {
-        // NUEVO: Mostrar el nombre del jugador en la UI
+        // Obtener el nombre a mostrar (o usar "Jugador 1" por defecto)
+        string nombreFinal = string.IsNullOrEmpty(GameData.PlayerName) ? "Jugador 1" : GameData.PlayerName;
+
+        // Asignar el nombre al texto de afuera (si está asignado)
         if (playerNameText != null)
         {
-            if (!string.IsNullOrEmpty(GameData.PlayerName))
-            {
-                playerNameText.text = GameData.PlayerName;
-            }
-            else
-            {
-                playerNameText.text = "Jugador 1"; // Por defecto si no hay nombre
-            }
+            playerNameText.text = nombreFinal;
+        }
+
+        // Asignar el nombre al texto que está DENTRO del borde
+        if (playerBorderNameText != null)
+        {
+            playerBorderNameText.text = nombreFinal;
         }
 
         cpuBorder.gameObject.SetActive(false);
@@ -64,51 +67,31 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void Update()
     {
-        // 1. SALIR (Tecla Esc) - Funciona siempre, incluso si ya se confirmó
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ExitToMainMenu();
             return;
         }
 
-        // Si el jugador ya confirmó, bloqueamos el resto de las teclas
         if (!inputEnabled)
             return;
 
-        // 2. CONFIRMAR (Enter o Enter del teclado numérico)
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             ConfirmSelection();
             return; 
         }
 
-        // 3. ALEATORIO (Shift Izquierdo o Derecho)
         if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
         {
             RandomSelection();
             return;
         }
 
-        // 4. MOVIMIENTO (Flechas)
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            MoveRight();
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            MoveLeft();
-        }
-
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            MoveUp();
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            MoveDown();
-        }
+        if (Input.GetKeyDown(KeyCode.RightArrow)) MoveRight();
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveLeft();
+        if (Input.GetKeyDown(KeyCode.UpArrow)) MoveUp();
+        if (Input.GetKeyDown(KeyCode.DownArrow)) MoveDown();
     }
 
     private void MoveRight()
@@ -131,8 +114,6 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void MoveUp()
     {
-        Debug.Log("MoveUp ejecutado");
-
         if (currentSelection >= 4)
         {
             currentSelection -= 4;
@@ -142,8 +123,6 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void MoveDown()
     {
-        Debug.Log("MoveDown ejecutado");
-
         if (currentSelection < 4)
         {
             currentSelection += 4;
@@ -153,8 +132,6 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void UpdatePlayerBorder()
     {
-        Debug.Log("Current Selection: " + currentSelection);
-
         // Mueve el borde de selección
         playerBorder.position = colorPoints[currentSelection].position;
 
@@ -182,15 +159,11 @@ public class CharacterSelectionManager : MonoBehaviour
         StartCoroutine(CPUSelectionRoutine());
     }
 
-    // ==========================================
-    // AJUSTE: ALEATORIO CON EFECTO "RULETA"
-    // ==========================================
     public void RandomSelection()
     {
         if (playerConfirmed || !inputEnabled)
             return;
 
-        // Bloqueamos la entrada temporalmente para que no se interrumpa la animación
         inputEnabled = false;
         StartCoroutine(RandomSelectionRoutine());
     }
@@ -198,36 +171,31 @@ public class CharacterSelectionManager : MonoBehaviour
     private IEnumerator RandomSelectionRoutine()
     {
         float timer = 0f;
-        float duration = 1.0f; // Cuánto dura el efecto de giro
-        float speed = 0.05f;   // Velocidad de cambio
+        float duration = 1.0f; 
+        float speed = 0.05f;   
 
-        // Elegimos el índice final desde el principio
         int finalSelection = Random.Range(0, colorPoints.Length);
 
-        // Bucle de animación
         while (timer < duration)
         {
             currentSelection++;
             if (currentSelection >= colorPoints.Length)
                 currentSelection = 0;
 
-            UpdatePlayerBorder(); // Esto actualiza el borde Y el carro
+            UpdatePlayerBorder(); 
 
             timer += speed;
             yield return new WaitForSeconds(speed);
         }
 
-        // Lo forzamos a caer en el elegido al azar
         currentSelection = finalSelection;
         UpdatePlayerBorder();
 
-        yield return new WaitForSeconds(0.2f); // Pequeña pausa antes de confirmar
+        yield return new WaitForSeconds(0.2f); 
 
-        // Restauramos la entrada y confirmamos
         inputEnabled = true; 
         ConfirmSelection();
     }
-    // ==========================================
 
     private IEnumerator CPUSelectionRoutine()
     {
@@ -276,16 +244,11 @@ public class CharacterSelectionManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-    // ==========================================
-    // NUEVA FUNCIÓN PARA EL CLIC DEL MOUSE
-    // ==========================================
     public void SeleccionarPorMouse(int index)
     {
-        // Si el jugador ya confirmó o la entrada está bloqueada, no hace nada
         if (playerConfirmed || !inputEnabled)
             return;
 
-        // Verificamos que el índice esté dentro del rango
         if (index >= 0 && index < colorPoints.Length)
         {
             currentSelection = index;
