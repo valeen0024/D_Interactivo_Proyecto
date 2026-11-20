@@ -3,29 +3,26 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
-public class PauseMenuController : MonoBehaviour
+public class PauseManager : MonoBehaviour
 {
-    [Header("UI Pausa y HUD")]
+    [Header("Paneles y Botón HUD")]
     [SerializeField] private GameObject pauseMenuPanel;
     [SerializeField] private GameObject hudPauseButton;
 
-    [Header("Audio (igual que en Main Menu)")]
-    [SerializeField] private AudioMixer musicMixer;
-    [SerializeField] private string musicExposedParam = "VolumeMaster"; // Pon aquí el nombre exacto que usa tu Main Menu
-    [SerializeField] private AudioSource fallbackMusicSource;         // Opcional: si tu música va por AudioSource directo
+    [Header("Respaldo AudioMixer (si no hay AudioManager)")]
+    [SerializeField] private AudioMixer fallbackMixer;
+    [SerializeField] private string musicExposedParam = "VolumeMaster";
+    [SerializeField] private string sfxExposedParam = "SFXVolume";
 
-    [SerializeField] private AudioMixer sfxMixer;
-    [SerializeField] private string sfxExposedParam = "SFXVolume";     // Nombre expuesto en el grupo SFX
-
-    [Header("Sliders")]
+    [Header("Sliders de Audio")]
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
 
     [Header("Escena Menú")]
     [SerializeField] private string mainMenuSceneName = "MainMenu";
 
-    private const string MUSIC_PREF_KEY = "MusicVolume";
-    private const string SFX_PREF_KEY = "SFXVolume";
+    private const string MUSIC_PREF_KEY = "MusicVolumeDB";
+    private const string SFX_PREF_KEY = "SFXVolumeDB";
     private bool isPaused = false;
 
     private void Start()
@@ -36,33 +33,31 @@ public class PauseMenuController : MonoBehaviour
         if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
         if (hudPauseButton != null) hudPauseButton.SetActive(true);
 
-        float savedMusic = PlayerPrefs.GetFloat(MUSIC_PREF_KEY, 0.75f);
-        float savedSfx = PlayerPrefs.GetFloat(SFX_PREF_KEY, 0.75f);
+        float savedMusic = PlayerPrefs.GetFloat(MUSIC_PREF_KEY, 0f);
+        float savedSfx = PlayerPrefs.GetFloat(SFX_PREF_KEY, 0f);
+
+        Debug.Log($"[PauseManager Start] savedMusic={savedMusic} | savedSfx={savedSfx} | AudioManager.Instance={(AudioManager.Instance != null ? "EXISTE" : "NULL")} | fallbackMixer={(fallbackMixer != null ? fallbackMixer.name : "NULL")}");
 
         if (musicSlider != null)
         {
-            musicSlider.minValue = 0.0001f;
-            musicSlider.maxValue = 1f;
             musicSlider.SetValueWithoutNotify(savedMusic);
             musicSlider.onValueChanged.RemoveAllListeners();
             musicSlider.onValueChanged.AddListener(SetMusicVolume);
         }
-        ApplyMusicVolume(savedMusic);
+        SetMusicVolume(savedMusic);
 
         if (sfxSlider != null)
         {
-            sfxSlider.minValue = 0.0001f;
-            sfxSlider.maxValue = 1f;
             sfxSlider.SetValueWithoutNotify(savedSfx);
             sfxSlider.onValueChanged.RemoveAllListeners();
             sfxSlider.onValueChanged.AddListener(SetSFXVolume);
         }
-        ApplySFXVolume(savedSfx);
+        SetSFXVolume(savedSfx);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
         {
             if (isPaused) ResumeGame();
             else PauseGame();
@@ -77,6 +72,7 @@ public class PauseMenuController : MonoBehaviour
         if (hudPauseButton != null) hudPauseButton.SetActive(false);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        Debug.Log("[PauseManager] Juego pausado.");
     }
 
     public void ResumeGame()
@@ -91,8 +87,7 @@ public class PauseMenuController : MonoBehaviour
     {
         isPaused = false;
         Time.timeScale = 1f;
-        Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.buildIndex);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void GoToMainMenu()
@@ -104,37 +99,43 @@ public class PauseMenuController : MonoBehaviour
 
     public void SetMusicVolume(float value)
     {
-        ApplyMusicVolume(value);
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.SetMusicVolumeDB(value);
+            Debug.Log($"[SetMusicVolume] Llamó a AudioManager.Instance.SetMusicVolumeDB({value})");
+        }
+        else if (fallbackMixer != null && !string.IsNullOrEmpty(musicExposedParam))
+        {
+            bool ok = fallbackMixer.SetFloat(musicExposedParam, value);
+            Debug.Log($"[SetMusicVolume] fallbackMixer.SetFloat('{musicExposedParam}', {value}) -> resultado: {ok}");
+        }
+        else
+        {
+            Debug.LogWarning("[SetMusicVolume] No hay AudioManager ni fallbackMixer asignado.");
+        }
+
         PlayerPrefs.SetFloat(MUSIC_PREF_KEY, value);
         PlayerPrefs.Save();
     }
 
     public void SetSFXVolume(float value)
     {
-        ApplySFXVolume(value);
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.SetSFXVolumeDB(value);
+            Debug.Log($"[SetSFXVolume] Llamó a AudioManager.Instance.SetSFXVolumeDB({value})");
+        }
+        else if (fallbackMixer != null && !string.IsNullOrEmpty(sfxExposedParam))
+        {
+            bool ok = fallbackMixer.SetFloat(sfxExposedParam, value);
+            Debug.Log($"[SetSFXVolume] fallbackMixer.SetFloat('{sfxExposedParam}', {value}) -> resultado: {ok}");
+        }
+        else
+        {
+            Debug.LogWarning("[SetSFXVolume] No hay AudioManager ni fallbackMixer asignado.");
+        }
+
         PlayerPrefs.SetFloat(SFX_PREF_KEY, value);
         PlayerPrefs.Save();
-    }
-
-    private void ApplyMusicVolume(float value)
-    {
-        float clamped = Mathf.Clamp(value, 0.0001f, 1f);
-        if (musicMixer != null && !string.IsNullOrEmpty(musicExposedParam))
-        {
-            musicMixer.SetFloat(musicExposedParam, Mathf.Log10(clamped) * 20f);
-        }
-        if (fallbackMusicSource != null)
-        {
-            fallbackMusicSource.volume = value;
-        }
-    }
-
-    private void ApplySFXVolume(float value)
-    {
-        float clamped = Mathf.Clamp(value, 0.0001f, 1f);
-        if (sfxMixer != null && !string.IsNullOrEmpty(sfxExposedParam))
-        {
-            sfxMixer.SetFloat(sfxExposedParam, Mathf.Log10(clamped) * 20f);
-        }
     }
 }

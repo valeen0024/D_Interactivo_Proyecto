@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class KartLaneController : MonoBehaviour
 {
     [Header("Lane Configuration")]
     [Tooltip("Horizontal distance between each lane center.")]
     [SerializeField] private float laneOffset = 2f;
-    
+
     [Tooltip("Speed at which the kart transitions horizontally between lanes.")]
     [SerializeField] private float laneChangeSpeed = 15f;
 
@@ -24,7 +25,7 @@ public class KartLaneController : MonoBehaviour
     [Header("Lane Limits (4 Lanes Setup)")]
     [Tooltip("Minimum lane index (most left lane).")]
     [SerializeField] private int minLane = -1;
-    
+
     [Tooltip("Maximum lane index (most right lane).")]
     [SerializeField] private int maxLane = 2;
 
@@ -37,7 +38,6 @@ public class KartLaneController : MonoBehaviour
     [SerializeField] private int currentLane = 0;
     public int CurrentLane => currentLane;
 
-
     [Header("Turbo / Boost Settings")]
     [Tooltip("Speed multiplier during the boost.")]
     [SerializeField] private float boostSpeedMultiplier = 1.8f;
@@ -46,8 +46,12 @@ public class KartLaneController : MonoBehaviour
     [SerializeField] private float boostDuration = 2f;
 
     [Header("Audio Settings")]
-    [Tooltip("Rngine sound.")]
+    [Tooltip("Grupo SFX de tu AudioMixer para que el slider de efectos controle motor y turbo.")]
+    [SerializeField] private AudioMixerGroup sfxMixerGroup;
+
+    [Tooltip("Engine sound.")]
     [SerializeField] private AudioClip engineClip;
+
     [Tooltip("Turbo sound.")]
     [SerializeField] private AudioClip turboClip;
 
@@ -55,7 +59,7 @@ public class KartLaneController : MonoBehaviour
     [SerializeField] private float normalEngineVolume = 0.5f;
     [SerializeField] private float normalEnginePitch = 1.0f;
 
-    [Tooltip("VEngine volume and tone when the turbo is active.")]
+    [Tooltip("Engine volume and tone when the turbo is active.")]
     [SerializeField] private float turboEngineVolume = 1.0f;
     [SerializeField] private float turboEnginePitch = 1.5f;
 
@@ -66,8 +70,6 @@ public class KartLaneController : MonoBehaviour
     [SerializeField] private float turboCooldownDuration = 0.5f;
 
     private bool isFadingOut = false;
-
-
     private AudioSource engineAudioSource;
     private AudioSource turboAudioSource;
 
@@ -81,13 +83,11 @@ public class KartLaneController : MonoBehaviour
     private bool isSliding = false;
     private bool isBoosting = false;
 
-
     public bool HasUsedTurbo => hasUsedTurbo;
     public bool canUseTurbo = true;
 
-
     // Stores the initial X coordinate of the kart set in the Scene
-    private float startXPosition; 
+    private float startXPosition;
 
     private void Start()
     {
@@ -95,7 +95,7 @@ public class KartLaneController : MonoBehaviour
 
         // Finds the Animator on this object or its children.
         animator = GetComponentInChildren<Animator>();
-        
+
         targetForwardSpeed = 0f;
         currentForwardSpeed = 0f;
         targetPosition = transform.position;
@@ -103,8 +103,7 @@ public class KartLaneController : MonoBehaviour
         // Capture the initial X position as the origin for the reference lane (0)
         startXPosition = transform.position.x;
 
-
-        //Create the Engine AudioSource
+        // Create the Engine AudioSource
         if (engineClip != null)
         {
             engineAudioSource = gameObject.AddComponent<AudioSource>();
@@ -113,20 +112,19 @@ public class KartLaneController : MonoBehaviour
             engineAudioSource.volume = normalEngineVolume;
             engineAudioSource.pitch = normalEnginePitch;
             engineAudioSource.playOnAwake = false;
+            engineAudioSource.outputAudioMixerGroup = sfxMixerGroup;
         }
 
-        //Create the Turbo AudioSource
+        // Create the Turbo AudioSource
         if (turboClip != null)
         {
             turboAudioSource = gameObject.AddComponent<AudioSource>();
             turboAudioSource.clip = turboClip;
-            turboAudioSource.loop = false; 
+            turboAudioSource.loop = false;
             turboAudioSource.playOnAwake = false;
+            turboAudioSource.outputAudioMixerGroup = sfxMixerGroup;
         }
     }
-
-
-
 
     private void Update()
     {
@@ -215,16 +213,10 @@ public class KartLaneController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Handles forward movement and lane changes using MoveTowards to guarantee precision.
-    /// </summary> 
-
-
     public void RestoreTutorialLane(int lane)
     {
         currentLane = Mathf.Clamp(lane, minLane, maxLane);
     }
-
 
     public float GetLaneWorldX(int lane)
     {
@@ -232,17 +224,16 @@ public class KartLaneController : MonoBehaviour
         return startXPosition + (safeLane * laneOffset);
     }
 
-
     private void MoveKart()
     {
         // Calculate target X position based on the offset and current lane index
         float targetX = startXPosition + (currentLane * laneOffset);
-        
+
         Vector3 currentPos = transform.position;
 
         // MoveTowards snaps perfectly to targetX without floating-point offset drift
         float newX = Mathf.MoveTowards(currentPos.x, targetX, laneChangeSpeed * Time.deltaTime);
-        
+
         // Continuous forward progress using smoothed inertia speed
         float newZ = currentPos.z + (currentForwardSpeed * Time.deltaTime);
 
@@ -285,9 +276,11 @@ public class KartLaneController : MonoBehaviour
         {
             animator.SetTrigger("Boost");
         }
-        //Activate the turbo sound.
+
+        // Activate the turbo sound.
         if (turboAudioSource != null)
         {
+            turboAudioSource.outputAudioMixerGroup = sfxMixerGroup;
             turboAudioSource.Play();
         }
 
@@ -299,36 +292,32 @@ public class KartLaneController : MonoBehaviour
     {
         if (engineAudioSource != null && !engineAudioSource.isPlaying)
         {
+            engineAudioSource.outputAudioMixerGroup = sfxMixerGroup;
             StartCoroutine(FadeInEngine());
         }
     }
 
-    //Fade-in effect at the start of the engine sound.
+    // Fade-in effect at the start of the engine sound.
     private IEnumerator FadeInEngine()
     {
-        
         engineAudioSource.volume = 0f;
-       
         engineAudioSource.Play();
 
         float currentTime = 0f;
 
-        
         while (currentTime < engineFadeDuration)
         {
             currentTime += Time.deltaTime;
-          
             engineAudioSource.volume = Mathf.Lerp(0f, normalEngineVolume, currentTime / engineFadeDuration);
-            yield return null; // Esperamos al siguiente frame
+            yield return null;
         }
 
-      
         engineAudioSource.volume = normalEngineVolume;
     }
-    //Stops the engine sound
+
+    // Stops the engine sound
     public void StopEngineSound()
     {
-        
         if (engineAudioSource != null && engineAudioSource.isPlaying && !isFadingOut)
         {
             StartCoroutine(FadeOutEngine());
@@ -340,7 +329,6 @@ public class KartLaneController : MonoBehaviour
     {
         isFadingOut = true;
 
-        
         float startVolume = engineAudioSource.volume;
         float currentTime = 0f;
 
@@ -351,7 +339,6 @@ public class KartLaneController : MonoBehaviour
             yield return null;
         }
 
-        
         engineAudioSource.volume = 0f;
         engineAudioSource.Stop();
         isFadingOut = false;
@@ -362,7 +349,7 @@ public class KartLaneController : MonoBehaviour
         isBoosting = true;
         Debug.Log("Boost activated!");
 
-        //Increases the volume and intensifies the sound of the engine when the turbo is activated.
+        // Increases the volume and intensifies the sound of the engine when the turbo is activated.
         if (engineAudioSource != null)
         {
             engineAudioSource.volume = turboEngineVolume;
@@ -372,36 +359,30 @@ public class KartLaneController : MonoBehaviour
         // Waits for the assigned duration
         yield return new WaitForSeconds(boostDuration);
 
-        // Once finished, restores the original speed 
+        // Once finished, restores the original speed
         // (Making sure it hasn't run out of fuel in the meantime)
         if (fuelSystem == null || !fuelSystem.IsOutOfFuel)
         {
             currentForwardSpeed = baseForwardSpeed;
         }
 
-        //When the turbo stops, the engine sound returns to normal.
+        // When the turbo stops, the engine sound returns to normal.
         if (engineAudioSource != null)
         {
             float startVolume = engineAudioSource.volume;
             float startPitch = engineAudioSource.pitch;
             float currentTime = 0f;
 
-            
             while (currentTime < turboCooldownDuration)
             {
                 currentTime += Time.deltaTime;
-
                 engineAudioSource.volume = Mathf.Lerp(startVolume, normalEngineVolume, currentTime / turboCooldownDuration);
                 engineAudioSource.pitch = Mathf.Lerp(startPitch, normalEnginePitch, currentTime / turboCooldownDuration);
-
-                yield return null; 
+                yield return null;
             }
 
-            
             engineAudioSource.volume = normalEngineVolume;
             engineAudioSource.pitch = normalEnginePitch;
-
-            
         }
 
         isBoosting = false;
@@ -422,7 +403,6 @@ public class KartLaneController : MonoBehaviour
     /// <summary>
     /// Coroutine managing speed reduction and recovery duration when slipping on oil.
     /// </summary>
-
     private IEnumerator OilSlowRoutine(float duration)
     {
         isSliding = true;
@@ -439,4 +419,3 @@ public class KartLaneController : MonoBehaviour
         baseForwardSpeed = Mathf.Max(0f, newSpeed);
     }
 }
-

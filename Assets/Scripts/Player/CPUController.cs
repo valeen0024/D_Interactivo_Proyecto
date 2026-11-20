@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class CPUController : MonoBehaviour
 {
@@ -57,6 +58,9 @@ public class CPUController : MonoBehaviour
     [SerializeField] private float boostChancePerSecond = 0.2f;
 
     [Header("Audio Settings")]
+    [Tooltip("Grupo SFX de tu AudioMixer para que el slider de efectos controle motor y turbo.")]
+    [SerializeField] private AudioMixerGroup sfxMixerGroup;
+
     [SerializeField] private AudioClip engineClip;
     [SerializeField] private AudioClip turboClip;
 
@@ -90,10 +94,11 @@ public class CPUController : MonoBehaviour
     // Initial transform
     private Vector3 startPosition;
     private Quaternion startRotation;
+
     private void Start()
     {
         startPosition = transform.position;
-        startRotation = transform.rotation; 
+        startRotation = transform.rotation;
 
         fuelSystem = GetComponent<KartFuelSystem>();
 
@@ -112,7 +117,7 @@ public class CPUController : MonoBehaviour
         // Start the lane decision timer.
         laneChangeTimer = laneChangeInterval;
 
-        // Create the turbo sound player
+        // Create the engine sound player
         if (engineClip != null)
         {
             engineAudioSource = gameObject.AddComponent<AudioSource>();
@@ -121,6 +126,7 @@ public class CPUController : MonoBehaviour
             engineAudioSource.volume = normalEngineVolume;
             engineAudioSource.pitch = normalEnginePitch;
             engineAudioSource.playOnAwake = false;
+            engineAudioSource.outputAudioMixerGroup = sfxMixerGroup;
         }
 
         // Create the turbo player from code
@@ -130,6 +136,7 @@ public class CPUController : MonoBehaviour
             turboAudioSource.clip = turboClip;
             turboAudioSource.loop = false;
             turboAudioSource.playOnAwake = false;
+            turboAudioSource.outputAudioMixerGroup = sfxMixerGroup;
         }
     }
 
@@ -153,7 +160,7 @@ public class CPUController : MonoBehaviour
 
         MoveCPU();
 
-        //Randomly evaluate if the CPU should use its single-use turbo
+        // Randomly evaluate if the CPU should use its single-use turbo
         if (!hasUsedTurbo)
         {
             // Generates a random value. Scales with deltaTime so the chance is per second.
@@ -288,7 +295,6 @@ public class CPUController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-       
         Debug.Log(
             "The CPU came into contact with: "
             + other.gameObject.name
@@ -296,14 +302,12 @@ public class CPUController : MonoBehaviour
             + other.gameObject.tag
         );
 
-
         // Comprueba si el objeto es un barril de combustible.
         if (other.CompareTag("Fuel"))
         {
             Debug.Log(
                 "The CPU picked up a fuel barrel."
             );
-
 
             // Checks if the object is a fuel barrel..
             if (fuelSystem != null)
@@ -315,20 +319,15 @@ public class CPUController : MonoBehaviour
                 fuelSystem.AddFuel();
             }
 
-
-
             // Deactivates the barrel after picking it up.
             other.gameObject.SetActive(false);
-
 
             Debug.Log(
                 "Barrel deactivated."
             );
 
-
             return;
         }
-
 
         // Checks if the object is an oil slick.
         if (other.CompareTag("Oil"))
@@ -336,7 +335,6 @@ public class CPUController : MonoBehaviour
             Debug.Log(
                 "The CPU stepped on an oil slick."
             );
-
 
             // Reduces fuel consumption.
             if (fuelSystem != null)
@@ -348,13 +346,10 @@ public class CPUController : MonoBehaviour
                 fuelSystem.ReduceFuelFromOil();
             }
 
-
-
             // Applies the speed reduction.
             ApplyOilSlow(
                 oilSlowDuration
             );
-
 
             Debug.Log(
                 "Effect of applied oil."
@@ -390,6 +385,7 @@ public class CPUController : MonoBehaviour
         isSliding = false;
         Debug.Log("CPU speed recovered.");
     }
+
     public void ResetForNewTurn()
     {
         StopAllCoroutines();
@@ -433,6 +429,7 @@ public class CPUController : MonoBehaviour
 
         if (turboAudioSource != null)
         {
+            turboAudioSource.outputAudioMixerGroup = sfxMixerGroup;
             turboAudioSource.Play();
         }
 
@@ -444,8 +441,7 @@ public class CPUController : MonoBehaviour
         currentForwardSpeed = cpuSpeed * boostSpeedMultiplier;
         Debug.Log("CPU activated Boost randomly!");
 
-
-        ////Increases the volume and intensifies the sound of the engine when the turbo is activated.
+        // Increases the volume and intensifies the sound of the engine when the turbo is activated.
         if (engineAudioSource != null)
         {
             engineAudioSource.volume = turboEngineVolume;
@@ -459,7 +455,8 @@ public class CPUController : MonoBehaviour
         {
             currentForwardSpeed = cpuSpeed;
         }
-        //When the turbo stops, the engine sound returns to normal.
+
+        // When the turbo stops, the engine sound returns to normal.
         if (engineAudioSource != null)
         {
             float startVolume = engineAudioSource.volume;
@@ -485,6 +482,7 @@ public class CPUController : MonoBehaviour
     {
         if (engineAudioSource != null && !engineAudioSource.isPlaying)
         {
+            engineAudioSource.outputAudioMixerGroup = sfxMixerGroup;
             StartCoroutine(FadeInEngine());
         }
     }
@@ -529,6 +527,4 @@ public class CPUController : MonoBehaviour
         engineAudioSource.Stop();
         isFadingOut = false;
     }
-
-
 }

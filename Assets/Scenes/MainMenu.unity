@@ -5263,7 +5263,8 @@ MonoBehaviour:
   volumeMaster: {fileID: 1560531031}
   muteToggle: {fileID: 654711172}
   qualityDropdown: {fileID: 1442725030}
-  mixer: {fileID: 24100000, guid: bb2c79958b4d08d428f2dc426b0fd0ab, type: 2}
+  mixer: {fileID: 24100000, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
+  musicExposedParam: VolumeMaster
   mainPanel: {fileID: 1441389527}
   optionsPanel: {fileID: 1401792111}
   creditsPanel: {fileID: 1320958544}
@@ -5762,7 +5763,7 @@ AudioSource:
   m_GameObject: {fileID: 2097897266}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: bb2c79958b4d08d428f2dc426b0fd0ab, type: 2}
+  OutputAudioMixerGroup: {fileID: -2945272166423487045, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -5946,6 +5947,62 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2107520939
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2107520941}
+  - component: {fileID: 2107520940}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2107520940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107520939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac6a70a1a9b9a2c4fa6b2d1f49f14ca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  mainAudioMixer: {fileID: 24100000, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
+  musicExposedParam: VolumeMaster
+  musicMixerGroup: {fileID: -2945272166423487045, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
+  sfxExposedParam: SFXVolume
+  sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
+  mainMenuMusic: {fileID: 0}
+  gameplayMusic: {fileID: 0}
+  gameplaySceneName: Gameplay
+  musicBaseVolume: 0.7
+  fuelPickupClip: {fileID: 8300000, guid: dd6bef61df8a2594c8dbfdbb8d19440e, type: 3}
+  oilSlipClip: {fileID: 8300000, guid: 434d3b87b7be78e48a40b05fbf070294, type: 3}
+  turboClip: {fileID: 8300000, guid: ed8ecb627d015db47846c71556f1c32f, type: 3}
+--- !u!4 &2107520941
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107520939}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 894.57605, y: 548.39636, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2122941891
 GameObject:
   m_ObjectHideFlags: 0
@@ -6031,3 +6088,4 @@ SceneRoots:
   - {fileID: 2093664130}
   - {fileID: 1790468859}
   - {fileID: 2097897269}
+  - {fileID: 2107520941}

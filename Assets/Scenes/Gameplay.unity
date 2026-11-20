@@ -219,7 +219,7 @@ AudioSource:
   m_GameObject: {fileID: 17609193}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -348,6 +348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSlick
   slowDuration: 2
+  slipVolume: 1
 --- !u!65 &17609198
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1691,6 +1692,7 @@ MonoBehaviour:
   currentLane: 0
   boostSpeedMultiplier: 2
   boostDuration: 2
+  sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   engineClip: {fileID: 8300000, guid: dcce8fe17e131834da513a21b3826752, type: 3}
   turboClip: {fileID: 8300000, guid: ed8ecb627d015db47846c71556f1c32f, type: 3}
   normalEngineVolume: 0.5
@@ -2058,7 +2060,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
-  impactSound: {fileID: 8300000, guid: dd6bef61df8a2594c8dbfdbb8d19440e, type: 3}
   soundVolume: 1
 --- !u!114 &190335435
 MonoBehaviour:
@@ -3092,6 +3093,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSlick
   slowDuration: 2
+  slipVolume: 1
 --- !u!65 &257797768
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3135,7 +3137,7 @@ AudioSource:
   m_GameObject: {fileID: 257797764}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -6126,7 +6128,7 @@ AudioSource:
   m_GameObject: {fileID: 418790720}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -6255,6 +6257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSlick
   slowDuration: 2
+  slipVolume: 1
 --- !u!65 &418790725
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9800,7 +9803,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
-  impactSound: {fileID: 8300000, guid: dd6bef61df8a2594c8dbfdbb8d19440e, type: 3}
   soundVolume: 1
 --- !u!135 &660177018
 SphereCollider:
@@ -10965,7 +10967,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
-  impactSound: {fileID: 8300000, guid: dd6bef61df8a2594c8dbfdbb8d19440e, type: 3}
   soundVolume: 1
 --- !u!135 &809796635
 SphereCollider:
@@ -11907,7 +11908,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
-  impactSound: {fileID: 8300000, guid: dd6bef61df8a2594c8dbfdbb8d19440e, type: 3}
   soundVolume: 1
 --- !u!135 &913173596
 SphereCollider:
@@ -13168,9 +13168,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainMenuManager, Assembly-CSharp
-        m_MethodName: ChangeVolumeMaster
+      - m_Target: {fileID: 1396142392}
+        m_TargetAssemblyTypeName: PauseManager, Assembly-CSharp
+        m_MethodName: SetMusicVolume
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14844,9 +14844,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainMenuManager, Assembly-CSharp
-        m_MethodName: ChangeVolumeMaster
+      - m_Target: {fileID: 1396142392}
+        m_TargetAssemblyTypeName: PauseManager, Assembly-CSharp
+        m_MethodName: SetSFXVolume
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -16828,10 +16828,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuController
   pauseMenuPanel: {fileID: 1110667692}
   hudPauseButton: {fileID: 968112841}
-  musicMixer: {fileID: 24100000, guid: bb2c79958b4d08d428f2dc426b0fd0ab, type: 2}
+  fallbackMixer: {fileID: 24100000, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   musicExposedParam: VolumeMaster
-  fallbackMusicSource: {fileID: 0}
-  sfxMixer: {fileID: 24100000, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   sfxExposedParam: SFXVolume
   musicSlider: {fileID: 977466603}
   sfxSlider: {fileID: 1128127241}
@@ -17141,7 +17139,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
-  impactSound: {fileID: 8300000, guid: dd6bef61df8a2594c8dbfdbb8d19440e, type: 3}
   soundVolume: 1
 --- !u!135 &1434264110
 SphereCollider:
@@ -19012,7 +19009,7 @@ AudioSource:
   m_GameObject: {fileID: 1554867237}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -19141,6 +19138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSlick
   slowDuration: 2
+  slipVolume: 1
 --- !u!65 &1554867242
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19851,7 +19849,7 @@ AudioSource:
   m_GameObject: {fileID: 1599742143}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -19980,6 +19978,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSlick
   slowDuration: 2
+  slipVolume: 1
 --- !u!65 &1599742148
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20412,6 +20411,7 @@ MonoBehaviour:
   currentLane: 0
   boostSpeedMultiplier: 2
   boostDuration: 2
+  sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   engineClip: {fileID: 0}
   turboClip: {fileID: 0}
   normalEngineVolume: 0.5
@@ -20515,6 +20515,7 @@ MonoBehaviour:
   boostSpeedMultiplier: 2
   boostDuration: 3
   boostChancePerSecond: 0.8
+  sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   engineClip: {fileID: 8300000, guid: dcce8fe17e131834da513a21b3826752, type: 3}
   turboClip: {fileID: 8300000, guid: ed8ecb627d015db47846c71556f1c32f, type: 3}
   normalEngineVolume: 0.5
@@ -20763,7 +20764,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
-  impactSound: {fileID: 8300000, guid: dd6bef61df8a2594c8dbfdbb8d19440e, type: 3}
   soundVolume: 1
 --- !u!135 &1650879464
 SphereCollider:
@@ -24071,7 +24071,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
-  impactSound: {fileID: 8300000, guid: dd6bef61df8a2594c8dbfdbb8d19440e, type: 3}
   soundVolume: 1
 --- !u!135 &1806068604
 SphereCollider:
@@ -24713,7 +24712,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
-  impactSound: {fileID: 8300000, guid: dd6bef61df8a2594c8dbfdbb8d19440e, type: 3}
   soundVolume: 1
 --- !u!135 &1865688019
 SphereCollider:
@@ -25286,7 +25284,7 @@ AudioSource:
   m_GameObject: {fileID: 1925237931}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -25415,6 +25413,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSlick
   slowDuration: 2
+  slipVolume: 1
 --- !u!65 &1925237936
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26780,7 +26779,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
-  impactSound: {fileID: 8300000, guid: dd6bef61df8a2594c8dbfdbb8d19440e, type: 3}
   soundVolume: 1
 --- !u!135 &2001427876
 SphereCollider:
@@ -27027,7 +27025,7 @@ AudioSource:
   m_GameObject: {fileID: 2032856355}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -27156,6 +27154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSlick
   slowDuration: 2
+  slipVolume: 1
 --- !u!65 &2032856360
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29724,7 +29723,7 @@ AudioSource:
   m_GameObject: {fileID: 2081506382}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -29853,6 +29852,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSlick
   slowDuration: 2
+  slipVolume: 1
 --- !u!65 &2081506387
 BoxCollider:
   m_ObjectHideFlags: 0
