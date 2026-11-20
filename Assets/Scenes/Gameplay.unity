@@ -21530,10 +21530,10 @@ MonoBehaviour:
   winnerName: 
   finalPlayerDistance: 0
   finalCPUDistance: 0
-  instructionText: {fileID: 136337372}
-  continueButtonText: {fileID: 162910217}
-  progressText: {fileID: 2081017820}
-  previousButton: {fileID: 973377079}
+  instructionText: {fileID: 0}
+  continueButtonText: {fileID: 0}
+  progressText: {fileID: 0}
+  previousButton: {fileID: 0}
 --- !u!4 &1785007285
 Transform:
   m_ObjectHideFlags: 0

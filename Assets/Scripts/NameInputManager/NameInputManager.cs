@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class NameInputManager : MonoBehaviour
 {
@@ -13,14 +14,16 @@ public class NameInputManager : MonoBehaviour
 
     private void Update()
     {
+        if (Keyboard.current == null) return;
+
         // 1. PRESIONAR ENTER PARA CONTINUAR
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        if (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.numpadEnterKey.wasPressedThisFrame)
         {
             ConfirmName();
         }
 
         // 2. PRESIONAR ESC PARA SALIR
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             ExitToMenu();
         }

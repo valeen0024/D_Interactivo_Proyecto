@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class CharacterSelectionManager : MonoBehaviour
 {
@@ -37,7 +38,6 @@ public class CharacterSelectionManager : MonoBehaviour
     private int cpuSelection = -1;
     private int cpuCurrentIndex = 0;
 
-
     private void Start()
     {
         // Obtener el nombre a mostrar (o usar "Jugador 1" por defecto)
@@ -67,7 +67,9 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Keyboard.current == null) return;
+
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             ExitToMainMenu();
             return;
@@ -76,22 +78,22 @@ public class CharacterSelectionManager : MonoBehaviour
         if (!inputEnabled)
             return;
 
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        if (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.numpadEnterKey.wasPressedThisFrame)
         {
             ConfirmSelection();
             return; 
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+        if (Keyboard.current.leftShiftKey.wasPressedThisFrame || Keyboard.current.rightShiftKey.wasPressedThisFrame)
         {
             RandomSelection();
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow)) MoveRight();
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveLeft();
-        if (Input.GetKeyDown(KeyCode.UpArrow)) MoveUp();
-        if (Input.GetKeyDown(KeyCode.DownArrow)) MoveDown();
+        if (Keyboard.current.rightArrowKey.wasPressedThisFrame) MoveRight();
+        if (Keyboard.current.leftArrowKey.wasPressedThisFrame) MoveLeft();
+        if (Keyboard.current.upArrowKey.wasPressedThisFrame) MoveUp();
+        if (Keyboard.current.downArrowKey.wasPressedThisFrame) MoveDown();
     }
 
     private void MoveRight()
