@@ -34,15 +34,13 @@ public class DistanceTracker : MonoBehaviour
     //Executed every frame of the game.
     private void Update()
     {
-
         //Checks if it's this specific kart's turn by evaluating the GameManager's state.
         bool isMyTurn =
             (isPlayer && GameManager.Instance.gameState == GameManager.GameState.PlayerTurn)
             ||
             (!isPlayer && GameManager.Instance.gameState == GameManager.GameState.CPUTurn);
 
-
-        //f it's this kart's turn and it hasn't reached the finish line yet, calculate its progress.
+        //If it's this kart's turn and it hasn't reached the finish line yet, calculate its progress.
         if (isMyTurn && !hasFinished)
         {
             UpdateDistance();
@@ -53,7 +51,6 @@ public class DistanceTracker : MonoBehaviour
     //Calculates the distance based on the kart's Z position relative to the start line's Z position.
     public void UpdateDistance()
     {
-
         //Gets the absolute difference on the Z axis and multiplies it by the scale factor.
         currentDistance = Mathf.Abs(transform.position.z - startLine.position.z) * distanceMultiplier;
         //Ensures the current distance never exceeds the maximum limit
@@ -71,7 +68,6 @@ public class DistanceTracker : MonoBehaviour
             GameManager.Instance.finalCPUDistance = currentDistance;
         }
     }
-
 
     //Checks if the kart has reached the required distance to finish its race.
     public void CheckFinish()
@@ -98,20 +94,26 @@ public class DistanceTracker : MonoBehaviour
                 {
                     kartMovement.enabled = false;
 
-                    laneController.StopEngineSound();
+                    if (laneController != null)
+                    {
+                        laneController.StopEngineSound();
+                    }
                 }
 
                 // Immediately eliminate any physical velocity or inertia.
                 if (TryGetComponent<Rigidbody>(out var rb))
                 {
-                    rb.linearVelocity = Vector3.zero;
-                    rb.angularVelocity = Vector3.zero;
+                    if (!rb.isKinematic)
+                    {
+                        rb.linearVelocity = Vector3.zero;
+                        rb.angularVelocity = Vector3.zero;
+                    }
                     rb.isKinematic = true; // It freezes it completely in space.
                 }
+
                 //Notifies the GameManager that the player's turn ended successfully.
                 GameManager.Instance.EndPlayerTurn();
             }
-
             //Stopping logic if it is the CPU.
             else
             {
@@ -126,10 +128,14 @@ public class DistanceTracker : MonoBehaviour
                 //Stops its physics completely.
                 if (TryGetComponent<Rigidbody>(out var rb))
                 {
-                    rb.linearVelocity = Vector3.zero;
-                    rb.angularVelocity = Vector3.zero;
+                    if (!rb.isKinematic)
+                    {
+                        rb.linearVelocity = Vector3.zero;
+                        rb.angularVelocity = Vector3.zero;
+                    }
                     rb.isKinematic = true;
                 }
+
                 //Notifies the GameManager that the CPU's turn ended successfully.
                 GameManager.Instance.EndCPUTurn();
             }

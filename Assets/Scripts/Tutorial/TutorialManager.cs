@@ -1,8 +1,8 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -27,7 +27,6 @@ public class TutorialManager : MonoBehaviour
     private Vector3 originalFuelPosition;
     private int selectedFuelLane;
 
-
     [Header("Tutorial Movement")]
     [SerializeField] private float tutorialForwardSpeed = 4f;
 
@@ -37,7 +36,6 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private float oilSpawnDistance = 18f;
 
     private int selectedOilLane;
-
 
     [Header("Completion UI")]
     [SerializeField] private GameObject completionPanel;
@@ -61,7 +59,6 @@ public class TutorialManager : MonoBehaviour
     private Quaternion oilExerciseStartRotation;
 
     private bool turboExerciseCompleted = false;
-
 
     private void PositionFuelBarrelRandomly()
     {
@@ -162,7 +159,6 @@ public class TutorialManager : MonoBehaviour
         playerController.canMove = true;
     }
 
-
     private void Start()
     {
         if (playerController == null)
@@ -222,10 +218,8 @@ public class TutorialManager : MonoBehaviour
                 "PASO 2 DE 5"
             );
         }
-
         else if (exercise == 2)
         {
-
             fuelExerciseStartPosition = playerController.transform.position;
             fuelExerciseStartRotation = playerController.transform.rotation;
             fuelExerciseStartLane = playerController.CurrentLane;
@@ -249,10 +243,8 @@ public class TutorialManager : MonoBehaviour
             playerController.canMove = true;
             playerController.SetForwardSpeed(tutorialForwardSpeed);
         }
-
         else if (exercise == 3)
         {
-
             oilExerciseStartPosition = playerController.transform.position;
             oilExerciseStartRotation = playerController.transform.rotation;
             oilExerciseStartLane = playerController.CurrentLane;
@@ -276,8 +268,6 @@ public class TutorialManager : MonoBehaviour
             playerController.canMove = true;
             playerController.SetForwardSpeed(tutorialForwardSpeed);
         }
-
-
         else if (exercise == 4)
         {
             UpdateUI(
@@ -285,16 +275,12 @@ public class TutorialManager : MonoBehaviour
                 "PASO 5 DE 5"
             );
 
-
             turboExerciseCompleted = false;
 
             playerController.canUseTurbo = true;
             playerController.canMove = true;
             playerController.SetForwardSpeed(tutorialForwardSpeed);
-
         }
-
-
     }
 
     private void Update()
@@ -304,7 +290,7 @@ public class TutorialManager : MonoBehaviour
 
         if (currentExercise == 0)
         {
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (Keyboard.current != null && Keyboard.current.rightArrowKey.wasPressedThisFrame)
                 correctKeyPressed = true;
 
             float distance =
@@ -318,7 +304,7 @@ public class TutorialManager : MonoBehaviour
         }
         else if (currentExercise == 1)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            if (Keyboard.current != null && Keyboard.current.leftArrowKey.wasPressedThisFrame)
                 correctKeyPressed = true;
 
             float distance =
@@ -330,7 +316,6 @@ public class TutorialManager : MonoBehaviour
                 StartCoroutine(CompleteExercise());
             }
         }
-
         else if (currentExercise == 2)
         {
             if (playerFuelSystem != null)
@@ -351,9 +336,6 @@ public class TutorialManager : MonoBehaviour
                 StartCoroutine(RetryFuelExercise());
             }
         }
-
-
-
         else if (currentExercise == 3)
         {
             if (tutorialOilSpill == null || oilDetector == null)
@@ -386,8 +368,6 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-
-
     private IEnumerator CompleteExercise()
     {
         transitioning = true;
@@ -412,8 +392,6 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-
-
     private IEnumerator CompleteFuelExercise()
     {
         transitioning = true;
@@ -432,7 +410,6 @@ public class TutorialManager : MonoBehaviour
         playerController.canMove = false;
         StartExercise(3);
     }
-
 
     private IEnumerator CompleteOilExercise(bool avoidedOil)
     {
@@ -462,7 +439,6 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(messageDelay);
 
-
         if (avoidedOil)
         {
             if (tutorialOilSpill != null)
@@ -474,7 +450,6 @@ public class TutorialManager : MonoBehaviour
 
             StartExercise(4);
         }
-
         else
         {
             Debug.Log("TUTORIAL: Restarting oil exercise.");
@@ -498,8 +473,6 @@ public class TutorialManager : MonoBehaviour
             StartExercise(3);
         }
     }
-
-
 
     private IEnumerator CompleteTurboExercise()
     {
@@ -536,7 +509,6 @@ public class TutorialManager : MonoBehaviour
         Debug.Log("TUTORIAL: Training completed.");
     }
 
-
     private void UpdateUI(string message, string progress)
     {
         if (instructionText != null)
@@ -552,5 +524,4 @@ public class TutorialManager : MonoBehaviour
 
         SceneManager.LoadScene("Gameplay");
     }
-
 }

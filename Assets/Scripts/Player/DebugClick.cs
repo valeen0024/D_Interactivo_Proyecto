@@ -6,11 +6,7 @@ public class DebugClick : MonoBehaviour
 {
     void Update()
     {
-        // Revisa el clic con el sistema nuevo Y el viejo
-        bool clickNuevo = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-        bool clickViejo = Input.GetMouseButtonDown(0);
-
-        if (clickNuevo || clickViejo)
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             Debug.Log("<color=cyan>1. ¡El mouse HIZO CLIC en la pantalla!</color>");
 
@@ -19,7 +15,7 @@ public class DebugClick : MonoBehaviour
                 if (EventSystem.current.IsPointerOverGameObject())
                 {
                     PointerEventData pointerData = new PointerEventData(EventSystem.current);
-                    pointerData.position = Mouse.current != null ? Mouse.current.position.ReadValue() : (Vector2)Input.mousePosition;
+                    pointerData.position = Mouse.current.position.ReadValue();
 
                     var results = new System.Collections.Generic.List<RaycastResult>();
                     EventSystem.current.RaycastAll(pointerData, results);

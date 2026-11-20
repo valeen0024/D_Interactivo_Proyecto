@@ -70,9 +70,9 @@ public class CPUController : MonoBehaviour
     [SerializeField] private float turboEngineVolume = 1.0f;
     [SerializeField] private float turboEnginePitch = 1.5f;
 
-    [Tooltip("Duración del Fade In/Out general del motor")]
+    [Tooltip("Duraciï¿½n del Fade In/Out general del motor")]
     [SerializeField] private float engineFadeDuration = 1.0f;
-    [Tooltip("Duración para que el motor vuelva a la normalidad tras el turbo")]
+    [Tooltip("Duraciï¿½n para que el motor vuelva a la normalidad tras el turbo")]
     [SerializeField] private float turboCooldownDuration = 0.5f;
 
     private bool isFadingOut = false;

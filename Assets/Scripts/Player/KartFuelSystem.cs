@@ -147,8 +147,8 @@ public class KartFuelSystem : MonoBehaviour
         // Marks the kart as out of fuel.
         isOutOfFuel = true;
 
-        // Physically stops the Rigidbody.
-        if (rb != null)
+        // Physically stops the Rigidbody only if it is not kinematic.
+        if (rb != null && !rb.isKinematic)
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
@@ -175,13 +175,19 @@ public class KartFuelSystem : MonoBehaviour
             {
                 GameManager.Instance.PlayerOutOfFuel();
 
-                kartController.StopEngineSound();
+                if (kartController != null)
+                {
+                    kartController.StopEngineSound();
+                }
             }
             else if (CompareTag("CPU"))
             {
                 GameManager.Instance.CPUOutOfFuel();
 
-                cpuController.StopEngineSound();
+                if (cpuController != null)
+                {
+                    cpuController.StopEngineSound();
+                }
             }
         }
     }
