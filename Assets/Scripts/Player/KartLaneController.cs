@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.InputSystem;
 
 public class KartLaneController : MonoBehaviour
 {
@@ -70,6 +71,7 @@ public class KartLaneController : MonoBehaviour
     [SerializeField] private float turboCooldownDuration = 0.5f;
 
     private bool isFadingOut = false;
+
     private AudioSource engineAudioSource;
     private AudioSource turboAudioSource;
 
@@ -133,8 +135,9 @@ public class KartLaneController : MonoBehaviour
         // Detect single-use boost input
         if (canUseTurbo &&
             !hasUsedTurbo &&
-            (Input.GetKeyDown(KeyCode.UpArrow) ||
-             Input.GetKeyDown(KeyCode.W)))
+            Keyboard.current != null &&
+            (Keyboard.current.upArrowKey.wasPressedThisFrame ||
+             Keyboard.current.wKey.wasPressedThisFrame))
         {
             ActivateTurbo();
         }
@@ -151,14 +154,15 @@ public class KartLaneController : MonoBehaviour
     private void HandleLaneInput()
     {
         if (fuelSystem != null && fuelSystem.IsOutOfFuel) return;
+        if (Keyboard.current == null) return;
 
         // Move Left
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame)
         {
             if (currentLane > minLane) currentLane--;
         }
         // Move Right (allows reaching the 4th lane at index 2)
-        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame)
         {
             if (currentLane < maxLane) currentLane++;
         }
