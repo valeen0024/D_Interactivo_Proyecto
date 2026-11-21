@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class PauseManager : MonoBehaviour
 {
@@ -57,7 +58,9 @@ public class PauseManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
+        if (Keyboard.current != null &&
+            (Keyboard.current.escapeKey.wasPressedThisFrame ||
+             Keyboard.current.pKey.wasPressedThisFrame))
         {
             if (isPaused) ResumeGame();
             else PauseGame();
