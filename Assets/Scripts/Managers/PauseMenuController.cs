@@ -25,11 +25,13 @@ public class PauseManager : MonoBehaviour
     private const string MUSIC_PREF_KEY = "MusicVolumeDB";
     private const string SFX_PREF_KEY = "SFXVolumeDB";
     private bool isPaused = false;
+    private bool isTransitioning = false;
 
     private void Start()
     {
         Time.timeScale = 1f;
         isPaused = false;
+        isTransitioning = false;
 
         if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
         if (hudPauseButton != null) hudPauseButton.SetActive(true);
@@ -58,6 +60,8 @@ public class PauseManager : MonoBehaviour
 
     private void Update()
     {
+        if (isTransitioning) return;
+
         if (Keyboard.current != null &&
             (Keyboard.current.escapeKey.wasPressedThisFrame ||
              Keyboard.current.pKey.wasPressedThisFrame))
@@ -69,6 +73,8 @@ public class PauseManager : MonoBehaviour
 
     public void PauseGame()
     {
+        if (isPaused || isTransitioning) return;
+
         isPaused = true;
         Time.timeScale = 0f;
         if (pauseMenuPanel != null) pauseMenuPanel.SetActive(true);
@@ -80,23 +86,36 @@ public class PauseManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        if (isTransitioning) return;
+
         isPaused = false;
         Time.timeScale = 1f;
         if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
         if (hudPauseButton != null) hudPauseButton.SetActive(true);
+        Debug.Log("[PauseManager] Juego reanudado.");
     }
 
     public void RestartLevel()
     {
+        if (isTransitioning) return;
+
+        isTransitioning = true;
         isPaused = false;
         Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void GoToMainMenu()
     {
+        if (isTransitioning) return;
+
+        isTransitioning = true;
         isPaused = false;
         Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SceneManager.LoadScene(mainMenuSceneName);
     }
 
