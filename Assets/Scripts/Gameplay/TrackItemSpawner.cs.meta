@@ -1,2 +1,13 @@
 fileFormatVersion: 2
 guid: e46cbc55c21fc4f4989d5c755a9ab45d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - fuelDrumPrefab: {fileID: 4963081413787537871, guid: 6ecd464828016b7488dc17137cb08a62, type: 3}
+  - oilSpillPrefab: {fileID: 1297765023470733099, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

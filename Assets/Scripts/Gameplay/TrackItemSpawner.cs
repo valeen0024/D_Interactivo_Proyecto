@@ -14,43 +14,61 @@ public class TrackItemSpawner : MonoBehaviour
     [SerializeField] private float fuelHeightY = 463.896f;
     [SerializeField] private float oilHeightY = 463.7f;
 
-    [Header("Parámetros de Generación en Pista")]
-    [Tooltip("Distancia por delante del jugador donde van apareciendo los objetos.")]
-    [SerializeField] private float spawnAheadDistance = 30f;
+    [Header("Parámetros de Generación en Pista (800 Yardas)")]
+    [Tooltip("Distancia por delante del kart donde van apareciendo los objetos.")]
+    [SerializeField] private float spawnAheadDistance = 40f;
 
     [Tooltip("Separación base en Z entre cada oleada.")]
-    [SerializeField] private float spawnIntervalZ = 9f;
+    [SerializeField] private float spawnIntervalZ = 10.5f;
 
-    [Tooltip("Variación máxima en Z (+/-) para que los objetos salgan escalonados y no en línea recta.")]
-    [SerializeField] private float zStaggerRange = 3.2f;
+    [Tooltip("Variación máxima en Z (+/-) para que los objetos salgan escalonados.")]
+    [SerializeField] private float zStaggerRange = 3.8f;
 
-    [Tooltip("Posición Z máxima hasta donde se pueden generar objetos (antes de la meta).")]
-    [SerializeField] private float maxSpawnZ = 712f;
+    [Tooltip("Metros antes de la meta en los que se dejan de generar ítems.")]
+    [SerializeField] private float safetyMarginBeforeFinish = 15f;
 
-    [Header("Dificultad y Probabilidades")]
+    [Tooltip("Si no encuentra el arco de meta, usará este límite Z por defecto.")]
+    [SerializeField] private float fallbackMaxSpawnZ = 195f;
+
+    [Header("Equilibrio de Bidones y Aceite")]
     [Range(0f, 1f)]
-    [SerializeField] private float fuelSpawnChance = 0.55f;
+    [Tooltip("Probabilidad de que aparezca un bidón en la oleada.")]
+    [SerializeField] private float fuelSpawnChance = 0.68f;
 
     [Range(0f, 1f)]
-    [SerializeField] private float oilSpawnChance = 0.90f;
+    [Tooltip("Probabilidad de que aparezca aceite en la oleada.")]
+    [SerializeField] private float oilSpawnChance = 0.85f;
 
-    [Tooltip("Mínimo de manchas de aceite por oleada.")]
+    [Header("Variedad por Tramo (Inicio vs. Final de Carrera)")]
     [Range(1, 3)]
-    [SerializeField] private int minOilPerRow = 1;
+    [Tooltip("Mínimo de manchas de aceite en la primera mitad de la pista.")]
+    [SerializeField] private int earlyMinOilPerRow = 1;
 
-    [Tooltip("Máximo de manchas de aceite por oleada (nunca 4 para que siempre haya paso).")]
     [Range(1, 3)]
-    [SerializeField] private int maxOilPerRow = 3;
+    [Tooltip("Máximo de manchas de aceite en la primera mitad de la pista.")]
+    [SerializeField] private int earlyMaxOilPerRow = 2;
 
-    [Tooltip("Cantidad mínima de carriles libres garantizados en cada oleada.")]
+    [Range(1, 3)]
+    [Tooltip("Mínimo de manchas de aceite en la segunda mitad de la pista.")]
+    [SerializeField] private int lateMinOilPerRow = 1;
+
+    [Range(1, 3)]
+    [Tooltip("Máximo de manchas de aceite en la segunda mitad de la pista.")]
+    [SerializeField] private int lateMaxOilPerRow = 3;
+
     [Range(1, 2)]
+    [Tooltip("Carriles garantizados libres de aceite por oleada.")]
     [SerializeField] private int guaranteedFreeLanes = 1;
 
     private Transform playerTransform;
     private Transform cpuTransform;
     private float startZ;
     private float nextSpawnZ;
+    private float calculatedMaxSpawnZ;
     private bool isInitialized = false;
+    private GameManager.GameState lastKnownState = GameManager.GameState.Waiting;
+
+    private readonly List<GameObject> spawnedItems = new List<GameObject>();
 
     private void Start()
     {
@@ -60,28 +78,91 @@ public class TrackItemSpawner : MonoBehaviour
         GameObject cpu = GameObject.FindGameObjectWithTag("CPU");
         if (cpu != null) cpuTransform = cpu.transform;
 
-        startZ = GetLeadingKartZ();
-        nextSpawnZ = startZ + 10f;
+        CalculateTrackLimits();
+        ResetSpawnerForTurn();
         isInitialized = true;
+    }
+
+    private void CalculateTrackLimits()
+    {
+        GameObject startObj = GameObject.FindGameObjectWithTag("Start");
+        startZ = (startObj != null) ? startObj.transform.position.z : GetLeadingKartZ();
+
+        Transform finishTransform = null;
+        FinishLine finishComponent = FindFirstObjectByType<FinishLine>();
+        if (finishComponent != null)
+        {
+            finishTransform = finishComponent.transform;
+        }
+        else
+        {
+            GameObject gantry = GameObject.Find("MD_Finish_Line_Gantry");
+            if (gantry != null) finishTransform = gantry.transform;
+        }
+
+        if (finishTransform != null)
+        {
+            calculatedMaxSpawnZ = finishTransform.position.z - safetyMarginBeforeFinish;
+        }
+        else
+        {
+            calculatedMaxSpawnZ = fallbackMaxSpawnZ;
+        }
+    }
+
+    public void ResetSpawnerForTurn()
+    {
+        for (int i = 0; i < spawnedItems.Count; i++)
+        {
+            if (spawnedItems[i] != null)
+            {
+                Destroy(spawnedItems[i]);
+            }
+        }
+        spawnedItems.Clear();
+
+        nextSpawnZ = startZ + 12f;
     }
 
     private void Update()
     {
         if (!isInitialized || GameManager.Instance == null) return;
 
-        if (GameManager.Instance.gameState == GameManager.GameState.Waiting ||
-            GameManager.Instance.gameState == GameManager.GameState.Finished)
+        GameManager.GameState currentState = GameManager.Instance.gameState;
+
+        if (currentState != lastKnownState)
+        {
+            if (currentState == GameManager.GameState.PlayerTurn || currentState == GameManager.GameState.CPUTurn)
+            {
+                ResetSpawnerForTurn();
+            }
+            lastKnownState = currentState;
+        }
+
+        if (currentState == GameManager.GameState.Waiting ||
+            currentState == GameManager.GameState.Finished)
         {
             return;
         }
 
-        float leadingZ = GetLeadingKartZ();
+        float activeZ = GetActiveKartZ(currentState);
 
-        while (leadingZ + spawnAheadDistance >= nextSpawnZ && nextSpawnZ <= maxSpawnZ)
+        while (activeZ + spawnAheadDistance >= nextSpawnZ && nextSpawnZ <= calculatedMaxSpawnZ)
         {
             SpawnWaveAt(nextSpawnZ);
             nextSpawnZ += spawnIntervalZ;
         }
+    }
+
+    private float GetActiveKartZ(GameManager.GameState state)
+    {
+        if (state == GameManager.GameState.PlayerTurn && playerTransform != null)
+            return playerTransform.position.z;
+
+        if (state == GameManager.GameState.CPUTurn && cpuTransform != null)
+            return cpuTransform.position.z;
+
+        return GetLeadingKartZ();
     }
 
     private float GetLeadingKartZ()
@@ -99,9 +180,8 @@ public class TrackItemSpawner : MonoBehaviour
 
     private float GetStaggeredZ(float baseZ)
     {
-        // Desplaza cada ítem hacia adelante o atrás dentro de la oleada sin pasar la meta
         float randomOffset = Random.Range(-zStaggerRange, zStaggerRange);
-        return Mathf.Clamp(baseZ + randomOffset, startZ + 8f, maxSpawnZ);
+        return Mathf.Clamp(baseZ + randomOffset, startZ + 10f, calculatedMaxSpawnZ);
     }
 
     private void SpawnWaveAt(float baseZ)
@@ -114,7 +194,6 @@ public class TrackItemSpawner : MonoBehaviour
             availableLanes.Add(i);
         }
 
-        // Reserva carriles libres de aceite para asegurar siempre un camino pasable
         int safeLanesCount = Mathf.Clamp(guaranteedFreeLanes, 1, laneXPositions.Length - 1);
         List<int> safeLanes = new List<int>();
 
@@ -125,24 +204,28 @@ public class TrackItemSpawner : MonoBehaviour
             availableLanes.RemoveAt(idx);
         }
 
-        // 1. Bidón de gasolina en un carril seguro, con su propia altura Z escalonada
+        // 1. Bidón de gasolina (priorizando un carril libre de aceite en esa oleada)
         if (fuelDrumPrefab != null && Random.value <= fuelSpawnChance && safeLanes.Count > 0)
         {
             int chosenSafeLane = safeLanes[Random.Range(0, safeLanes.Count)];
             float staggeredZ = GetStaggeredZ(baseZ);
             Vector3 fuelPos = new Vector3(laneXPositions[chosenSafeLane], fuelHeightY, staggeredZ);
-            Instantiate(fuelDrumPrefab, fuelPos, fuelDrumPrefab.transform.rotation, transform);
+            GameObject fuel = Instantiate(fuelDrumPrefab, fuelPos, fuelDrumPrefab.transform.rotation, transform);
+            spawnedItems.Add(fuel);
         }
 
-        // 2. Manchas de aceite en los carriles restantes, cada una en una posición Z distinta (escalonadas)
+        // 2. Aceite con variedad progresiva según qué tan avanzado está el tramo
         if (oilSpillPrefab != null && Random.value <= oilSpawnChance && availableLanes.Count > 0)
         {
-            float trackProgress = Mathf.InverseLerp(startZ, maxSpawnZ, baseZ);
-            int dynamicMin = (trackProgress > 0.5f) ? Mathf.Min(2, maxOilPerRow) : minOilPerRow;
-            int oilCount = Random.Range(dynamicMin, maxOilPerRow + 1);
+            float trackProgress = Mathf.InverseLerp(startZ, calculatedMaxSpawnZ, baseZ);
+
+            int minOil = (trackProgress < 0.5f) ? earlyMinOilPerRow : lateMinOilPerRow;
+            int maxOil = (trackProgress < 0.5f) ? earlyMaxOilPerRow : lateMaxOilPerRow;
+
+            minOil = Mathf.Clamp(minOil, 1, maxOil);
+            int oilCount = Random.Range(minOil, maxOil + 1);
             oilCount = Mathf.Min(oilCount, availableLanes.Count);
 
-            // Reparte desplazamientos distintos para que las manchas de la misma oleada no queden en línea
             float step = (oilCount > 1) ? (zStaggerRange * 2f) / (oilCount - 1) : 0f;
 
             for (int i = 0; i < oilCount; i++)
@@ -152,12 +235,13 @@ public class TrackItemSpawner : MonoBehaviour
                 availableLanes.RemoveAt(randomIndex);
 
                 float structuredOffset = (oilCount > 1)
-                    ? (-zStaggerRange + (step * i)) + Random.Range(-0.6f, 0.6f)
+                    ? (-zStaggerRange + (step * i)) + Random.Range(-0.7f, 0.7f)
                     : Random.Range(-zStaggerRange, zStaggerRange);
 
-                float oilZ = Mathf.Clamp(baseZ + structuredOffset, startZ + 8f, maxSpawnZ);
+                float oilZ = Mathf.Clamp(baseZ + structuredOffset, startZ + 10f, calculatedMaxSpawnZ);
                 Vector3 oilPos = new Vector3(laneXPositions[chosenLane], oilHeightY, oilZ);
-                Instantiate(oilSpillPrefab, oilPos, oilSpillPrefab.transform.rotation, transform);
+                GameObject oil = Instantiate(oilSpillPrefab, oilPos, oilSpillPrefab.transform.rotation, transform);
+                spawnedItems.Add(oil);
             }
         }
     }
