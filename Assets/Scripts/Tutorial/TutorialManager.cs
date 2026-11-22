@@ -34,6 +34,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private GameObject tutorialOilSpill;
     [SerializeField] private TutorialOilDetector oilDetector;
     [SerializeField] private float oilSpawnDistance = 18f;
+    [SerializeField] private AudioClip oilSound; // <-- Arrastra aquí "lose sound"
 
     private int selectedOilLane;
 
@@ -196,7 +197,6 @@ public class TutorialManager : MonoBehaviour
             turboExerciseStartRotation
         );
 
-        // Recarga la gasolina para asegurar que el propulsor funcione al reintentar
         RefillPlayerFuelForTutorial();
 
         turboExerciseCompleted = false;
@@ -328,7 +328,6 @@ public class TutorialManager : MonoBehaviour
             turboExerciseStartRotation = playerController.transform.rotation;
             turboExerciseStartLane = playerController.CurrentLane;
 
-            // Recarga la gasolina completa antes de pedir activar el propulsor
             RefillPlayerFuelForTutorial();
 
             UpdateUI(
@@ -497,6 +496,20 @@ public class TutorialManager : MonoBehaviour
         }
         else
         {
+            // Reproduce "lose sound" usando el AudioSource de MAT_ OIL SPILL en cada intento
+            if (oilSound != null && tutorialOilSpill != null)
+            {
+                AudioSource spillAudio = tutorialOilSpill.GetComponentInChildren<AudioSource>();
+                if (spillAudio != null)
+                {
+                    spillAudio.PlayOneShot(oilSound);
+                }
+                else
+                {
+                    AudioSource.PlayClipAtPoint(oilSound, playerController.transform.position);
+                }
+            }
+
             UpdateUI(
                 "¡Cuidado! Tocaste el aceite. Inténtalo de nuevo.",
                 "PASO 4 DE 5"
