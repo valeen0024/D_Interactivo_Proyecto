@@ -559058,7 +559058,7 @@ MonoBehaviour:
   obstacleFuelPenalty: 0
   startLane: 0
   boostSpeedMultiplier: 2
-  boostDuration: 3
+  boostDuration: 2
   maxBoostUses: 3
   boostChancePerSecond: 0.8
   sfxMixerGroup: {fileID: 0}
