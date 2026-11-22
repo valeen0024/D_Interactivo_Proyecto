@@ -8,6 +8,7 @@ TagManager:
   - Start
   - Oil
   - CPU
+  - Obstacle
   layers:
   - Default
   - TransparentFX

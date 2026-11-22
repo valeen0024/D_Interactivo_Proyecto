@@ -244,6 +244,8 @@ public class CPUController : MonoBehaviour
         int bestLane = currentLane;
         float bestWeight = EvaluateLaneWeight(currentLane);
 
+        bool currentLaneIsSafe = IsLaneSafe(currentLane);
+
         for (int lane = minLane; lane <= maxLane; lane++)
         {
             if (lane == currentLane)
@@ -252,12 +254,15 @@ public class CPUController : MonoBehaviour
             float weight = EvaluateLaneWeight(lane);
             float minimumImprovement = 5f;
 
-            if (weight > bestWeight + minimumImprovement)
+            if (IsLaneSafe(lane) &&
+                ((!currentLaneIsSafe && bestLane == currentLane) ||
+                 weight > bestWeight + minimumImprovement))
             {
                 bestWeight = weight;
                 bestLane = lane;
             }
         }
+
 
         if (bestLane != currentLane)
         {
@@ -267,19 +272,37 @@ public class CPUController : MonoBehaviour
             if (IsLaneSafe(nextLane))
             {
                 targetLane = nextLane;
+
                 Debug.Log(
                     "[CPU RUTA] Actual: " + currentLane +
                     " | Destino deseado: " + bestLane +
                     " | Siguiente carril: " + targetLane
                 );
+
+                return;
+            }
+
+            // Try the opposite direction when the planned route is blocked.
+            int alternativeLane = currentLane - direction;
+
+            if (alternativeLane >= minLane &&
+                alternativeLane <= maxLane &&
+                IsLaneSafe(alternativeLane))
+            {
+                targetLane = alternativeLane;
+
+                Debug.Log(
+                    "[CPU RUTA] Ruta alternativa segura: " + targetLane
+                );
             }
             else
             {
-                Debug.Log("[CPU RUTA] Ruta bloqueada por peligro en carril " + nextLane);
+                Debug.Log("[CPU RUTA] No hay una ruta alternativa segura.");
             }
 
             return;
         }
+
 
         if (Mathf.Approximately(bestWeight, emptyLaneWeight) && Random.value < 0.10f)
         {

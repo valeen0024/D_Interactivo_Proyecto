@@ -559040,15 +559040,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CPUController
   laneOffset: 2
   laneChangeSpeed: 8
-  cpuSpeed: 3
+  cpuSpeed: 6
   minLane: -2
   maxLane: 1
   canMove: 0
-  laneChangeInterval: 2
-  scanDistance: 20
+  laneChangeInterval: 1
+  scanDistance: 25
   emptyLaneWeight: 10
-  fuelCanWeight: 50
-  oilSpillWeight: 10
+  fuelCanWeight: 25
+  oilSpillWeight: -100
   obstacleLaneWeight: 1
   oilSlowMultiplier: 0.5
   oilSlowDuration: 2
@@ -559056,14 +559056,14 @@ MonoBehaviour:
   obstacleSlowMultiplier: 0.4
   obstacleSlowDuration: 1.2
   obstacleFuelPenalty: 0
-  startLane: 1
+  startLane: 0
   boostSpeedMultiplier: 2
   boostDuration: 3
   maxBoostUses: 3
   boostChancePerSecond: 0.8
-  sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
-  engineClip: {fileID: 8300000, guid: dcce8fe17e131834da513a21b3826752, type: 3}
-  turboClip: {fileID: 8300000, guid: ed8ecb627d015db47846c71556f1c32f, type: 3}
+  sfxMixerGroup: {fileID: 0}
+  engineClip: {fileID: 0}
+  turboClip: {fileID: 0}
   normalEngineVolume: 0.5
   normalEnginePitch: 1
   turboEngineVolume: 1
