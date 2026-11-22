@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
@@ -44,6 +45,7 @@ public class TutorialManager : MonoBehaviour
     [Header("Completion UI")]
     [SerializeField] private GameObject completionPanel;
     [SerializeField] private GameObject instructionsPanel;
+    [SerializeField] private Button startRaceButton; // <-- Arrastra aquí el botón COMENZAR CARRERA
 
     [Header("HUD Introduction")]
     [SerializeField] private GameObject hudTutorialPanel;
@@ -363,8 +365,27 @@ public class TutorialManager : MonoBehaviour
 
     private void Update()
     {
-        if (!tutorialStarted || transitioning || currentExercise >= 5)
+        if (!tutorialStarted || transitioning)
             return;
+
+        // Cuando el entrenamiento terminó y el panel final está activo, Enter inicia la carrera
+        if (currentExercise >= 5)
+        {
+            if (completionPanel != null && completionPanel.activeInHierarchy &&
+                Keyboard.current != null &&
+                (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.numpadEnterKey.wasPressedThisFrame))
+            {
+                if (startRaceButton != null)
+                {
+                    startRaceButton.onClick.Invoke();
+                }
+                else
+                {
+                    StartMainRace();
+                }
+            }
+            return;
+        }
 
         if (currentExercise == 0)
         {
@@ -607,6 +628,7 @@ public class TutorialManager : MonoBehaviour
         playerController.canMove = false;
 
         currentExercise = 5;
+        transitioning = false; // Permite detectar la tecla Enter en Update()
 
         if (instructionsPanel != null)
         {
