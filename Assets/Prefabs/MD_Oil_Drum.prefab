@@ -118,8 +118,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99f59f156326d4b4ea296f5719ef101e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
-  fuelAmount: 25
+  fuelAmount: 30
   soundVolume: 1
+  force2DSound: 1
   useAudioManagerPickup: 1
   barrelAudioSource: {fileID: 0}
   mixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}

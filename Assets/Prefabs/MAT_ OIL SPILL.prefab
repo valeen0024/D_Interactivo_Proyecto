@@ -147,7 +147,7 @@ MonoBehaviour:
   fallbackAudioSource: {fileID: 0}
   oilConfig:
     slowDuration: 1.5
-    fuelLossOverride: 10
+    fuelLossOverride: 5
     hideAfterHit: 0
     hideDelay: 0.25
     useAudioManagerSlip: 1
