@@ -70,7 +70,7 @@ Material:
     - _OutlineSoftness: 0
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 0.446
+    - _OutlineWidth: 0.32
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
     - _ScaleRatioA: 0.9
@@ -360411,7 +360411,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1564
         m_GlyphValueRecord:
@@ -360426,7 +360426,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1564
         m_GlyphValueRecord:
@@ -360441,7 +360441,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1564
         m_GlyphValueRecord:
@@ -360456,7 +360456,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1564
         m_GlyphValueRecord:
@@ -360471,7 +360471,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1564
         m_GlyphValueRecord:
@@ -360486,7 +360486,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1564
         m_GlyphValueRecord:
@@ -360501,7 +360501,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1564
         m_GlyphValueRecord:
@@ -360516,7 +360516,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1564
         m_GlyphValueRecord:
@@ -360531,7 +360531,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1564
         m_GlyphValueRecord:
@@ -360546,7 +360546,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360561,7 +360561,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360576,7 +360576,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360591,7 +360591,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360606,7 +360606,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360621,7 +360621,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360636,7 +360636,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360651,7 +360651,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360666,7 +360666,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360681,7 +360681,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360696,7 +360696,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360711,7 +360711,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360726,7 +360726,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360741,7 +360741,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360756,7 +360756,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360771,7 +360771,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360786,7 +360786,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 1600
         m_GlyphValueRecord:
@@ -360801,7 +360801,7 @@ MonoBehaviour:
           m_YPlacement: 0
           m_XAdvance: 0
           m_YAdvance: 0
-      m_FeatureLookupFlags: 900407007
+      m_FeatureLookupFlags: -1723392289
     m_MarkToBaseAdjustmentRecords:
     - m_BaseGlyphID: 1
       m_BaseGlyphAnchorPoint:
