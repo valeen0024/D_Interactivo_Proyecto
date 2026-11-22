@@ -574,6 +574,28 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &39586115 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1297765023470733099, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+  m_PrefabInstance: {fileID: 167649870}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &39586116 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2285048122497742655, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+  m_PrefabInstance: {fileID: 167649870}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &39586122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39586115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76243bf028a0bb248bd55dba3efb7232, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialOilDetector
 --- !u!43 &48387180
 Mesh:
   m_ObjectHideFlags: 0
@@ -1566,6 +1588,78 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 163413233}
   m_CullTransparentMesh: 1
+--- !u!1001 &167649870
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -2069929584275428435, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: fallbackAudioSource
+      value: 
+      objectReference: {fileID: 39586116}
+    - target: {fileID: 1297765023470733099, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_Name
+      value: MAT_ OIL SPILL
+      objectReference: {fileID: 0}
+    - target: {fileID: 1297765023470733099, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -100.74
+      objectReference: {fileID: 0}
+    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 463.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 669.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8339545520668934368, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1297765023470733099, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 39586122}
+  m_SourcePrefab: {fileID: 100100000, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
 --- !u!1 &178725313
 GameObject:
   m_ObjectHideFlags: 0
@@ -14288,10 +14382,10 @@ MonoBehaviour:
   minRandomLane: -1
   maxRandomLane: 2
   tutorialForwardSpeed: 4
-  tutorialOilSpill: {fileID: 2091982627}
-  oilDetector: {fileID: 2091982628}
+  tutorialOilSpill: {fileID: 39586115}
+  oilDetector: {fileID: 39586122}
   oilSpawnDistance: 18
-  oilSound: {fileID: 8300000, guid: e62a3f5f8bf5a134e983abe868f06dc6, type: 3}
+  oilSound: {fileID: 8300000, guid: 2651decbdf0d3284abc11e279b0801d6, type: 3}
   finishLine: {fileID: 2042688448}
   completionPanel: {fileID: 324343323}
   instructionsPanel: {fileID: 1087909064}
@@ -19476,6 +19570,7 @@ GameObject:
   - component: {fileID: 1645004116}
   - component: {fileID: 1645004115}
   - component: {fileID: 1645004122}
+  - component: {fileID: 1645004123}
   m_Layer: 0
   m_Name: Tutorial Oil Spill
   m_TagString: Oil
@@ -19492,7 +19587,7 @@ AudioSource:
   m_GameObject: {fileID: 1645004114}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -19587,13 +19682,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1645004114}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2c5bf639b385174e826f6d2f9a3369d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSpill
   audioSource: {fileID: 1645004115}
-  oilSound: {fileID: 8300000, guid: 1a25f5217966bf2488ac9e9b072c7609, type: 3}
+  oilSound: {fileID: 8300000, guid: 2651decbdf0d3284abc11e279b0801d6, type: 3}
   destroyOnStepped: 0
 --- !u!114 &1645004117
 MonoBehaviour:
@@ -19729,6 +19824,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76243bf028a0bb248bd55dba3efb7232, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialOilDetector
+--- !u!114 &1645004123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645004114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab8dd1303e165d4faaaefb4b424d830, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleBehavior
+  obstacleKind: 0
+  applyGameplayEffects: 1
+  triggerOnlyOnce: 1
+  fallbackAudioSource: {fileID: 0}
+  oilConfig:
+    slowDuration: 2
+    fuelLossOverride: 0
+    hideAfterHit: 0
+    hideDelay: 0.25
+    useAudioManagerSlip: 1
+    audio:
+      audioSource: {fileID: 0}
+      clips: []
+      playMode: 0
+      volume: 1
+      force2DSound: 1
+      nextSequentialIndex: 0
+  coneConfig:
+    slowDuration: 1.6
+    speedMultiplier: 0.45
+    fuelLoss: 0
+    breakAndDestroyOnHit: 1
+    breakEffectPrefab: {fileID: 0}
+    brokenVisualObject: {fileID: 0}
+    destroyDelay: 0.6
+    hideAfterHit: 0
+    hideDelay: 0.15
+    useAudioManagerSlip: 0
+    audio:
+      audioSource: {fileID: 0}
+      clips: []
+      playMode: 0
+      volume: 1
+      force2DSound: 1
+      nextSequentialIndex: 0
+  barrierConfig:
+    blockDuration: 0.9
+    blockSpeedMultiplier: 0.05
+    fuelPenalty: 0
+    audio:
+      audioSource: {fileID: 0}
+      clips: []
+      playMode: 0
+      volume: 1
+      force2DSound: 1
+      nextSequentialIndex: 0
 --- !u!43 &1658266150
 Mesh:
   m_ObjectHideFlags: 0
@@ -27816,103 +27969,6 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
---- !u!1001 &2091982626
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1297765023470733099, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_Name
-      value: MAT_ OIL SPILL
-      objectReference: {fileID: 0}
-    - target: {fileID: 1297765023470733099, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6628871091995164005, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: oilSound
-      value: 
-      objectReference: {fileID: 8300000, guid: e62a3f5f8bf5a134e983abe868f06dc6, type: 3}
-    - target: {fileID: 6628871091995164005, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6628871091995164005, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: destroyOnStepped
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -100.74
-      objectReference: {fileID: 0}
-    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 463.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 669.32
-      objectReference: {fileID: 0}
-    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6854899105662276586, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8339545520668934368, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1297765023470733099, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2091982628}
-  m_SourcePrefab: {fileID: 100100000, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
---- !u!1 &2091982627 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1297765023470733099, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
-  m_PrefabInstance: {fileID: 2091982626}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2091982628
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2091982627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76243bf028a0bb248bd55dba3efb7232, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TutorialOilDetector
 --- !u!1 &2096599667
 GameObject:
   m_ObjectHideFlags: 0
@@ -28632,7 +28688,7 @@ SceneRoots:
   - {fileID: 155260670}
   - {fileID: 1216743994}
   - {fileID: 1645004121}
-  - {fileID: 2091982626}
+  - {fileID: 167649870}
   - {fileID: 1384376939}
   - {fileID: 2123538189}
   - {fileID: 15078306}
