@@ -19,6 +19,7 @@ public class TutorialSlidesController : MonoBehaviour
     [Header("Conexión con la Práctica")]
     [SerializeField] private GameObject visualTutorialPanel;
     [SerializeField] private GameObject hudPlayToRestore;
+    [SerializeField] private GameObject practicalTutorialUI; // <-- Nuevo: UI Practical Tutorial
 
     private int currentPage = 0;
 
@@ -26,8 +27,12 @@ public class TutorialSlidesController : MonoBehaviour
     {
         Time.timeScale = 0f;
 
+        // Ocultar tanto el HUD de juego como el letrero de entrenamiento mientras se leen las 3 páginas
         if (hudPlayToRestore != null)
             hudPlayToRestore.SetActive(false);
+
+        if (practicalTutorialUI != null)
+            practicalTutorialUI.SetActive(false);
 
         if (prevButton != null) prevButton.onClick.AddListener(PreviousPage);
         if (nextButton != null) nextButton.onClick.AddListener(NextPage);
@@ -112,6 +117,10 @@ public class TutorialSlidesController : MonoBehaviour
 
         if (hudPlayToRestore != null)
             hudPlayToRestore.SetActive(true);
+
+        // Activar el letrero de ENTRENAMIENTO PASO 1 DE 5
+        if (practicalTutorialUI != null)
+            practicalTutorialUI.SetActive(true);
 
         if (visualTutorialPanel != null)
             visualTutorialPanel.SetActive(false);
