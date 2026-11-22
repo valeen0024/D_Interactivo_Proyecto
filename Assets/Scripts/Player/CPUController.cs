@@ -25,6 +25,9 @@ public class CPUController : MonoBehaviour
     [Tooltip("Allows the CPU kart to move.")]
     public bool canMove = false;
 
+    private bool cpuTurnStarted = false;
+
+
     [Tooltip("How often the CPU chooses a new lane.")]
     [SerializeField] private float laneChangeInterval = 2f;
 
@@ -107,6 +110,13 @@ public class CPUController : MonoBehaviour
 
     private int usesRemaining = 0;
     private bool isBoosting = false;
+    private float nextBoostAllowedTime = 0f;
+
+    private float boostWaitMin = 2.5f;
+    private float boostWaitMax = 4.5f;
+    private float boostWaitEndMin = 6f;
+    private float boostWaitEndMax = 9.5f;
+
     private Coroutine activeBoostCoroutine;
     private Animator animator;
 
@@ -145,6 +155,8 @@ public class CPUController : MonoBehaviour
         currentForwardSpeed = cpuSpeed;
         usesRemaining = Mathf.Max(0, maxBoostUses);
         laneChangeTimer = laneChangeInterval;
+
+        nextBoostAllowedTime = Time.time + CalculateBoostWait();
 
         if (engineClip != null)
         {
@@ -185,12 +197,26 @@ public class CPUController : MonoBehaviour
         if (GameManager.Instance.gameState != GameManager.GameState.CPUTurn)
             return;
 
+        if (!cpuTurnStarted)
+        {
+            cpuTurnStarted = true;
+            nextBoostAllowedTime = Time.time + CalculateBoostWait();
+
+            Debug.Log("[CPU TURBO] Turno iniciado. Espera inicial programada.");
+        }
+
         if (fuelSystem != null && fuelSystem.IsOutOfFuel)
             return;
 
         MoveCPU();
 
-        if (!isBoosting && usesRemaining > 0)
+
+        if (!isBoosting &&
+            usesRemaining > 0 &&
+            Time.time >= nextBoostAllowedTime &&
+            fuelBarrelsCollected > 0 &&
+            fuelSystem != null &&
+            fuelSystem.IsFuelAtMax)
         {
             if (Random.value < boostChancePerSecond * Time.deltaTime)
             {
@@ -576,6 +602,9 @@ public class CPUController : MonoBehaviour
         isObstacleSlowed = false;
         isBoosting = false;
         usesRemaining = Mathf.Max(0, maxBoostUses);
+        nextBoostAllowedTime = Time.time + CalculateBoostWait();
+        cpuTurnStarted = false;
+
 
         fuelBarrelsCollected = 0;
         oilSpillsHit = 0;
@@ -586,6 +615,34 @@ public class CPUController : MonoBehaviour
         {
             fuelSystem.ResetFuelState();
         }
+
+        activeBoostCoroutine = null;
+
+        if (engineAudioSource != null)
+        {
+            engineAudioSource.volume = normalEngineVolume;
+            engineAudioSource.pitch = normalEnginePitch;
+        }
+
+    }
+
+    private float CalculateBoostWait()
+    {
+        float progress = 0f;
+
+        DistanceTracker tracker = GetComponent<DistanceTracker>();
+
+        if (tracker != null && tracker.maxDistance > 0f)
+        {
+            progress = Mathf.Clamp01(
+                tracker.currentDistance / tracker.maxDistance
+            );
+        }
+
+        float minWait = Mathf.Lerp(boostWaitMin, boostWaitEndMin, progress);
+        float maxWait = Mathf.Lerp(boostWaitMax, boostWaitEndMax, progress);
+
+        return Random.Range(minWait, maxWait);
     }
 
     private void ActivateTurbo()
@@ -595,6 +652,8 @@ public class CPUController : MonoBehaviour
 
         usesRemaining--;
         turbosUsed++;
+
+        nextBoostAllowedTime = Time.time + boostDuration + CalculateBoostWait();
 
         Debug.Log("[CPU ESTADISTICAS] Turbos utilizados: " + turbosUsed + " | Restantes: " + usesRemaining);
 
@@ -621,6 +680,12 @@ public class CPUController : MonoBehaviour
     {
         isBoosting = true;
         currentForwardSpeed = cpuSpeed * boostSpeedMultiplier;
+
+        if (fuelSystem != null)
+        {
+            fuelSystem.SetFuelConsumptionMultiplier(2.2f);
+        }
+
         Debug.Log("CPU activated Boost!");
 
         if (engineAudioSource != null)
@@ -630,6 +695,11 @@ public class CPUController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(boostDuration);
+
+        if (fuelSystem != null)
+        {
+            fuelSystem.SetFuelConsumptionMultiplier(1f);
+        }
 
         if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isSliding && !isObstacleSlowed)
         {
