@@ -7,6 +7,8 @@ public class DistanceTracker : MonoBehaviour
     public float currentDistance;
     public float maxDistance = 800f;
     public float distanceMultiplier = 3.4f;
+    public float CurrentDistance => currentDistance;
+    public float MaxDistance => maxDistance;
     private bool hasFinished = false;
 
     private void Start()

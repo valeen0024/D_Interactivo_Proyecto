@@ -115,7 +115,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10.24, y: 10.54, z: 5.42}
+  m_Size: {x: 2.5, y: 2.5, z: 2.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1207529938511525495
 MonoBehaviour:
@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23e67f97ca7e8c14d876a8bb5675ace2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSlick
-  slowDuration: 2
+  slowDuration: 1.2
   slipVolume: 1
 --- !u!114 &8339545520668934368
 MonoBehaviour:
@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OilSpill
   audioSource: {fileID: 2285048122497742655}
-  oilSound: {fileID: 8300000, guid: 1a25f5217966bf2488ac9e9b072c7609, type: 3}
+  oilSound: {fileID: 8300000, guid: e62a3f5f8bf5a134e983abe868f06dc6, type: 3}
   destroyOnStepped: 0
 --- !u!82 &2285048122497742655
 AudioSource:
@@ -180,7 +180,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 0.5043335
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0

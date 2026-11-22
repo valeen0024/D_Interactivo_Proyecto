@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class KartLaneController : MonoBehaviour
 {
@@ -39,12 +40,82 @@ public class KartLaneController : MonoBehaviour
     [SerializeField] private int currentLane = 0;
     public int CurrentLane => currentLane;
 
-    [Header("Turbo / Boost Settings")]
+    [Header("Boost / Turbo (Many Opportunities, Limited Uses per Level)")]
     [Tooltip("Speed multiplier during the boost.")]
     [SerializeField] private float boostSpeedMultiplier = 1.8f;
 
+    [Tooltip("Extra fuel consumption multiplier while boost is active.")]
+    [Min(1f)]
+    [SerializeField] private float boostFuelConsumptionMultiplier = 2.2f;
+
     [Tooltip("Duration of the boost in seconds.")]
     [SerializeField] private float boostDuration = 2f;
+
+    [Tooltip("Max boost uses allowed in this level (e.g., 3 in Level 1, 2 in Level 2).")]
+    [Min(0)]
+    [SerializeField] private int maxBoostUses = 3;
+
+    [Tooltip("Seconds the activation window stays open once ready.")]
+    [Min(1f)]
+    [SerializeField] private float boostActivationWindow = 5.5f;
+
+    [Tooltip("If true, requires collecting at least one fuel drum before opportunities start opening.")]
+    [SerializeField] private bool requireCollectionBeforeBoost = true;
+
+    [Tooltip("If true, requires fuel to reach the threshold in KartFuelSystem to open a window.")]
+    [SerializeField] private bool requireFullFuelForBoost = true;
+
+    [Tooltip("Difficulty factor of the current level (1.0 in Level 1, higher in later levels).")]
+    [Range(0.5f, 2.5f)]
+    [SerializeField] private float levelDifficulty = 1.0f;
+
+    [Header("Progressive Race Wait (Scales with Race Progress & Level Difficulty)")]
+    [Tooltip("Minimum wait time (seconds) near the start of the race.")]
+    [Min(0f)]
+    [SerializeField] private float startMinWaitSeconds = 1.5f;
+
+    [Tooltip("Maximum wait time (seconds) near the start of the race.")]
+    [Min(0f)]
+    [SerializeField] private float startMaxWaitSeconds = 3.0f;
+
+    [Tooltip("Minimum wait time (seconds) near the end of the race.")]
+    [Min(0f)]
+    [SerializeField] private float endMinWaitSeconds = 4.0f;
+
+    [Tooltip("Maximum wait time (seconds) near the end of the race.")]
+    [Min(0f)]
+    [SerializeField] private float endMaxWaitSeconds = 7.0f;
+
+    [SerializeField] private int usesRemaining = 0;
+    [SerializeField] private float waitTimerRemaining = 0f;
+    [SerializeField] private float currentActiveWaitDuration = 0f;
+    [SerializeField] private float activationWindowRemaining = 0f;
+
+    public int UsesRemaining => usesRemaining;
+    public bool HasRemainingUses => usesRemaining > 0;
+    public bool IsWaitingBeforeRecharge => waitTimerRemaining > 0f;
+    public bool IsBoostReadyToTrigger => activationWindowRemaining > 0f && !isBoosting && waitTimerRemaining <= 0f && HasRemainingUses;
+    public bool ShouldShowBoostOverlay => IsBoostReadyToTrigger || isBoosting;
+
+    [Header("Boost UI Overlay (Borde + Barril con rayos)")]
+    [Tooltip("Grupo/objeto padre que contiene el borde y el barril con rayos sobrepuestos.")]
+    [SerializeField] private GameObject boostOverlayGroup;
+
+    [Tooltip("Opcional: objeto base si también quieres alternar su visibilidad.")]
+    [SerializeField] private GameObject barrelIndicatorObject;
+
+    [Tooltip("Si está activo, oculta el indicador base cuando se muestra el overlay de propulsor.")]
+    [SerializeField] private bool hideBaseIndicatorWhenOverlayActive = false;
+
+    [Tooltip("Opcional: si el indicador tiene componente UI Image, cambia su color/sprite.")]
+    [SerializeField] private Image barrelIconImage;
+
+    [SerializeField] private Color normalBarrelColor = Color.white;
+    [SerializeField] private Color readyBarrelColor = new Color(0.25f, 1f, 0.85f, 1f);
+
+    [Tooltip("Sprite opcional cuando el propulsor está listo (si se deja vacío, solo cambia el color).")]
+    [SerializeField] private Sprite normalBarrelSprite;
+    [SerializeField] private Sprite readyBarrelSprite;
 
     [Header("Audio Settings")]
     [Tooltip("Grupo SFX de tu AudioMixer para que el slider de efectos controle motor y turbo.")]
@@ -75,37 +146,47 @@ public class KartLaneController : MonoBehaviour
     private AudioSource engineAudioSource;
     private AudioSource turboAudioSource;
 
-    private bool hasUsedTurbo = false; // Ensures it is a single-use boost
-    private Animator animator;         // Reference to trigger the animation
+    private Animator animator;
 
-    public float currentForwardSpeed;  // Current actual speed (interpolated)
-    private float targetForwardSpeed;   // Desired speed calculated by state & input
+    public float currentForwardSpeed;
+    private float targetForwardSpeed;
     private Vector3 targetPosition;
     private KartFuelSystem fuelSystem;
+    private DistanceTracker distanceTracker;
+    private Coroutine activeBoostCoroutine;
+    private bool wasWindowOpenLastFrame = false;
     private bool isSliding = false;
     private bool isBoosting = false;
 
-    public bool HasUsedTurbo => hasUsedTurbo;
+    public bool HasUsedTurbo => usesRemaining < maxBoostUses;
     public bool canUseTurbo = true;
 
-    // Stores the initial X coordinate of the kart set in the Scene
     private float startXPosition;
 
     private void Start()
     {
         fuelSystem = GetComponent<KartFuelSystem>();
-
-        // Finds the Animator on this object or its children.
+        distanceTracker = GetComponent<DistanceTracker>();
         animator = GetComponentInChildren<Animator>();
+
+        if (barrelIconImage == null && barrelIndicatorObject != null)
+        {
+            barrelIconImage = barrelIndicatorObject.GetComponentInChildren<Image>();
+        }
+
+        if (barrelIconImage != null && normalBarrelSprite == null)
+        {
+            normalBarrelSprite = barrelIconImage.sprite;
+        }
+
+        ResetBoostSystem();
+        UpdateBarrelVisual();
 
         targetForwardSpeed = 0f;
         currentForwardSpeed = 0f;
         targetPosition = transform.position;
-
-        // Capture the initial X position as the origin for the reference lane (0)
         startXPosition = transform.position.x;
 
-        // Create the Engine AudioSource
         if (engineClip != null)
         {
             engineAudioSource = gameObject.AddComponent<AudioSource>();
@@ -117,7 +198,6 @@ public class KartLaneController : MonoBehaviour
             engineAudioSource.outputAudioMixerGroup = sfxMixerGroup;
         }
 
-        // Create the Turbo AudioSource
         if (turboClip != null)
         {
             turboAudioSource = gameObject.AddComponent<AudioSource>();
@@ -128,18 +208,198 @@ public class KartLaneController : MonoBehaviour
         }
     }
 
+    public void ConfigureForLevel(
+        float difficulty,
+        int boostUsesForLevel,
+        bool mustCollectFirst = true,
+        bool mustHaveFullFuel = true)
+    {
+        levelDifficulty = Mathf.Clamp(difficulty, 0.5f, 2.5f);
+        maxBoostUses = Mathf.Max(0, boostUsesForLevel);
+        requireCollectionBeforeBoost = mustCollectFirst;
+        requireFullFuelForBoost = mustHaveFullFuel;
+        ResetBoostSystem();
+    }
+
+    public void ResetBoostSystem()
+    {
+        StopActiveBoost(restoreNormalConsumption: true);
+        usesRemaining = Mathf.Max(0, maxBoostUses);
+        waitTimerRemaining = 0f;
+        currentActiveWaitDuration = 0f;
+        activationWindowRemaining = 0f;
+        wasWindowOpenLastFrame = false;
+        UpdateBarrelVisual();
+    }
+
+    public void RegisterFuelCollected() { }
+
+    private float GetRaceProgressNormalized()
+    {
+        if (distanceTracker != null && distanceTracker.maxDistance > 0f)
+        {
+            return Mathf.Clamp01(distanceTracker.currentDistance / distanceTracker.maxDistance);
+        }
+        return 0f;
+    }
+
+    private float RollNextWaitDuration()
+    {
+        float progress = GetRaceProgressNormalized();
+        float difficultyFactor = Mathf.Max(0.5f, levelDifficulty);
+
+        float minBase = Mathf.Lerp(startMinWaitSeconds, endMinWaitSeconds, progress);
+        float maxBase = Mathf.Lerp(startMaxWaitSeconds, endMaxWaitSeconds, progress);
+        if (maxBase < minBase) maxBase = minBase;
+
+        float rolled = UnityEngine.Random.Range(minBase, maxBase);
+        float scaledWait = rolled * Mathf.Lerp(1f, difficultyFactor, 0.5f);
+        return Mathf.Max(minBase, scaledWait);
+    }
+
+    private bool CanOpenBoostOpportunity()
+    {
+        if (!canUseTurbo || !HasRemainingUses || isBoosting || waitTimerRemaining > 0f)
+            return false;
+
+        if (fuelSystem != null)
+        {
+            if (fuelSystem.IsOutOfFuel)
+                return false;
+
+            if (requireCollectionBeforeBoost && !fuelSystem.HasCollectedFuel)
+                return false;
+
+            if (requireFullFuelForBoost && !fuelSystem.IsFuelAtMax)
+                return false;
+        }
+
+        return true;
+    }
+
+    private void UpdateBoostOpportunityAndVisual()
+    {
+        if (waitTimerRemaining > 0f)
+        {
+            waitTimerRemaining = Mathf.Max(0f, waitTimerRemaining - Time.deltaTime);
+            activationWindowRemaining = 0f;
+            wasWindowOpenLastFrame = false;
+        }
+        else if (!isBoosting)
+        {
+            if (activationWindowRemaining > 0f)
+            {
+                activationWindowRemaining = Mathf.Max(0f, activationWindowRemaining - Time.deltaTime);
+
+                if (activationWindowRemaining <= 0f && wasWindowOpenLastFrame)
+                {
+                    currentActiveWaitDuration = RollNextWaitDuration();
+                    waitTimerRemaining = currentActiveWaitDuration;
+                    wasWindowOpenLastFrame = false;
+                    Debug.Log($"[Boost] Ventana cerrada sin usar. Espera antes de próxima oportunidad: {currentActiveWaitDuration:F1}s");
+                }
+            }
+            else if (CanOpenBoostOpportunity())
+            {
+                activationWindowRemaining = boostActivationWindow;
+                wasWindowOpenLastFrame = true;
+                Debug.Log($"[Boost] ¡Oportunidad abierta ({boostActivationWindow:F1}s)! Pulsa W o Flecha Arriba. Usos restantes: {usesRemaining}/{maxBoostUses}");
+            }
+            else
+            {
+                wasWindowOpenLastFrame = false;
+            }
+        }
+        else
+        {
+            activationWindowRemaining = 0f;
+            wasWindowOpenLastFrame = false;
+        }
+
+        UpdateBarrelVisual();
+    }
+
+    private void UpdateBarrelVisual()
+    {
+        bool overlayVisible = ShouldShowBoostOverlay;
+        bool ready = IsBoostReadyToTrigger;
+
+        if (boostOverlayGroup != null && boostOverlayGroup.activeSelf != overlayVisible)
+        {
+            boostOverlayGroup.SetActive(overlayVisible);
+        }
+
+        if (barrelIndicatorObject != null && hideBaseIndicatorWhenOverlayActive)
+        {
+            bool showBase = !overlayVisible;
+            if (barrelIndicatorObject.activeSelf != showBase)
+            {
+                barrelIndicatorObject.SetActive(showBase);
+            }
+        }
+
+        if (barrelIconImage != null)
+        {
+            barrelIconImage.color = ready ? readyBarrelColor : normalBarrelColor;
+
+            if (ready && readyBarrelSprite != null)
+            {
+                barrelIconImage.sprite = readyBarrelSprite;
+            }
+            else if (!ready && normalBarrelSprite != null)
+            {
+                barrelIconImage.sprite = normalBarrelSprite;
+            }
+        }
+    }
+
+    private bool CanTriggerBoostNow()
+    {
+        if (!canUseTurbo || !HasRemainingUses || isBoosting || waitTimerRemaining > 0f || activationWindowRemaining <= 0f)
+            return false;
+
+        if (fuelSystem != null && fuelSystem.IsOutOfFuel)
+            return false;
+
+        return true;
+    }
+
     private void Update()
     {
-        if (!canMove) return;
-
-        // Detect single-use boost input
-        if (canUseTurbo &&
-            !hasUsedTurbo &&
-            Keyboard.current != null &&
+        bool pressedBoostKey = Keyboard.current != null &&
             (Keyboard.current.upArrowKey.wasPressedThisFrame ||
-             Keyboard.current.wKey.wasPressedThisFrame))
+             Keyboard.current.wKey.wasPressedThisFrame);
+
+        if (pressedBoostKey)
         {
-            ActivateTurbo();
+            Debug.Log($"[Boost-Test] Kart={gameObject.name} | canMove={canMove} | canUseTurbo={canUseTurbo} | uses={usesRemaining}/{maxBoostUses} | wait={waitTimerRemaining:F1} | win={activationWindowRemaining:F1} | fuel={(fuelSystem != null ? fuelSystem.currentFuel.ToString("F1") : "null")} | fuelMax={(fuelSystem != null ? fuelSystem.IsFuelAtMax.ToString() : "null")} | overlay={(boostOverlayGroup != null ? boostOverlayGroup.name : "NONE")}");
+        }
+
+        if (!canMove)
+        {
+            UpdateBarrelVisual();
+            return;
+        }
+
+        bool hasFuel = (fuelSystem == null || !fuelSystem.IsOutOfFuel);
+
+        if (!hasFuel && isBoosting)
+        {
+            StopActiveBoost(restoreNormalConsumption: true);
+        }
+
+        UpdateBoostOpportunityAndVisual();
+
+        if (pressedBoostKey)
+        {
+            if (CanTriggerBoostNow())
+            {
+                ActivateTurbo();
+            }
+            else
+            {
+                Debug.Log($"[Boost] Tecla pulsada pero no está listo -> uses={usesRemaining}/{maxBoostUses}, isBoosting={isBoosting}, wait={waitTimerRemaining:F1}s, window={activationWindowRemaining:F1}s");
+            }
         }
 
         HandleLaneInput();
@@ -148,70 +408,53 @@ public class KartLaneController : MonoBehaviour
         MoveKart();
     }
 
-    /// <summary>
-    /// Processes player horizontal movement input for 4 lanes.
-    /// </summary>
     private void HandleLaneInput()
     {
         if (fuelSystem != null && fuelSystem.IsOutOfFuel) return;
         if (Keyboard.current == null) return;
 
-        // Move Left
         if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame)
         {
             if (currentLane > minLane) currentLane--;
         }
-        // Move Right (allows reaching the 4th lane at index 2)
         else if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame)
         {
             if (currentLane < maxLane) currentLane++;
         }
     }
 
-    /// <summary>
-    /// Determines the desired target speed based on fuel, oil slicks, and turbo state.
-    /// </summary>
     private void CalculateTargetSpeed()
     {
-        // 1. Out of fuel -> Stop completely
         if (fuelSystem != null && fuelSystem.IsOutOfFuel)
         {
             targetForwardSpeed = 0f;
             return;
         }
 
-        // 2. Currently in Boost state
         if (isBoosting)
         {
             targetForwardSpeed = baseForwardSpeed * boostSpeedMultiplier;
             return;
         }
 
-        // 3. Currently slipping on Oil
         if (isSliding)
         {
             targetForwardSpeed = baseForwardSpeed * 0.5f;
             return;
         }
 
-        // 4. Normal movement target
         targetForwardSpeed = baseForwardSpeed;
     }
 
-    /// <summary>
-    /// Smoothly transitions currentForwardSpeed toward targetForwardSpeed using acceleration and friction.
-    /// </summary>
     private void ApplyInertiaAndSpeed()
     {
         if (currentForwardSpeed < targetForwardSpeed)
         {
-            // Accelerate smoothly toward the target speed
             currentForwardSpeed += acceleration * Time.deltaTime;
             currentForwardSpeed = Mathf.Min(currentForwardSpeed, targetForwardSpeed);
         }
         else if (currentForwardSpeed > targetForwardSpeed)
         {
-            // Decelerate/apply friction when slowing down or running out of fuel
             currentForwardSpeed -= friction * 5f * Time.deltaTime;
             currentForwardSpeed = Mathf.Max(currentForwardSpeed, targetForwardSpeed);
         }
@@ -230,24 +473,12 @@ public class KartLaneController : MonoBehaviour
 
     private void MoveKart()
     {
-        // Calculate target X position based on the offset and current lane index
         float targetX = startXPosition + (currentLane * laneOffset);
-
         Vector3 currentPos = transform.position;
-
-        // MoveTowards snaps perfectly to targetX without floating-point offset drift
         float newX = Mathf.MoveTowards(currentPos.x, targetX, laneChangeSpeed * Time.deltaTime);
-
-        // Continuous forward progress using smoothed inertia speed
         float newZ = currentPos.z + (currentForwardSpeed * Time.deltaTime);
-
-        // Apply calculated position
         transform.position = new Vector3(newX, currentPos.y, newZ);
     }
-
-    // ==========================================
-    // OIL / OBSTACLE INTERACTION
-    // ==========================================
 
     private void OnTriggerEnter(Collider other)
     {
@@ -268,28 +499,44 @@ public class KartLaneController : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // TURBO / BOOST SYSTEM
-    // ==========================================
     private void ActivateTurbo()
     {
-        hasUsedTurbo = true; // Blocks future uses (Single use)
+        usesRemaining = Mathf.Max(0, usesRemaining - 1);
+        activationWindowRemaining = 0f;
+        wasWindowOpenLastFrame = false;
+        currentActiveWaitDuration = RollNextWaitDuration();
+        waitTimerRemaining = currentActiveWaitDuration;
+        UpdateBarrelVisual();
 
-        // Calls the exact "Boost" trigger defined in KartAnimator.controller
         if (animator != null)
         {
             animator.SetTrigger("Boost");
         }
 
-        // Activate the turbo sound.
         if (turboAudioSource != null)
         {
             turboAudioSource.outputAudioMixerGroup = sfxMixerGroup;
             turboAudioSource.Play();
         }
 
-        // Starts the speed increase
-        StartCoroutine(TurboRoutine());
+        StopActiveBoost(restoreNormalConsumption: false);
+        activeBoostCoroutine = StartCoroutine(TurboRoutine());
+    }
+
+    private void StopActiveBoost(bool restoreNormalConsumption)
+    {
+        if (activeBoostCoroutine != null)
+        {
+            StopCoroutine(activeBoostCoroutine);
+            activeBoostCoroutine = null;
+        }
+
+        isBoosting = false;
+
+        if (restoreNormalConsumption && fuelSystem != null)
+        {
+            fuelSystem.SetFuelConsumptionMultiplier(1f);
+        }
     }
 
     public void StartEngineSound()
@@ -301,7 +548,6 @@ public class KartLaneController : MonoBehaviour
         }
     }
 
-    // Fade-in effect at the start of the engine sound.
     private IEnumerator FadeInEngine()
     {
         engineAudioSource.volume = 0f;
@@ -319,7 +565,6 @@ public class KartLaneController : MonoBehaviour
         engineAudioSource.volume = normalEngineVolume;
     }
 
-    // Stops the engine sound
     public void StopEngineSound()
     {
         if (engineAudioSource != null && engineAudioSource.isPlaying && !isFadingOut)
@@ -328,7 +573,6 @@ public class KartLaneController : MonoBehaviour
         }
     }
 
-    // Gradual fade out of the engine sound when the kart stops.
     private IEnumerator FadeOutEngine()
     {
         isFadingOut = true;
@@ -351,26 +595,43 @@ public class KartLaneController : MonoBehaviour
     private IEnumerator TurboRoutine()
     {
         isBoosting = true;
-        Debug.Log("Boost activated!");
+        UpdateBarrelVisual();
 
-        // Increases the volume and intensifies the sound of the engine when the turbo is activated.
+        if (fuelSystem != null)
+        {
+            fuelSystem.SetFuelConsumptionMultiplier(boostFuelConsumptionMultiplier);
+        }
+
+        Debug.Log($"[Boost] ¡Usado! Quedan {usesRemaining}/{maxBoostUses} usos. Consumo x{boostFuelConsumptionMultiplier:F1}. Espera: {currentActiveWaitDuration:F1}s");
+
         if (engineAudioSource != null)
         {
             engineAudioSource.volume = turboEngineVolume;
             engineAudioSource.pitch = turboEnginePitch;
         }
 
-        // Waits for the assigned duration
-        yield return new WaitForSeconds(boostDuration);
+        float elapsed = 0f;
+        while (elapsed < boostDuration)
+        {
+            if (fuelSystem != null && fuelSystem.IsOutOfFuel)
+            {
+                break;
+            }
 
-        // Once finished, restores the original speed
-        // (Making sure it hasn't run out of fuel in the meantime)
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (fuelSystem != null)
+        {
+            fuelSystem.SetFuelConsumptionMultiplier(1f);
+        }
+
         if (fuelSystem == null || !fuelSystem.IsOutOfFuel)
         {
             currentForwardSpeed = baseForwardSpeed;
         }
 
-        // When the turbo stops, the engine sound returns to normal.
         if (engineAudioSource != null)
         {
             float startVolume = engineAudioSource.volume;
@@ -390,12 +651,11 @@ public class KartLaneController : MonoBehaviour
         }
 
         isBoosting = false;
-        Debug.Log("Boost finished. Normal speed restored.");
+        activeBoostCoroutine = null;
+        UpdateBarrelVisual();
+        Debug.Log("[Boost] Finalizado.");
     }
 
-    /// <summary>
-    /// Triggers the temporary slow-down effect caused by oil slicks.
-    /// </summary>
     public void ApplyOilSlow(float duration)
     {
         if (!isSliding)
@@ -404,9 +664,6 @@ public class KartLaneController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Coroutine managing speed reduction and recovery duration when slipping on oil.
-    /// </summary>
     private IEnumerator OilSlowRoutine(float duration)
     {
         isSliding = true;
