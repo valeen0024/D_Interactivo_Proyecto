@@ -13,8 +13,8 @@ public class KartFuelSystem : MonoBehaviour
     public float fuelConsumptionRate = 9f;
 
     [Header("Rewards and Penalties")]
-    public float fuelFromBarrel = 18f;      // Base reward
-    public float fuelLostFromOil = 15f;     // Oil penalty
+    public float fuelFromBarrel = 18f;
+    public float fuelLostFromOil = 15f;
 
     [Header("Full Tank Threshold")]
     [Tooltip("Percentage of maxFuel (0.80 = 80%) considered full enough to unlock boost opportunity.")]

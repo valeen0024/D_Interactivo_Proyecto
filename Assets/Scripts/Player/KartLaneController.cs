@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.InputSystem;
@@ -97,6 +98,22 @@ public class KartLaneController : MonoBehaviour
     public bool IsBoostReadyToTrigger => activationWindowRemaining > 0f && !isBoosting && waitTimerRemaining <= 0f && HasRemainingUses;
     public bool ShouldShowBoostOverlay => IsBoostReadyToTrigger || isBoosting;
 
+    [Header("Obstacle Settings")]
+    [Tooltip("Tag used by obstacle objects (other than Oil).")]
+    [SerializeField] private string obstacleTag = "Obstacle";
+
+    [Tooltip("Speed multiplier when hitting an obstacle.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float obstacleSpeedMultiplier = 0.4f;
+
+    [Tooltip("Duration in seconds of the obstacle slowdown.")]
+    [Min(0.1f)]
+    [SerializeField] private float obstacleSlowDuration = 1.2f;
+
+    [Tooltip("Optional fuel penalty when hitting an obstacle (0 if only slows).")]
+    [Min(0f)]
+    [SerializeField] private float obstacleFuelPenalty = 0f;
+
     [Header("Boost UI Overlay (Borde + Barril con rayos)")]
     [Tooltip("Grupo/objeto padre que contiene el borde y el barril con rayos sobrepuestos.")]
     [SerializeField] private GameObject boostOverlayGroup;
@@ -116,6 +133,28 @@ public class KartLaneController : MonoBehaviour
     [Tooltip("Sprite opcional cuando el propulsor está listo (si se deja vacío, solo cambia el color).")]
     [SerializeField] private Sprite normalBarrelSprite;
     [SerializeField] private Sprite readyBarrelSprite;
+
+    [Header("Boost Typewriter Notification (Configurable en Inspector)")]
+    [Tooltip("Activa o desactiva el aviso en pantalla al usar un propulsor.")]
+    [SerializeField] private bool enableBoostNotification = true;
+
+    [Tooltip("Texto TMP donde se escribe temporalmente cuántos propulsores quedan.")]
+    [SerializeField] private TMP_Text boostNotificationText;
+
+    [Tooltip("Contenedor/panel opcional del aviso (si se deja vacío, oculta solo el texto).")]
+    [SerializeField] private GameObject boostNotificationContainer;
+
+    [Tooltip("Segundos entre cada letra mientras se escribe el mensaje.")]
+    [Range(0.005f, 0.2f)]
+    [SerializeField] private float typewriterCharDelay = 0.035f;
+
+    [Tooltip("Segundos que el mensaje queda visible completo antes de ocultarse.")]
+    [Range(0.2f, 10f)]
+    [SerializeField] private float holdAfterTypingSeconds = 3.0f;
+
+    [Tooltip("Segundos extra que permanece visible cuando se agotan los propulsores (0 para usar el mismo tiempo).")]
+    [Range(0f, 8f)]
+    [SerializeField] private float extraHoldWhenEmptySeconds = 1.0f;
 
     [Header("Audio Settings")]
     [Tooltip("Grupo SFX de tu AudioMixer para que el slider de efectos controle motor y turbo.")]
@@ -154,8 +193,12 @@ public class KartLaneController : MonoBehaviour
     private KartFuelSystem fuelSystem;
     private DistanceTracker distanceTracker;
     private Coroutine activeBoostCoroutine;
+    private Coroutine notificationCoroutine;
+    private Coroutine obstacleSlowCoroutine;
     private bool wasWindowOpenLastFrame = false;
     private bool isSliding = false;
+    private bool isObstacleSlowed = false;
+    private float activeObstacleMultiplier = 0.4f;
     private bool isBoosting = false;
 
     public bool HasUsedTurbo => usesRemaining < maxBoostUses;
@@ -229,10 +272,78 @@ public class KartLaneController : MonoBehaviour
         currentActiveWaitDuration = 0f;
         activationWindowRemaining = 0f;
         wasWindowOpenLastFrame = false;
+
+        if (notificationCoroutine != null)
+        {
+            StopCoroutine(notificationCoroutine);
+            notificationCoroutine = null;
+        }
+        SetBoostNotificationVisible(false);
+
         UpdateBarrelVisual();
     }
 
     public void RegisterFuelCollected() { }
+
+    private void ShowBoostRemainingNotification()
+    {
+        if (!enableBoostNotification || boostNotificationText == null) return;
+
+        string message;
+        float extraHold = 0f;
+
+        if (usesRemaining == 1)
+        {
+            message = "Te queda 1 propulsor";
+        }
+        else if (usesRemaining > 1)
+        {
+            message = $"Te quedan {usesRemaining} propulsores";
+        }
+        else
+        {
+            message = "No te quedan propulsores";
+            extraHold = extraHoldWhenEmptySeconds;
+        }
+
+        if (notificationCoroutine != null)
+        {
+            StopCoroutine(notificationCoroutine);
+        }
+
+        notificationCoroutine = StartCoroutine(TypewriterNotificationRoutine(message, extraHold));
+    }
+
+    private IEnumerator TypewriterNotificationRoutine(string fullMessage, float extraHold)
+    {
+        SetBoostNotificationVisible(true);
+        boostNotificationText.text = string.Empty;
+
+        float charDelay = Mathf.Max(0.005f, typewriterCharDelay);
+        for (int i = 0; i < fullMessage.Length; i++)
+        {
+            boostNotificationText.text += fullMessage[i];
+            yield return new WaitForSeconds(charDelay);
+        }
+
+        float totalHold = Mathf.Max(0.2f, holdAfterTypingSeconds + extraHold);
+        yield return new WaitForSeconds(totalHold);
+
+        SetBoostNotificationVisible(false);
+        notificationCoroutine = null;
+    }
+
+    private void SetBoostNotificationVisible(bool visible)
+    {
+        if (boostNotificationContainer != null)
+        {
+            boostNotificationContainer.SetActive(visible);
+        }
+        else if (boostNotificationText != null)
+        {
+            boostNotificationText.gameObject.SetActive(visible);
+        }
+    }
 
     private float GetRaceProgressNormalized()
     {
@@ -443,6 +554,12 @@ public class KartLaneController : MonoBehaviour
             return;
         }
 
+        if (isObstacleSlowed)
+        {
+            targetForwardSpeed = baseForwardSpeed * activeObstacleMultiplier;
+            return;
+        }
+
         targetForwardSpeed = baseForwardSpeed;
     }
 
@@ -497,11 +614,22 @@ public class KartLaneController : MonoBehaviour
 
             ApplyOilSlow(duration);
         }
+        else if (!string.IsNullOrEmpty(obstacleTag) && other.CompareTag(obstacleTag))
+        {
+            if (obstacleFuelPenalty > 0f && fuelSystem != null)
+            {
+                fuelSystem.currentFuel = Mathf.Max(0f, fuelSystem.currentFuel - obstacleFuelPenalty);
+            }
+
+            ApplyObstacleSlow(obstacleSlowDuration, obstacleSpeedMultiplier);
+        }
     }
 
     private void ActivateTurbo()
     {
         usesRemaining = Mathf.Max(0, usesRemaining - 1);
+        ShowBoostRemainingNotification();
+
         activationWindowRemaining = 0f;
         wasWindowOpenLastFrame = false;
         currentActiveWaitDuration = RollNextWaitDuration();
@@ -673,6 +801,28 @@ public class KartLaneController : MonoBehaviour
 
         isSliding = false;
         Debug.Log("Normal speed recovered.");
+    }
+
+    public void ApplyObstacleSlow(float duration, float multiplier)
+    {
+        activeObstacleMultiplier = Mathf.Clamp01(multiplier);
+        if (obstacleSlowCoroutine != null)
+        {
+            StopCoroutine(obstacleSlowCoroutine);
+        }
+        obstacleSlowCoroutine = StartCoroutine(ObstacleSlowRoutine(duration));
+    }
+
+    private IEnumerator ObstacleSlowRoutine(float duration)
+    {
+        isObstacleSlowed = true;
+        Debug.Log("Hit an obstacle! Speed reduced.");
+
+        yield return new WaitForSeconds(duration);
+
+        isObstacleSlowed = false;
+        obstacleSlowCoroutine = null;
+        Debug.Log("Recovered from obstacle impact.");
     }
 
     public void SetForwardSpeed(float newSpeed)
