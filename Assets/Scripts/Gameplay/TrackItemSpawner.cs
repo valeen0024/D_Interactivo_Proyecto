@@ -75,6 +75,14 @@ public class TrackItemSpawner : MonoBehaviour
     [SerializeField] private float baseObstacleSpawnChance = 0.85f;
 
     [Min(0)]
+    [Tooltip("Distancia mínima en Z en el mismo carril para evitar que un bidón quede encima o pegado a un obstáculo.")]
+    [SerializeField] private float minSameLaneGapZ = 8.5f;
+
+    [Range(0f, 1f)]
+    [Tooltip("Probabilidad muy baja (ej. 0.05) de permitir un bidón cerca/en un carril con obstáculo; 0 = nunca encima.")]
+    [SerializeField] private float rareFuelNearObstacleChance = 0f;
+
+    [Min(0)]
     [Tooltip("Oleadas iniciales sin obstáculos (0 para verlos desde el arranque en pruebas).")]
     [SerializeField] private int warmupWavesWithoutObstacles = 1;
 
@@ -282,6 +290,26 @@ public class TrackItemSpawner : MonoBehaviour
         return Mathf.Clamp(baseZ + randomOffset, startZ + 10f, calculatedMaxSpawnZ);
     }
 
+    private bool HasNearbyObstacleInLane(float laneX, float candidateZ)
+    {
+        for (int i = 0; i < spawnedItems.Count; i++)
+        {
+            GameObject item = spawnedItems[i];
+            if (item == null || !item.activeInHierarchy) continue;
+            if (item.CompareTag("Fuel")) continue;
+
+            bool sameLane = Mathf.Abs(item.transform.position.x - laneX) < 0.35f;
+            bool closeInZ = Mathf.Abs(item.transform.position.z - candidateZ) < minSameLaneGapZ;
+
+            if (sameLane && closeInZ)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void SpawnWaveAt(float baseZ, int currentWave)
     {
         if (laneXPositions == null || laneXPositions.Length == 0) return;
@@ -313,13 +341,35 @@ public class TrackItemSpawner : MonoBehaviour
                 chosenSafeLane = safeLanes[1];
             }
 
-            Vector3 fuelPos = new Vector3(laneXPositions[chosenSafeLane], fuelHeightY, GetStaggeredZ(baseZ));
-            GameObject fuel = Instantiate(fuelDrumPrefab, fuelPos, fuelDrumPrefab.transform.rotation, transform);
-            spawnedItems.Add(fuel);
+            float fuelZ = GetStaggeredZ(baseZ);
+            float fuelX = laneXPositions[chosenSafeLane];
+            bool allowRareOverlap = rareFuelNearObstacleChance > 0f && UnityEngine.Random.value <= rareFuelNearObstacleChance;
 
-            lastFuelLane = chosenSafeLane;
-            wavesSinceLastFuel = 0;
-            spawnedFuel = true;
+            if (!allowRareOverlap && HasNearbyObstacleInLane(fuelX, fuelZ))
+            {
+                for (int i = 0; i < safeLanes.Count; i++)
+                {
+                    int candidateLane = safeLanes[i];
+                    float candidateX = laneXPositions[candidateLane];
+                    if (!HasNearbyObstacleInLane(candidateX, fuelZ))
+                    {
+                        chosenSafeLane = candidateLane;
+                        fuelX = candidateX;
+                        break;
+                    }
+                }
+            }
+
+            if (allowRareOverlap || !HasNearbyObstacleInLane(fuelX, fuelZ))
+            {
+                Vector3 fuelPos = new Vector3(fuelX, fuelHeightY, fuelZ);
+                GameObject fuel = Instantiate(fuelDrumPrefab, fuelPos, fuelDrumPrefab.transform.rotation, transform);
+                spawnedItems.Add(fuel);
+
+                lastFuelLane = chosenSafeLane;
+                wavesSinceLastFuel = 0;
+                spawnedFuel = true;
+            }
         }
 
         if (!spawnedFuel)
