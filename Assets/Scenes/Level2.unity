@@ -49186,10 +49186,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KartLaneController
   laneOffset: 2
-  laneChangeSpeed: 3
+  laneChangeSpeed: 6
   baseForwardSpeed: 6
   acceleration: 12
   friction: 2
+  enableProgressiveSpeed: 1
+  maxProgressiveForwardSpeed: 11
+  speedProgressionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   minLane: -1
   maxLane: 2
   canMove: 1
@@ -113283,7 +113309,7 @@ MonoBehaviour:
   minFOV: 45
   maxFOV: 60
   fovChangeSpeed: 5
-  maxKartSpeed: 15
+  maxKartSpeed: 12
 --- !u!1 &307492577
 GameObject:
   m_ObjectHideFlags: 0
@@ -599376,6 +599402,32 @@ MonoBehaviour:
   baseForwardSpeed: 6
   acceleration: 12
   friction: 2
+  enableProgressiveSpeed: 0
+  maxProgressiveForwardSpeed: 22
+  speedProgressionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   minLane: -1
   maxLane: 2
   canMove: 1
@@ -599505,6 +599557,8 @@ MonoBehaviour:
   laneOffset: 2
   laneChangeSpeed: 8
   cpuSpeed: 6
+  enableProgressiveSpeed: 1
+  maxProgressiveCpuSpeed: 12
   minLane: -2
   maxLane: 1
   canMove: 0

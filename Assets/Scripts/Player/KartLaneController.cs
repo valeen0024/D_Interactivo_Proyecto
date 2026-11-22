@@ -25,6 +25,16 @@ public class KartLaneController : MonoBehaviour
     [Tooltip("How fast the vehicle loses speed when releasing gas or idling.")]
     [SerializeField] private float friction = 2f;
 
+    [Header("Progressive Speed (Level 2+)")]
+    [Tooltip("Activa el aumento gradual de velocidad según el avance en la pista.")]
+    [SerializeField] private bool enableProgressiveSpeed = false;
+
+    [Tooltip("Velocidad máxima que alcanzará el kart al llegar al final de la pista.")]
+    [SerializeField] private float maxProgressiveForwardSpeed = 22f;
+
+    [Tooltip("Curva opcional para controlar cómo sube la velocidad (lineal por defecto).")]
+    [SerializeField] private AnimationCurve speedProgressionCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+
     [Header("Lane Limits (4 Lanes Setup)")]
     [Tooltip("Minimum lane index (most left lane).")]
     [SerializeField] private int minLane = -1;
@@ -567,6 +577,18 @@ public class KartLaneController : MonoBehaviour
         }
     }
 
+    private float GetCurrentBaseForwardSpeed()
+    {
+        if (!enableProgressiveSpeed)
+        {
+            return baseForwardSpeed;
+        }
+
+        float progress = GetRaceProgressNormalized();
+        float curvedProgress = speedProgressionCurve != null ? speedProgressionCurve.Evaluate(progress) : progress;
+        return Mathf.Lerp(baseForwardSpeed, maxProgressiveForwardSpeed, curvedProgress);
+    }
+
     private void CalculateTargetSpeed()
     {
         if (fuelSystem != null && fuelSystem.IsOutOfFuel)
@@ -581,25 +603,27 @@ public class KartLaneController : MonoBehaviour
             return;
         }
 
+        float activeBaseSpeed = GetCurrentBaseForwardSpeed();
+
         if (isBoosting)
         {
-            targetForwardSpeed = baseForwardSpeed * boostSpeedMultiplier;
+            targetForwardSpeed = activeBaseSpeed * boostSpeedMultiplier;
             return;
         }
 
         if (isSliding)
         {
-            targetForwardSpeed = baseForwardSpeed * 0.5f;
+            targetForwardSpeed = activeBaseSpeed * 0.5f;
             return;
         }
 
         if (isObstacleSlowed)
         {
-            targetForwardSpeed = baseForwardSpeed * activeObstacleMultiplier;
+            targetForwardSpeed = activeBaseSpeed * activeObstacleMultiplier;
             return;
         }
 
-        targetForwardSpeed = baseForwardSpeed;
+        targetForwardSpeed = activeBaseSpeed;
     }
 
     private void ApplyInertiaAndSpeed()
@@ -912,7 +936,7 @@ public class KartLaneController : MonoBehaviour
 
         if (fuelSystem == null || !fuelSystem.IsOutOfFuel)
         {
-            currentForwardSpeed = baseForwardSpeed;
+            currentForwardSpeed = GetCurrentBaseForwardSpeed();
         }
 
         if (engineAudioSource != null)

@@ -14,6 +14,13 @@ public class CPUController : MonoBehaviour
     [Tooltip("Forward speed of the CPU kart.")]
     [SerializeField] private float cpuSpeed = 6f;
 
+    [Header("Progressive Speed (Level 2+)")]
+    [Tooltip("Activa el aumento gradual de velocidad de la CPU según el avance.")]
+    [SerializeField] private bool enableProgressiveSpeed = false;
+
+    [Tooltip("Velocidad máxima que alcanzará la CPU al final de la pista.")]
+    [SerializeField] private float maxProgressiveCpuSpeed = 12f;
+
     [Header("Lane Limits (4 Lanes Setup)")]
     [Tooltip("Minimum lane index (leftmost lane).")]
     [SerializeField] private int minLane = -2;
@@ -127,6 +134,7 @@ public class CPUController : MonoBehaviour
 
     private float currentForwardSpeed;
     private KartFuelSystem fuelSystem;
+    private DistanceTracker distanceTracker;
     private bool isSliding = false;
     private bool isObstacleSlowed = false;
 
@@ -145,6 +153,7 @@ public class CPUController : MonoBehaviour
         startRotation = transform.rotation;
 
         fuelSystem = GetComponent<KartFuelSystem>();
+        distanceTracker = GetComponent<DistanceTracker>();
         animator = GetComponentInChildren<Animator>();
 
         startXPosition = transform.position.x - (Mathf.Clamp(startLane, minLane, maxLane) * laneOffset);
@@ -179,6 +188,17 @@ public class CPUController : MonoBehaviour
         }
     }
 
+    private float GetCurrentBaseCpuSpeed()
+    {
+        if (!enableProgressiveSpeed || distanceTracker == null || distanceTracker.maxDistance <= 0f)
+        {
+            return cpuSpeed;
+        }
+
+        float progress = Mathf.Clamp01(distanceTracker.currentDistance / distanceTracker.maxDistance);
+        return Mathf.Lerp(cpuSpeed, maxProgressiveCpuSpeed, progress);
+    }
+
     public void ConfigureForLevel(float difficulty, int boostUsesForLevel)
     {
         maxBoostUses = Mathf.Max(0, boostUsesForLevel);
@@ -207,6 +227,11 @@ public class CPUController : MonoBehaviour
 
         if (fuelSystem != null && fuelSystem.IsOutOfFuel)
             return;
+
+        if (!isBoosting && !isSliding && !isObstacleSlowed)
+        {
+            currentForwardSpeed = GetCurrentBaseCpuSpeed();
+        }
 
         MoveCPU();
 
@@ -547,14 +572,14 @@ public class CPUController : MonoBehaviour
     private IEnumerator OilSlowRoutine(float duration)
     {
         isSliding = true;
-        currentForwardSpeed = cpuSpeed * oilSlowMultiplier;
+        currentForwardSpeed = GetCurrentBaseCpuSpeed() * oilSlowMultiplier;
         Debug.Log("CPU slipped on oil. Speed reduced.");
 
         yield return new WaitForSeconds(duration);
 
         if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isBoosting && !isObstacleSlowed)
         {
-            currentForwardSpeed = cpuSpeed;
+            currentForwardSpeed = GetCurrentBaseCpuSpeed();
         }
 
         isSliding = false;
@@ -569,7 +594,7 @@ public class CPUController : MonoBehaviour
     private IEnumerator ObstacleSlowRoutine(float duration, float multiplier)
     {
         isObstacleSlowed = true;
-        currentForwardSpeed = cpuSpeed * Mathf.Clamp01(multiplier);
+        currentForwardSpeed = GetCurrentBaseCpuSpeed() * Mathf.Clamp01(multiplier);
         Debug.Log("CPU hit an obstacle! Speed reduced.");
 
         yield return new WaitForSeconds(duration);
@@ -578,7 +603,7 @@ public class CPUController : MonoBehaviour
 
         if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isBoosting && !isSliding)
         {
-            currentForwardSpeed = cpuSpeed;
+            currentForwardSpeed = GetCurrentBaseCpuSpeed();
         }
 
         Debug.Log("CPU recovered from obstacle impact.");
@@ -679,7 +704,7 @@ public class CPUController : MonoBehaviour
     private IEnumerator TurboRoutine()
     {
         isBoosting = true;
-        currentForwardSpeed = cpuSpeed * boostSpeedMultiplier;
+        currentForwardSpeed = GetCurrentBaseCpuSpeed() * boostSpeedMultiplier;
 
         if (fuelSystem != null)
         {
@@ -703,7 +728,7 @@ public class CPUController : MonoBehaviour
 
         if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isSliding && !isObstacleSlowed)
         {
-            currentForwardSpeed = cpuSpeed;
+            currentForwardSpeed = GetCurrentBaseCpuSpeed();
         }
 
         if (engineAudioSource != null)
