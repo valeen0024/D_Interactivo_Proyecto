@@ -9,6 +9,8 @@ TagManager:
   - Oil
   - CPU
   - Obstacle
+  - Barrier
+  - Cone
   layers:
   - Default
   - TransparentFX

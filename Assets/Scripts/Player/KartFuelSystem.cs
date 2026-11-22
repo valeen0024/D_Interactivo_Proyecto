@@ -59,12 +59,14 @@ public class KartFuelSystem : MonoBehaviour
         bool isMyTurn =
             (
                 gameObject.CompareTag("Player") &&
+                GameManager.Instance != null &&
                 GameManager.Instance.gameState ==
                 GameManager.GameState.PlayerTurn
             )
             ||
             (
                 gameObject.CompareTag("CPU") &&
+                GameManager.Instance != null &&
                 GameManager.Instance.gameState ==
                 GameManager.GameState.CPUTurn
             );
@@ -110,12 +112,15 @@ public class KartFuelSystem : MonoBehaviour
 
     public float GetFuelNormalized()
     {
-        return currentFuel / maxFuel;
+        return maxFuel > 0f ? currentFuel / maxFuel : 0f;
     }
 
+    // Solo para sumar combustible (barriles / recargas)
     public void AddFuel(float amount = -1f)
     {
         float amountToAdd = (amount < 0f) ? fuelFromBarrel : amount;
+        if (amountToAdd <= 0f)
+            return;
 
         currentFuel = Mathf.Clamp(currentFuel + amountToAdd, 0f, maxFuel);
         HasCollectedFuel = true;
@@ -147,22 +152,31 @@ public class KartFuelSystem : MonoBehaviour
         }
     }
 
-    public void ReduceFuelFromOil()
+    // Solo para restar combustible por obstáculos o penalizaciones
+    public void ConsumeFuel(float amount)
     {
-        currentFuel = Mathf.Clamp(currentFuel - fuelLostFromOil, 0f, maxFuel);
+        float amountToSubtract = Mathf.Abs(amount);
+        if (amountToSubtract <= 0f)
+            return;
+
+        currentFuel = Mathf.Clamp(currentFuel - amountToSubtract, 0f, maxFuel);
 
         if (fuelBar != null)
         {
             fuelBar.value = GetFuelNormalized();
         }
 
-        Debug.Log($"Fuel lost because of oil! Total: {currentFuel:F1}");
-
         if (currentFuel <= 0f && !isOutOfFuel)
         {
             SetFuelConsumptionMultiplier(1f);
             OnFuelEmpty();
         }
+    }
+
+    public void ReduceFuelFromOil()
+    {
+        ConsumeFuel(fuelLostFromOil);
+        Debug.Log($"Fuel lost because of oil! Total: {currentFuel:F1}");
     }
 
     private void OnFuelEmpty()

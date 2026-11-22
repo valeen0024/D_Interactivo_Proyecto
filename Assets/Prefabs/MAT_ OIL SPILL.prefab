@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 6854899105662276586}
   - component: {fileID: 8256191965579132095}
   - component: {fileID: 3261116045865955906}
-  - component: {fileID: 1207529938511525495}
   - component: {fileID: 8339545520668934368}
-  - component: {fileID: 6628871091995164005}
+  - component: {fileID: -2069929584275428435}
   - component: {fileID: 2285048122497742655}
   m_Layer: 0
   m_Name: MAT_ OIL SPILL
@@ -117,20 +116,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.5, y: 2.5, z: 2.5}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1207529938511525495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1297765023470733099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23e67f97ca7e8c14d876a8bb5675ace2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::OilSlick
-  slowDuration: 1.2
-  slipVolume: 1
 --- !u!114 &8339545520668934368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,7 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DestroyAfterDistance
   destroyDistanceBehind: 15
---- !u!114 &6628871091995164005
+--- !u!114 &-2069929584275428435
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -153,12 +138,57 @@ MonoBehaviour:
   m_GameObject: {fileID: 1297765023470733099}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2c5bf639b385174e826f6d2f9a3369d, type: 3}
+  m_Script: {fileID: 11500000, guid: cab8dd1303e165d4faaaefb4b424d830, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::OilSpill
-  audioSource: {fileID: 2285048122497742655}
-  oilSound: {fileID: 8300000, guid: e62a3f5f8bf5a134e983abe868f06dc6, type: 3}
-  destroyOnStepped: 0
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleBehavior
+  obstacleKind: 2
+  applyGameplayEffects: 1
+  triggerOnlyOnce: 1
+  fallbackAudioSource: {fileID: 0}
+  oilConfig:
+    slowDuration: 1.5
+    fuelLossOverride: 10
+    hideAfterHit: 0
+    hideDelay: 0.25
+    useAudioManagerSlip: 1
+    audio:
+      audioSource: {fileID: 0}
+      clips:
+      - {fileID: 8300000, guid: 2651decbdf0d3284abc11e279b0801d6, type: 3}
+      - {fileID: 8300000, guid: a7da24281c0f52f48bf7dffee71eb436, type: 3}
+      playMode: 0
+      volume: 1
+      force2DSound: 1
+      nextSequentialIndex: 0
+  coneConfig:
+    slowDuration: 2.5
+    speedMultiplier: 0.45
+    fuelLoss: 0
+    breakAndDestroyOnHit: 1
+    breakEffectPrefab: {fileID: 0}
+    brokenVisualObject: {fileID: 0}
+    destroyDelay: 0.6
+    hideAfterHit: 0
+    hideDelay: 0.15
+    useAudioManagerSlip: 0
+    audio:
+      audioSource: {fileID: 0}
+      clips: []
+      playMode: 0
+      volume: 0.9
+      force2DSound: 1
+      nextSequentialIndex: 0
+  barrierConfig:
+    blockDuration: 0.9
+    blockSpeedMultiplier: 0.05
+    fuelPenalty: 20
+    audio:
+      audioSource: {fileID: 0}
+      clips: []
+      playMode: 0
+      volume: 1
+      force2DSound: 1
+      nextSequentialIndex: 0
 --- !u!82 &2285048122497742655
 AudioSource:
   m_ObjectHideFlags: 0
@@ -178,7 +208,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 206
   DopplerLevel: 1
   MinDistance: 0.5043335
   MaxDistance: 500

@@ -15,7 +15,7 @@ public class TrackItemSpawner : MonoBehaviour
     [Serializable]
     public class ObstacleDefinition
     {
-        [Tooltip("Nombre descriptivo para identificarlo fácil en el Inspector (ej. Aceite, Cono).")]
+        [Tooltip("Nombre descriptivo para identificarlo fácil en el Inspector (ej. Aceite, Conos, Valla).")]
         public string label = "Aceite";
 
         [Tooltip("Prefab del obstáculo a instanciar.")]
@@ -23,6 +23,9 @@ public class TrackItemSpawner : MonoBehaviour
 
         [Tooltip("Altura Y en la pista para este obstáculo.")]
         public float heightY = 463.7f;
+
+        [Tooltip("Ajuste extra de rotación (en grados) aplicado sobre la rotación del prefab al instanciar.")]
+        public Vector3 rotationOffsetEuler = Vector3.zero;
 
         [Min(0.01f)]
         [Tooltip("Peso relativo de aparición frente a otros obstáculos.")]
@@ -35,6 +38,9 @@ public class TrackItemSpawner : MonoBehaviour
         [Range(0f, 1f)]
         [Tooltip("Progreso máximo de la carrera (0 = inicio, 1 = meta) hasta donde puede aparecer.")]
         public float maxTrackProgress = 1f;
+
+        [Tooltip("Marcar si este obstáculo bloquea/castiga fuerte (ej. Tag 'Barrier') para limitar cuántos salen por oleada.")]
+        public bool isBlockingBarrier = false;
     }
 
     [Header("Combustible (Bidón)")]
@@ -42,7 +48,7 @@ public class TrackItemSpawner : MonoBehaviour
     [SerializeField] private float fuelHeightY = 463.896f;
 
     [Header("Obstáculos (Escalable para nuevos niveles)")]
-    [Tooltip("Agrega aquí el aceite y cualquier obstáculo nuevo.")]
+    [Tooltip("Agrega aquí Aceite (Oil), Conos (Cone), Valla (Barrier) o cualquier obstáculo nuevo.")]
     [SerializeField] private List<ObstacleDefinition> obstacles = new List<ObstacleDefinition>();
 
     [Header("Nivel, Dificultad y Distancia")]
@@ -60,6 +66,7 @@ public class TrackItemSpawner : MonoBehaviour
 
     [Header("Carriles y Límites de Pista")]
     [SerializeField] private float[] laneXPositions = new float[] { -104.9f, -102.9f, -100.9f, -98.9f };
+    [SerializeField] private float laneMatchTolerance = 0.35f;
     [SerializeField] private float spawnAheadDistance = 42f;
     [SerializeField] private float minSpawnIntervalZ = 7.5f;
     [SerializeField] private float maxSpawnIntervalZ = 14.5f;
@@ -74,9 +81,17 @@ public class TrackItemSpawner : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float baseObstacleSpawnChance = 0.85f;
 
-    [Min(0)]
+    [Min(0f)]
     [Tooltip("Distancia mínima en Z en el mismo carril para evitar que un bidón quede encima o pegado a un obstáculo.")]
     [SerializeField] private float minSameLaneGapZ = 8.5f;
+
+    [Min(0f)]
+    [Tooltip("Distancia mínima en Z en el mismo carril entre obstáculos consecutivos para evitar encimamientos.")]
+    [SerializeField] private float minObstacleGapZ = 7.0f;
+
+    [Min(0)]
+    [Tooltip("Máximo de vallas/obstáculos bloqueantes por oleada (1 evita muros imposibles de esquivar).")]
+    [SerializeField] private int maxBlockingBarriersPerWave = 1;
 
     [Range(0f, 1f)]
     [Tooltip("Probabilidad muy baja (ej. 0.05) de permitir un bidón cerca/en un carril con obstáculo; 0 = nunca encima.")]
@@ -123,6 +138,11 @@ public class TrackItemSpawner : MonoBehaviour
         if (maxSpawnIntervalZ < minSpawnIntervalZ)
         {
             maxSpawnIntervalZ = minSpawnIntervalZ;
+        }
+
+        if (laneMatchTolerance < 0.05f)
+        {
+            laneMatchTolerance = 0.05f;
         }
 
         if (startMaxObstacles < startMinObstacles) startMaxObstacles = startMinObstacles;
@@ -290,16 +310,18 @@ public class TrackItemSpawner : MonoBehaviour
         return Mathf.Clamp(baseZ + randomOffset, startZ + 10f, calculatedMaxSpawnZ);
     }
 
-    private bool HasNearbyObstacleInLane(float laneX, float candidateZ)
+    private bool HasNearbyItemInLane(float laneX, float candidateZ, float minGapZ, bool ignoreFuel)
     {
+        if (minGapZ <= 0f) return false;
+
         for (int i = 0; i < spawnedItems.Count; i++)
         {
             GameObject item = spawnedItems[i];
             if (item == null || !item.activeInHierarchy) continue;
-            if (item.CompareTag("Fuel")) continue;
+            if (ignoreFuel && item.CompareTag("Fuel")) continue;
 
-            bool sameLane = Mathf.Abs(item.transform.position.x - laneX) < 0.35f;
-            bool closeInZ = Mathf.Abs(item.transform.position.z - candidateZ) < minSameLaneGapZ;
+            bool sameLane = Mathf.Abs(item.transform.position.x - laneX) < laneMatchTolerance;
+            bool closeInZ = Mathf.Abs(item.transform.position.z - candidateZ) < minGapZ;
 
             if (sameLane && closeInZ)
             {
@@ -345,13 +367,13 @@ public class TrackItemSpawner : MonoBehaviour
             float fuelX = laneXPositions[chosenSafeLane];
             bool allowRareOverlap = rareFuelNearObstacleChance > 0f && UnityEngine.Random.value <= rareFuelNearObstacleChance;
 
-            if (!allowRareOverlap && HasNearbyObstacleInLane(fuelX, fuelZ))
+            if (!allowRareOverlap && HasNearbyItemInLane(fuelX, fuelZ, minSameLaneGapZ, ignoreFuel: true))
             {
                 for (int i = 0; i < safeLanes.Count; i++)
                 {
                     int candidateLane = safeLanes[i];
                     float candidateX = laneXPositions[candidateLane];
-                    if (!HasNearbyObstacleInLane(candidateX, fuelZ))
+                    if (!HasNearbyItemInLane(candidateX, fuelZ, minSameLaneGapZ, ignoreFuel: true))
                     {
                         chosenSafeLane = candidateLane;
                         fuelX = candidateX;
@@ -360,7 +382,7 @@ public class TrackItemSpawner : MonoBehaviour
                 }
             }
 
-            if (allowRareOverlap || !HasNearbyObstacleInLane(fuelX, fuelZ))
+            if (allowRareOverlap || !HasNearbyItemInLane(fuelX, fuelZ, minSameLaneGapZ, ignoreFuel: true))
             {
                 Vector3 fuelPos = new Vector3(fuelX, fuelHeightY, fuelZ);
                 GameObject fuel = Instantiate(fuelDrumPrefab, fuelPos, fuelDrumPrefab.transform.rotation, transform);
@@ -406,22 +428,41 @@ public class TrackItemSpawner : MonoBehaviour
         int countToSpawn = UnityEngine.Random.Range(minCount, maxCount + 1);
         float step = (countToSpawn > 1) ? (zStaggerRange * 2f) / (countToSpawn - 1) : 0f;
         int spawnedObstaclesThisWave = 0;
+        int barriersInThisWave = 0;
 
         for (int i = 0; i < countToSpawn; i++)
         {
-            ObstacleDefinition chosenObstacle = PickWeightedObstacle(progress);
+            bool allowBlocking = maxBlockingBarriersPerWave <= 0 || barriersInThisWave < maxBlockingBarriersPerWave;
+            ObstacleDefinition chosenObstacle = PickWeightedObstacle(progress, allowBlocking);
             if (chosenObstacle == null || chosenObstacle.prefab == null) continue;
 
             int lane = lanePool[i];
+            float laneX = laneXPositions[lane];
             float structuredOffset = (countToSpawn > 1)
                 ? (-zStaggerRange + (step * i)) + UnityEngine.Random.Range(-1.1f, 1.1f)
                 : UnityEngine.Random.Range(-zStaggerRange, zStaggerRange);
 
             float itemZ = Mathf.Clamp(baseZ + structuredOffset, startZ + 10f, calculatedMaxSpawnZ);
-            Vector3 itemPos = new Vector3(laneXPositions[lane], chosenObstacle.heightY, itemZ);
-            GameObject obj = Instantiate(chosenObstacle.prefab, itemPos, chosenObstacle.prefab.transform.rotation, transform);
+
+            if (HasNearbyItemInLane(laneX, itemZ, minObstacleGapZ, ignoreFuel: true))
+            {
+                if (logSpawnDebug)
+                {
+                    Debug.Log($"[TrackItemSpawner] Omitido '{chosenObstacle.label}' en carril {lane} (Z={itemZ:F1}) por cercanía con otro obstáculo.");
+                }
+                continue;
+            }
+
+            Vector3 itemPos = new Vector3(laneX, chosenObstacle.heightY, itemZ);
+            Quaternion finalRot = chosenObstacle.prefab.transform.rotation * Quaternion.Euler(chosenObstacle.rotationOffsetEuler);
+            GameObject obj = Instantiate(chosenObstacle.prefab, itemPos, finalRot, transform);
             spawnedItems.Add(obj);
             spawnedObstaclesThisWave++;
+
+            if (chosenObstacle.isBlockingBarrier)
+            {
+                barriersInThisWave++;
+            }
         }
 
         if (logSpawnDebug && spawnedObstaclesThisWave == 0)
@@ -430,7 +471,7 @@ public class TrackItemSpawner : MonoBehaviour
         }
     }
 
-    private ObstacleDefinition PickWeightedObstacle(float progress)
+    private ObstacleDefinition PickWeightedObstacle(float progress, bool allowBlocking)
     {
         float totalWeight = 0f;
 
@@ -438,6 +479,7 @@ public class TrackItemSpawner : MonoBehaviour
         {
             ObstacleDefinition item = obstacles[i];
             if (item == null || item.prefab == null || item.weight <= 0f) continue;
+            if (!allowBlocking && item.isBlockingBarrier) continue;
 
             float minP = Mathf.Min(item.minTrackProgress, item.maxTrackProgress);
             float maxP = Mathf.Max(item.minTrackProgress, item.maxTrackProgress);
@@ -457,6 +499,7 @@ public class TrackItemSpawner : MonoBehaviour
         {
             ObstacleDefinition item = obstacles[i];
             if (item == null || item.prefab == null || item.weight <= 0f) continue;
+            if (!allowBlocking && item.isBlockingBarrier) continue;
 
             float minP = Mathf.Min(item.minTrackProgress, item.maxTrackProgress);
             float maxP = Mathf.Max(item.minTrackProgress, item.maxTrackProgress);
@@ -491,3 +534,4 @@ public class TrackItemSpawner : MonoBehaviour
         }
     }
 }
+

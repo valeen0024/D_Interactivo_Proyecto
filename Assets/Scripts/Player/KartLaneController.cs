@@ -99,20 +99,24 @@ public class KartLaneController : MonoBehaviour
     public bool ShouldShowBoostOverlay => IsBoostReadyToTrigger || isBoosting;
 
     [Header("Obstacle Settings")]
-    [Tooltip("Tag used by obstacle objects (other than Oil).")]
+    [Tooltip("Legacy fallback tag used by obstacle objects (other than Oil, Cone, Barrier).")]
     [SerializeField] private string obstacleTag = "Obstacle";
 
-    [Tooltip("Speed multiplier when hitting an obstacle.")]
+    [Tooltip("Speed multiplier when hitting a cone or generic obstacle.")]
     [Range(0f, 1f)]
-    [SerializeField] private float obstacleSpeedMultiplier = 0.4f;
+    [SerializeField] private float obstacleSpeedMultiplier = 0.45f;
 
-    [Tooltip("Duration in seconds of the obstacle slowdown.")]
+    [Tooltip("Duration in seconds of the cone / obstacle slowdown.")]
     [Min(0.1f)]
-    [SerializeField] private float obstacleSlowDuration = 1.2f;
+    [SerializeField] private float obstacleSlowDuration = 1.6f;
 
-    [Tooltip("Optional fuel penalty when hitting an obstacle (0 if only slows).")]
+    [Tooltip("Optional fuel penalty when hitting a generic obstacle.")]
     [Min(0f)]
     [SerializeField] private float obstacleFuelPenalty = 0f;
+
+    [Tooltip("Margen en Z para evitar que el kart penetre la valla al chocar.")]
+    [Min(0f)]
+    [SerializeField] private float barrierStopMarginZ = 0.15f;
 
     [Header("Boost UI Overlay (Borde + Barril con rayos)")]
     [Tooltip("Grupo/objeto padre que contiene el borde y el barril con rayos sobrepuestos.")]
@@ -194,12 +198,18 @@ public class KartLaneController : MonoBehaviour
     private DistanceTracker distanceTracker;
     private Coroutine activeBoostCoroutine;
     private Coroutine notificationCoroutine;
+    private Coroutine oilSlideCoroutine;
     private Coroutine obstacleSlowCoroutine;
     private bool wasWindowOpenLastFrame = false;
     private bool isSliding = false;
     private bool isObstacleSlowed = false;
-    private float activeObstacleMultiplier = 0.4f;
+    private float activeObstacleMultiplier = 0.45f;
     private bool isBoosting = false;
+
+    // Bloqueo físico de valla (sin temporizador: se mantiene mientras el carril esté bloqueado)
+    private bool isBarrierBlocked = false;
+    private int blockedLane = int.MinValue;
+    private float barrierFrontZ = float.MaxValue;
 
     public bool HasUsedTurbo => usesRemaining < maxBoostUses;
     public bool canUseTurbo = true;
@@ -272,6 +282,7 @@ public class KartLaneController : MonoBehaviour
         currentActiveWaitDuration = 0f;
         activationWindowRemaining = 0f;
         wasWindowOpenLastFrame = false;
+        ClearBarrierBlock();
 
         if (notificationCoroutine != null)
         {
@@ -284,6 +295,20 @@ public class KartLaneController : MonoBehaviour
     }
 
     public void RegisterFuelCollected() { }
+
+    public void SetForwardSpeed(float speed)
+    {
+        float clampedSpeed = Mathf.Max(0f, speed);
+        targetForwardSpeed = clampedSpeed;
+        currentForwardSpeed = clampedSpeed;
+    }
+
+    private void ClearBarrierBlock()
+    {
+        isBarrierBlocked = false;
+        blockedLane = int.MinValue;
+        barrierFrontZ = float.MaxValue;
+    }
 
     private void ShowBoostRemainingNotification()
     {
@@ -524,6 +549,9 @@ public class KartLaneController : MonoBehaviour
         if (fuelSystem != null && fuelSystem.IsOutOfFuel) return;
         if (Keyboard.current == null) return;
 
+        int previousLane = currentLane;
+
+        // El cambio de carril permanece libre incluso al estar detenido frente a una valla.
         if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame)
         {
             if (currentLane > minLane) currentLane--;
@@ -532,11 +560,22 @@ public class KartLaneController : MonoBehaviour
         {
             if (currentLane < maxLane) currentLane++;
         }
+
+        if (currentLane != previousLane && isBarrierBlocked && currentLane != blockedLane)
+        {
+            ClearBarrierBlock();
+        }
     }
 
     private void CalculateTargetSpeed()
     {
         if (fuelSystem != null && fuelSystem.IsOutOfFuel)
+        {
+            targetForwardSpeed = 0f;
+            return;
+        }
+
+        if (isBarrierBlocked && currentLane == blockedLane)
         {
             targetForwardSpeed = 0f;
             return;
@@ -565,6 +604,13 @@ public class KartLaneController : MonoBehaviour
 
     private void ApplyInertiaAndSpeed()
     {
+        if (isBarrierBlocked && currentLane == blockedLane)
+        {
+            currentForwardSpeed = 0f;
+            targetForwardSpeed = 0f;
+            return;
+        }
+
         if (currentForwardSpeed < targetForwardSpeed)
         {
             currentForwardSpeed += acceleration * Time.deltaTime;
@@ -580,6 +626,7 @@ public class KartLaneController : MonoBehaviour
     public void RestoreTutorialLane(int lane)
     {
         currentLane = Mathf.Clamp(lane, minLane, maxLane);
+        ClearBarrierBlock();
     }
 
     public float GetLaneWorldX(int lane)
@@ -593,8 +640,92 @@ public class KartLaneController : MonoBehaviour
         float targetX = startXPosition + (currentLane * laneOffset);
         Vector3 currentPos = transform.position;
         float newX = Mathf.MoveTowards(currentPos.x, targetX, laneChangeSpeed * Time.deltaTime);
-        float newZ = currentPos.z + (currentForwardSpeed * Time.deltaTime);
+
+        float newZ = currentPos.z;
+        if (!(isBarrierBlocked && currentLane == blockedLane))
+        {
+            newZ += currentForwardSpeed * Time.deltaTime;
+            if (isBarrierBlocked && currentLane == blockedLane && newZ > barrierFrontZ)
+            {
+                newZ = barrierFrontZ;
+            }
+        }
+        else if (currentPos.z > barrierFrontZ)
+        {
+            newZ = barrierFrontZ;
+        }
+
         transform.position = new Vector3(newX, currentPos.y, newZ);
+    }
+
+    public void ApplyOilSlow(float duration)
+    {
+        float safeDuration = Mathf.Max(0.1f, duration);
+        if (oilSlideCoroutine != null)
+        {
+            StopCoroutine(oilSlideCoroutine);
+        }
+        oilSlideCoroutine = StartCoroutine(OilSlideRoutine(safeDuration));
+    }
+
+    private IEnumerator OilSlideRoutine(float duration)
+    {
+        isSliding = true;
+        yield return new WaitForSeconds(duration);
+        isSliding = false;
+        oilSlideCoroutine = null;
+    }
+
+    public void ApplyObstacleSlow(float duration, float speedMultiplier)
+    {
+        float safeDuration = Mathf.Max(0.1f, duration);
+        activeObstacleMultiplier = Mathf.Clamp(speedMultiplier, 0f, 1f);
+
+        if (obstacleSlowCoroutine != null)
+        {
+            StopCoroutine(obstacleSlowCoroutine);
+        }
+        obstacleSlowCoroutine = StartCoroutine(ObstacleSlowRoutine(safeDuration));
+    }
+
+    // Mantiene compatibilidad con firmas anteriores si algo externo llama ApplyBarrierBlock con parámetros.
+    public void ApplyBarrierBlock(float duration = 0f, float blockMultiplier = 0f)
+    {
+        BlockAgainstBarrier(null);
+    }
+
+    public void BlockAgainstBarrier(Collider barrierCollider)
+    {
+        isBarrierBlocked = true;
+        blockedLane = currentLane;
+        currentForwardSpeed = 0f;
+        targetForwardSpeed = 0f;
+
+        if (barrierCollider != null)
+        {
+            float frontEdgeZ = barrierCollider.bounds.min.z - barrierStopMarginZ;
+            if (transform.position.z > frontEdgeZ)
+            {
+                barrierFrontZ = Mathf.Min(barrierFrontZ, frontEdgeZ);
+                transform.position = new Vector3(transform.position.x, transform.position.y, barrierFrontZ);
+            }
+            else
+            {
+                barrierFrontZ = Mathf.Min(barrierFrontZ, Mathf.Max(transform.position.z, frontEdgeZ));
+            }
+        }
+        else
+        {
+            barrierFrontZ = Mathf.Min(barrierFrontZ, transform.position.z);
+        }
+    }
+
+    private IEnumerator ObstacleSlowRoutine(float duration)
+    {
+        isObstacleSlowed = true;
+        yield return new WaitForSeconds(duration);
+        isObstacleSlowed = false;
+        obstacleSlowCoroutine = null;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -614,14 +745,38 @@ public class KartLaneController : MonoBehaviour
 
             ApplyOilSlow(duration);
         }
+        else if (other.CompareTag("Cone"))
+        {
+            ApplyObstacleSlow(obstacleSlowDuration, obstacleSpeedMultiplier);
+        }
         else if (!string.IsNullOrEmpty(obstacleTag) && other.CompareTag(obstacleTag))
         {
             if (obstacleFuelPenalty > 0f && fuelSystem != null)
             {
-                fuelSystem.currentFuel = Mathf.Max(0f, fuelSystem.currentFuel - obstacleFuelPenalty);
+                fuelSystem.AddFuel(-obstacleFuelPenalty);
             }
 
             ApplyObstacleSlow(obstacleSlowDuration, obstacleSpeedMultiplier);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Barrier"))
+        {
+            BlockAgainstBarrier(collision.collider);
+        }
+        else if (collision.gameObject.CompareTag("Cone"))
+        {
+            ApplyObstacleSlow(obstacleSlowDuration, obstacleSpeedMultiplier);
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Barrier"))
+        {
+            BlockAgainstBarrier(collision.collider);
         }
     }
 
@@ -781,52 +936,5 @@ public class KartLaneController : MonoBehaviour
         isBoosting = false;
         activeBoostCoroutine = null;
         UpdateBarrelVisual();
-        Debug.Log("[Boost] Finalizado.");
-    }
-
-    public void ApplyOilSlow(float duration)
-    {
-        if (!isSliding)
-        {
-            StartCoroutine(OilSlowRoutine(duration));
-        }
-    }
-
-    private IEnumerator OilSlowRoutine(float duration)
-    {
-        isSliding = true;
-        Debug.Log("Slipped on oil! Speed reduced.");
-
-        yield return new WaitForSeconds(duration);
-
-        isSliding = false;
-        Debug.Log("Normal speed recovered.");
-    }
-
-    public void ApplyObstacleSlow(float duration, float multiplier)
-    {
-        activeObstacleMultiplier = Mathf.Clamp01(multiplier);
-        if (obstacleSlowCoroutine != null)
-        {
-            StopCoroutine(obstacleSlowCoroutine);
-        }
-        obstacleSlowCoroutine = StartCoroutine(ObstacleSlowRoutine(duration));
-    }
-
-    private IEnumerator ObstacleSlowRoutine(float duration)
-    {
-        isObstacleSlowed = true;
-        Debug.Log("Hit an obstacle! Speed reduced.");
-
-        yield return new WaitForSeconds(duration);
-
-        isObstacleSlowed = false;
-        obstacleSlowCoroutine = null;
-        Debug.Log("Recovered from obstacle impact.");
-    }
-
-    public void SetForwardSpeed(float newSpeed)
-    {
-        baseForwardSpeed = Mathf.Max(0f, newSpeed);
     }
 }
