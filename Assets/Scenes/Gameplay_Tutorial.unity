@@ -1399,6 +1399,32 @@ MonoBehaviour:
   baseForwardSpeed: 0
   acceleration: 12
   friction: 2
+  enableProgressiveSpeed: 0
+  maxProgressiveForwardSpeed: 22
+  speedProgressionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   minLane: -1
   maxLane: 2
   canMove: 0
@@ -1438,7 +1464,7 @@ MonoBehaviour:
   typewriterCharDelay: 0.035
   holdAfterTypingSeconds: 3
   extraHoldWhenEmptySeconds: 1
-  sfxMixerGroup: {fileID: 0}
+  sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   engineClip: {fileID: 8300000, guid: dcce8fe17e131834da513a21b3826752, type: 3}
   turboClip: {fileID: 8300000, guid: ed8ecb627d015db47846c71556f1c32f, type: 3}
   normalEngineVolume: 0.5
@@ -14269,6 +14295,7 @@ MonoBehaviour:
   finishLine: {fileID: 2042688448}
   completionPanel: {fileID: 324343323}
   instructionsPanel: {fileID: 1087909064}
+  startRaceButton: {fileID: 0}
   hudTutorialPanel: {fileID: 0}
 --- !u!1 &1247462313
 GameObject:
@@ -22721,6 +22748,9 @@ MonoBehaviour:
   uiInstructions: {fileID: 0}
   uiPlay: {fileID: 541621646}
   uiWin: {fileID: 0}
+  nextLevelSceneName: Level2
+  autoAdvanceToNextLevel: 0
+  autoAdvanceDelay: 1.5
   enableCPUTurnBanner: 1
   cpuTurnBannerText: {fileID: 0}
   cpuTurnBannerContainer: {fileID: 0}
