@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +16,26 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject uiPlay;
     [SerializeField] private GameObject uiWin;
 
+    [Header("CPU Turn Banner (Configurable en Inspector)")]
+    [Tooltip("Activa o desactiva el aviso cuando pasa al turno de la CPU.")]
+    [SerializeField] private bool enableCPUTurnBanner = true;
+
+    [Tooltip("Texto TMP que anuncia el turno de la CPU.")]
+    [SerializeField] private TMP_Text cpuTurnBannerText;
+
+    [Tooltip("Contenedor o panel opcional del aviso de turno de la CPU.")]
+    [SerializeField] private GameObject cpuTurnBannerContainer;
+
+    [SerializeField] private string cpuTurnMessage = "Turno de la CPU";
+
+    [Tooltip("Escribe el mensaje letra por letra si está activado.")]
+    [SerializeField] private bool useTypewriterForCPUTurn = true;
+
+    [Range(0.005f, 0.2f)]
+    [SerializeField] private float cpuTurnTypewriterDelay = 0.035f;
+
+    [Range(0.3f, 8f)]
+    [SerializeField] private float cpuTurnBannerDuration = 2.5f;
 
     public enum GameState
     {
@@ -25,6 +46,7 @@ public class GameManager : MonoBehaviour
     }
 
     private List<GameObject> fuelBarrels = new List<GameObject>();
+    private Coroutine cpuBannerCoroutine;
 
     public GameState gameState;
     public bool isGameOver;
@@ -37,7 +59,6 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public float finalCPUDistance;
 
-    //Initializes the Singleton pattern to ensure only one GameManager exists in the scene.
     private void Awake()
     {
         if (Instance == null)
@@ -50,9 +71,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //Called at the start of the game.Starts the match and finds the fuel barrels.
     private void Start()
     {
+        SetCPUTurnBannerVisible(false);
         FindFuelBarrels();
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -66,7 +87,6 @@ public class GameManager : MonoBehaviour
         {
             cpuCtrl.canMove = false;
         }
-
 
         if (uiInstructions != null)
         {
@@ -84,7 +104,6 @@ public class GameManager : MonoBehaviour
         }
 
         StartGame();
-
     }
 
     private bool continueInstructions = false;
@@ -95,20 +114,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI progressText;
     [SerializeField] private UnityEngine.UI.Button previousButton;
 
-
     private string[] tutorialMessages =
     {
-    "Usa las flechas IZQUIERDA y DERECHA para cambiar de carril.",
-
-    "Recoge los BIDONES para recuperar COMBUSTIBLE y seguir avanzando.",
-
-    "Evita las MANCHAS DE ACEITE porque reducen la velocidad del vehículo.",
-
-    "Presiona la flecha ARRIBA para activar el propulsor.",
-
-    "¡Todo listo! Llega a la meta y consigue la mayor distancia posible."
-};
-
+        "Usa las flechas IZQUIERDA y DERECHA para cambiar de carril.",
+        "Recoge los BIDONES para recuperar COMBUSTIBLE y seguir avanzando.",
+        "Evita las MANCHAS DE ACEITE porque reducen la velocidad del vehículo.",
+        "Presiona la flecha ARRIBA para activar el propulsor.",
+        "¡Todo listo! Llega a la meta y consigue la mayor distancia posible."
+    };
 
     private IEnumerator ShowInstructionsRoutine()
     {
@@ -147,7 +160,6 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
-
     public void ContinueInstructions()
     {
         if (gameState != GameState.Waiting)
@@ -182,7 +194,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public void PreviousInstruction()
     {
         if (gameState != GameState.Waiting)
@@ -210,7 +221,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public void SkipTutorial()
     {
         if (gameState != GameState.Waiting)
@@ -219,8 +229,6 @@ public class GameManager : MonoBehaviour
         continueInstructions = true;
     }
 
-
-    //Finds all objects with the "Fuel" tag in the scene and stores them in a list.
     private void FindFuelBarrels()
     {
         GameObject[] foundBarrels = GameObject.FindGameObjectsWithTag("Fuel");
@@ -230,7 +238,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //Resets game variables and starts the traffic light sequence for the player's turn.
     public void StartGame()
     {
         gameState = GameState.Waiting;
@@ -240,13 +247,19 @@ public class GameManager : MonoBehaviour
         finalPlayerDistance = 0f;
         finalCPUDistance = 0f;
 
+        if (cpuBannerCoroutine != null)
+        {
+            StopCoroutine(cpuBannerCoroutine);
+            cpuBannerCoroutine = null;
+        }
+        SetCPUTurnBannerVisible(false);
+
         if (trafficLightManager != null)
         {
             trafficLightManager.StartPlayerTurnSequence();
         }
     }
 
-    //Reactivates all saved fuel barrels in the list for the next turn.
     public void RespawnFuelBarrels()
     {
         foreach (GameObject barrel in fuelBarrels)
@@ -258,39 +271,32 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //Checks if it is the player's turn and starts the transition coroutine to the CPU.
     public void EndPlayerTurn()
     {
         if (gameState != GameState.PlayerTurn) return;
 
-        // Instead of an abrupt transition, we initiate the cinematic shift-change sequence.
         StartCoroutine(TransitionToCPUTurn());
     }
 
     private IEnumerator TransitionToCPUTurn()
     {
-        // Change the status to waiting
         gameState = GameState.Waiting;
 
-        // Stop the player immediately
         GameObject player = GameObject.FindGameObjectWithTag("Player");
 
         if (player != null)
         {
-            // Turn off lane control
             if (player.TryGetComponent<KartLaneController>(out var laneCtrl))
             {
                 laneCtrl.canMove = false;
                 laneCtrl.StopEngineSound();
             }
 
-            // Disable physics-based movement
             if (player.TryGetComponent<KartMovement>(out var kartMov))
             {
                 kartMov.enabled = false;
             }
 
-            // Stop the Rigidbody and freeze physics
             if (player.TryGetComponent<Rigidbody>(out var rb))
             {
                 if (!rb.isKinematic)
@@ -305,18 +311,15 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("¡Turn over! The car has stopped. Waiting 3 seconds...");
 
-        // 3-second wait before changing turns
         yield return new WaitForSeconds(3f);
 
-        // Hide the player
         if (player != null)
         {
             player.SetActive(false);
             Debug.Log("Hidden player's kart.");
         }
 
-        // Point the camera at the CPU
-        CameraFollow cam = Camera.main.GetComponent<CameraFollow>();
+        CameraFollow cam = Camera.main != null ? Camera.main.GetComponent<CameraFollow>() : null;
         GameObject cpu = GameObject.FindGameObjectWithTag("CPU");
 
         if (cam != null && cpu != null)
@@ -325,16 +328,66 @@ public class GameManager : MonoBehaviour
             Debug.Log("Camera switching to the CPU kart.");
         }
 
-        // Reset the fuel barrels
+        ShowCPUTurnBanner();
+
         RespawnFuelBarrels();
 
-        // Start the CPU traffic light
         if (trafficLightManager != null)
         {
             trafficLightManager.StartCPUTurnSequence();
         }
     }
-    // Ends the CPU's turn and calls the function to end the game.
+
+    private void ShowCPUTurnBanner()
+    {
+        if (!enableCPUTurnBanner || cpuTurnBannerText == null) return;
+
+        if (cpuBannerCoroutine != null)
+        {
+            StopCoroutine(cpuBannerCoroutine);
+        }
+
+        cpuBannerCoroutine = StartCoroutine(CPUTurnBannerRoutine());
+    }
+
+    private IEnumerator CPUTurnBannerRoutine()
+    {
+        SetCPUTurnBannerVisible(true);
+
+        if (useTypewriterForCPUTurn)
+        {
+            cpuTurnBannerText.text = string.Empty;
+            float delay = Mathf.Max(0.005f, cpuTurnTypewriterDelay);
+
+            for (int i = 0; i < cpuTurnMessage.Length; i++)
+            {
+                cpuTurnBannerText.text += cpuTurnMessage[i];
+                yield return new WaitForSeconds(delay);
+            }
+        }
+        else
+        {
+            cpuTurnBannerText.text = cpuTurnMessage;
+        }
+
+        yield return new WaitForSeconds(Mathf.Max(0.3f, cpuTurnBannerDuration));
+
+        SetCPUTurnBannerVisible(false);
+        cpuBannerCoroutine = null;
+    }
+
+    private void SetCPUTurnBannerVisible(bool visible)
+    {
+        if (cpuTurnBannerContainer != null)
+        {
+            cpuTurnBannerContainer.SetActive(visible);
+        }
+        else if (cpuTurnBannerText != null)
+        {
+            cpuTurnBannerText.gameObject.SetActive(visible);
+        }
+    }
+
     public void EndCPUTurn()
     {
         if (gameState != GameState.CPUTurn) return;
@@ -349,19 +402,16 @@ public class GameManager : MonoBehaviour
         FinishGame();
     }
 
-    //The turn ends when the player runs out of fuel.
-
     public void PlayerOutOfFuel()
     {
         EndPlayerTurn();
     }
-    // The turn ends when the CPU runs out of fuel.
 
     public void CPUOutOfFuel()
     {
         EndCPUTurn();
     }
-    // Changes the game state to finished and runs the check to see who won.
+
     public void FinishGame()
     {
         if (isGameOver) return;
@@ -373,14 +423,10 @@ public class GameManager : MonoBehaviour
             "Game finished. Winner: " +
             winnerName
         );
-
     }
-
-    // Compares the final distance of the player and the CPU to declare a winner or a draw.
 
     public void CheckWinner()
     {
-
         Debug.Log(
             "Comparing distances - Player: " +
             finalPlayerDistance +
@@ -405,13 +451,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Reloads the current scene, restarting the race from scratch.
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    //Loads the Main Menu scene.
     public void ReturnToMenu()
     {
         SceneManager.LoadScene("MainMenu");
