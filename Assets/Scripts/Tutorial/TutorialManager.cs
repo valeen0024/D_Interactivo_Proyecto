@@ -37,6 +37,9 @@ public class TutorialManager : MonoBehaviour
 
     private int selectedOilLane;
 
+    [Header("Turbo Exercise")]
+    [SerializeField] private Transform finishLine;
+
     [Header("Completion UI")]
     [SerializeField] private GameObject completionPanel;
     [SerializeField] private GameObject instructionsPanel;
@@ -49,6 +52,7 @@ public class TutorialManager : MonoBehaviour
     private bool correctKeyPressed = false;
     private bool transitioning = false;
     private bool fuelRetryInProgress = false;
+    private bool turboRetryInProgress = false;
     private float fuelBeforeCollection;
 
     private Vector3 fuelExerciseStartPosition;
@@ -57,8 +61,19 @@ public class TutorialManager : MonoBehaviour
     private Vector3 oilExerciseStartPosition;
     private int oilExerciseStartLane;
     private Quaternion oilExerciseStartRotation;
+    private Vector3 turboExerciseStartPosition;
+    private Quaternion turboExerciseStartRotation;
+    private int turboExerciseStartLane;
 
     private bool turboExerciseCompleted = false;
+
+    private void RefillPlayerFuelForTutorial()
+    {
+        if (playerFuelSystem != null)
+        {
+            playerFuelSystem.AddFuel(100f);
+        }
+    }
 
     private void PositionFuelBarrelRandomly()
     {
@@ -99,18 +114,18 @@ public class TutorialManager : MonoBehaviour
         if (tutorialOilSpill == null || playerController == null)
             return;
 
-        selectedOilLane = Random.Range(minRandomLane, maxRandomLane + 1);
+        selectedOilLane = playerController.CurrentLane;
 
-        float randomX = playerController.GetLaneWorldX(selectedOilLane);
+        float playerLaneX = playerController.GetLaneWorldX(selectedOilLane);
 
         Vector3 newPosition = tutorialOilSpill.transform.position;
 
-        newPosition.x = randomX;
+        newPosition.x = playerLaneX;
         newPosition.z = playerController.transform.position.z + oilSpawnDistance;
 
         tutorialOilSpill.transform.position = newPosition;
 
-        Debug.Log("TUTORIAL: Oil spill placed in random lane: " + selectedOilLane);
+        Debug.Log("TUTORIAL: Oil spill placed in player's current lane: " + selectedOilLane);
     }
 
     private IEnumerator RetryFuelExercise()
@@ -157,6 +172,45 @@ public class TutorialManager : MonoBehaviour
 
         playerController.SetForwardSpeed(tutorialForwardSpeed);
         playerController.canMove = true;
+    }
+
+    private IEnumerator RetryTurboExercise()
+    {
+        turboRetryInProgress = true;
+        transitioning = true;
+
+        playerController.canMove = false;
+        playerController.canUseTurbo = false;
+        playerController.SetForwardSpeed(0f);
+
+        UpdateUI(
+            "¡No activaste el propulsor! Inténtalo de nuevo.",
+            "PASO 5 DE 5"
+        );
+
+        yield return new WaitForSeconds(messageDelay);
+
+        playerController.RestoreTutorialLane(turboExerciseStartLane);
+        playerController.transform.SetPositionAndRotation(
+            turboExerciseStartPosition,
+            turboExerciseStartRotation
+        );
+
+        // Recarga la gasolina para asegurar que el propulsor funcione al reintentar
+        RefillPlayerFuelForTutorial();
+
+        turboExerciseCompleted = false;
+        transitioning = false;
+        turboRetryInProgress = false;
+
+        UpdateUI(
+            "¡Presiona la flecha ARRIBA para activar el PROPULSOR!",
+            "PASO 5 DE 5"
+        );
+
+        playerController.canUseTurbo = true;
+        playerController.canMove = true;
+        playerController.SetForwardSpeed(tutorialForwardSpeed);
     }
 
     private void Start()
@@ -270,6 +324,13 @@ public class TutorialManager : MonoBehaviour
         }
         else if (exercise == 4)
         {
+            turboExerciseStartPosition = playerController.transform.position;
+            turboExerciseStartRotation = playerController.transform.rotation;
+            turboExerciseStartLane = playerController.CurrentLane;
+
+            // Recarga la gasolina completa antes de pedir activar el propulsor
+            RefillPlayerFuelForTutorial();
+
             UpdateUI(
                 "¡Presiona la flecha ARRIBA para activar el PROPULSOR!",
                 "PASO 5 DE 5"
@@ -364,6 +425,13 @@ public class TutorialManager : MonoBehaviour
                 Debug.Log("TUTORIAL: Turbo activated successfully!");
 
                 StartCoroutine(CompleteTurboExercise());
+            }
+            else if (!turboExerciseCompleted &&
+                     !turboRetryInProgress &&
+                     finishLine != null &&
+                     playerController.transform.position.z >= finishLine.position.z)
+            {
+                StartCoroutine(RetryTurboExercise());
             }
         }
     }
