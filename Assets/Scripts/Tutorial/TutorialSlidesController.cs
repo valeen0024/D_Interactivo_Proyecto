@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class TutorialSlidesController : MonoBehaviour
 {
-    [Header("Diapositivas del Tutorial (Opcional si los sprites van en cada Grupo)")]
+    [Header("Diapositivas del Tutorial (Opcional)")]
     [SerializeField] private Image slideDisplayImage;
     [SerializeField] private Sprite[] tutorialSlides;
 
@@ -19,7 +20,10 @@ public class TutorialSlidesController : MonoBehaviour
     [Header("Conexión con la Práctica")]
     [SerializeField] private GameObject visualTutorialPanel;
     [SerializeField] private GameObject hudPlayToRestore;
-    [SerializeField] private GameObject practicalTutorialUI; // <-- Nuevo: UI Practical Tutorial
+    [SerializeField] private GameObject practicalTutorialUI;
+
+    [Header("Controlador del Kart (Para bloquear flechas durante las diapositivas)")]
+    [SerializeField] private MonoBehaviour kartLaneController; // Arrastra aquí KartParent -> KartLaneController
 
     private int currentPage = 0;
 
@@ -27,7 +31,10 @@ public class TutorialSlidesController : MonoBehaviour
     {
         Time.timeScale = 0f;
 
-        // Ocultar tanto el HUD de juego como el letrero de entrenamiento mientras se leen las 3 páginas
+        // Bloquea el script del kart mientras se leen las 3 diapositivas
+        if (kartLaneController != null)
+            kartLaneController.enabled = false;
+
         if (hudPlayToRestore != null)
             hudPlayToRestore.SetActive(false);
 
@@ -46,13 +53,17 @@ public class TutorialSlidesController : MonoBehaviour
         if (visualTutorialPanel == null || !visualTutorialPanel.activeInHierarchy) return;
         if (Keyboard.current == null) return;
 
-        if (Keyboard.current.rightArrowKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame)
+        if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
         {
-            HandleMainButton();
+            NextPage();
         }
         else if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
         {
             PreviousPage();
+        }
+        else if (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.numpadEnterKey.wasPressedThisFrame)
+        {
+            HandleMainButton();
         }
     }
 
@@ -113,12 +124,18 @@ public class TutorialSlidesController : MonoBehaviour
 
     public void StartPracticeMode()
     {
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
+
         Time.timeScale = 1f;
+
+        // Reactiva el movimiento del kart justo al iniciar la práctica
+        if (kartLaneController != null)
+            kartLaneController.enabled = true;
 
         if (hudPlayToRestore != null)
             hudPlayToRestore.SetActive(true);
 
-        // Activar el letrero de ENTRENAMIENTO PASO 1 DE 5
         if (practicalTutorialUI != null)
             practicalTutorialUI.SetActive(true);
 
