@@ -38,12 +38,17 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
-        PlayMusic(menuMusic);
+        UpdateMusicForScene(SceneManager.GetActiveScene().name);
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Gameplay")
+        UpdateMusicForScene(scene.name);
+    }
+
+    private void UpdateMusicForScene(string sceneName)
+    {
+        if (sceneName == "Gameplay" || sceneName == "Level2")
         {
             PlayMusic(gameplayMusic);
         }

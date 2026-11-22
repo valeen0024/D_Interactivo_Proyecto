@@ -37,7 +37,10 @@ public class UIManager : MonoBehaviour
         UpdateFuelBar();
         UpdateDistance();
 
-        if (!winnerShown && GameManager.Instance.gameState == GameManager.GameState.Finished)
+        if (!winnerShown &&
+            GameManager.Instance != null &&
+            GameManager.Instance.gameState == GameManager.GameState.Finished &&
+            !GameManager.Instance.AutoAdvanceToNextLevel)
         {
             ShowWinnerUI();
         }
@@ -80,7 +83,7 @@ public class UIManager : MonoBehaviour
 
         if (txtWinJ1 != null) txtWinJ1.gameObject.SetActive(false);
         if (txtWinJ2 != null) txtWinJ2.gameObject.SetActive(false);
-        if (imgTie != null) imgTie.SetActive(false);
+        if (imgTie != null) imgTie.gameObject.SetActive(false);
 
         switch (GameManager.Instance.winnerName)
         {

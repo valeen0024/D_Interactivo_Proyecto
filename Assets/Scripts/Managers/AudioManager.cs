@@ -84,7 +84,8 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusicForScene(string sceneName)
     {
-        AudioClip target = (sceneName == gameplaySceneName) ? gameplayMusic : mainMenuMusic;
+        bool isGameplayScene = sceneName == gameplaySceneName || sceneName == "Level2";
+        AudioClip target = isGameplayScene ? gameplayMusic : mainMenuMusic;
 
         if (target == null)
         {

@@ -16,6 +16,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject uiPlay;
     [SerializeField] private GameObject uiWin;
 
+    [Header("Flujo de Niveles")]
+    [Tooltip("Nombre exacto de la escena siguiente (ej. Level2 en el Nivel 1; vacío o MainMenu en el último nivel).")]
+    [SerializeField] private string nextLevelSceneName = "Level2";
+
+    [Tooltip("Si está activo (Nivel 1), salta la pantalla de victoria/derrota y pasa directo al siguiente nivel.")]
+    [SerializeField] private bool autoAdvanceToNextLevel = false;
+
+    [Tooltip("Segundos de pausa breve antes de cargar el siguiente nivel automáticamente.")]
+    [Range(0f, 5f)]
+    [SerializeField] private float autoAdvanceDelay = 1.5f;
+
+    public bool AutoAdvanceToNextLevel => autoAdvanceToNextLevel;
+
     [Header("CPU Turn Banner (Configurable en Inspector)")]
     [Tooltip("Activa o desactiva el aviso cuando pasa al turno de la CPU.")]
     [SerializeField] private bool enableCPUTurnBanner = true;
@@ -423,6 +436,21 @@ public class GameManager : MonoBehaviour
             "Game finished. Winner: " +
             winnerName
         );
+
+        if (autoAdvanceToNextLevel && !string.IsNullOrEmpty(nextLevelSceneName))
+        {
+            StartCoroutine(AutoAdvanceRoutine());
+        }
+    }
+
+    private IEnumerator AutoAdvanceRoutine()
+    {
+        if (autoAdvanceDelay > 0f)
+        {
+            yield return new WaitForSeconds(autoAdvanceDelay);
+        }
+
+        LoadNextLevel();
     }
 
     public void CheckWinner()
@@ -451,13 +479,31 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void LoadNextLevel()
+    {
+        Time.timeScale = 1f;
+
+        if (!string.IsNullOrEmpty(nextLevelSceneName))
+        {
+            Debug.Log("[GameManager] Cargando siguiente nivel: " + nextLevelSceneName);
+            SceneManager.LoadScene(nextLevelSceneName);
+        }
+        else
+        {
+            Debug.Log("[GameManager] No hay más niveles configurados. Volviendo al menú principal.");
+            SceneManager.LoadScene("MainMenu");
+        }
+    }
+
     public void RestartGame()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void ReturnToMenu()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
     }
 }
