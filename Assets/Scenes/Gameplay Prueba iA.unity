@@ -45997,9 +45997,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KartFuelSystem
   currentFuel: 100
   maxFuel: 100
+  startingFuelRatio: 0.62
   fuelConsumptionRate: 10
   fuelFromBarrel: 25
   fuelLostFromOil: 15
+  fullFuelRatioThreshold: 0.8
   fuelBar: {fileID: 697138294}
 --- !u!114 &155260672
 MonoBehaviour:
@@ -46023,7 +46025,29 @@ MonoBehaviour:
   canMove: 1
   currentLane: 0
   boostSpeedMultiplier: 2
+  boostFuelConsumptionMultiplier: 2.2
   boostDuration: 2
+  maxBoostUses: 3
+  boostActivationWindow: 5.5
+  requireCollectionBeforeBoost: 1
+  requireFullFuelForBoost: 1
+  levelDifficulty: 1
+  startMinWaitSeconds: 1.5
+  startMaxWaitSeconds: 3
+  endMinWaitSeconds: 4
+  endMaxWaitSeconds: 7
+  usesRemaining: 0
+  waitTimerRemaining: 0
+  currentActiveWaitDuration: 0
+  activationWindowRemaining: 0
+  boostOverlayGroup: {fileID: 0}
+  barrelIndicatorObject: {fileID: 0}
+  hideBaseIndicatorWhenOverlayActive: 0
+  barrelIconImage: {fileID: 0}
+  normalBarrelColor: {r: 1, g: 1, b: 1, a: 1}
+  readyBarrelColor: {r: 0.25, g: 1, b: 0.85, a: 1}
+  normalBarrelSprite: {fileID: 0}
+  readyBarrelSprite: {fileID: 0}
   sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   engineClip: {fileID: 8300000, guid: dcce8fe17e131834da513a21b3826752, type: 3}
   turboClip: {fileID: 8300000, guid: ed8ecb627d015db47846c71556f1c32f, type: 3}
@@ -103496,13 +103520,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 304783445}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3418296, y: -0, z: -0, w: 0.939762}
-  m_LocalPosition: {x: -101.83, y: 467.926, z: 656.261}
+  m_LocalRotation: {x: 0.4428208, y: 0, z: 0, w: 0.8966102}
+  m_LocalPosition: {x: -102.06, y: 469.03, z: 656.741}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 39.977, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 52.568, y: 0, z: 0}
 --- !u!114 &304783449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485512,26 +485536,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrackItemSpawner
   fuelDrumPrefab: {fileID: 4963081413787537871, guid: 6ecd464828016b7488dc17137cb08a62, type: 3}
-  oilSpillPrefab: {fileID: 1297765023470733099, guid: 9080424b0c129614aaac48209c30c00c, type: 3}
+  fuelHeightY: 463.896
+  obstacles: []
+  targetDistanceYards: 800
+  metersPerYardEstimate: 1.168
+  difficultyPreset: 1
+  difficultyMultiplier: 1
+  fuelGenerosityMultiplier: 1.15
   laneXPositions:
   - -104.9
   - -102.9
   - -100.9
   - -98.9
-  fuelHeightY: 463.896
-  oilHeightY: 463.7
   spawnAheadDistance: 30
-  spawnIntervalZ: 10
+  minSpawnIntervalZ: 7.5
+  maxSpawnIntervalZ: 14.5
   zStaggerRange: 3.2
   safetyMarginBeforeFinish: 15
   fallbackMaxSpawnZ: 185
-  fuelSpawnChance: 0.819
-  oilSpawnChance: 0.8
-  earlyMinOilPerRow: 1
-  earlyMaxOilPerRow: 2
-  lateMinOilPerRow: 1
-  lateMaxOilPerRow: 3
+  baseFuelSpawnChance: 0.65
+  baseObstacleSpawnChance: 0.85
+  warmupWavesWithoutObstacles: 1
+  startMinObstacles: 1
+  startMaxObstacles: 1
+  endMinObstacles: 1
+  endMaxObstacles: 3
   guaranteedFreeLanes: 1
+  logSpawnDebug: 0
 --- !u!1 &1432765162
 GameObject:
   m_ObjectHideFlags: 0
@@ -558089,9 +558120,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KartFuelSystem
   currentFuel: 100
   maxFuel: 100
+  startingFuelRatio: 0.62
   fuelConsumptionRate: 10
   fuelFromBarrel: 25
   fuelLostFromOil: 15
+  fullFuelRatioThreshold: 0.8
   fuelBar: {fileID: 0}
 --- !u!114 &1611915969
 MonoBehaviour:
@@ -558115,7 +558148,29 @@ MonoBehaviour:
   canMove: 1
   currentLane: 0
   boostSpeedMultiplier: 2
+  boostFuelConsumptionMultiplier: 2.2
   boostDuration: 2
+  maxBoostUses: 3
+  boostActivationWindow: 5.5
+  requireCollectionBeforeBoost: 1
+  requireFullFuelForBoost: 1
+  levelDifficulty: 1
+  startMinWaitSeconds: 1.5
+  startMaxWaitSeconds: 3
+  endMinWaitSeconds: 4
+  endMaxWaitSeconds: 7
+  usesRemaining: 0
+  waitTimerRemaining: 0
+  currentActiveWaitDuration: 0
+  activationWindowRemaining: 0
+  boostOverlayGroup: {fileID: 0}
+  barrelIndicatorObject: {fileID: 0}
+  hideBaseIndicatorWhenOverlayActive: 0
+  barrelIconImage: {fileID: 0}
+  normalBarrelColor: {r: 1, g: 1, b: 1, a: 1}
+  readyBarrelColor: {r: 0.25, g: 1, b: 0.85, a: 1}
+  normalBarrelSprite: {fileID: 0}
+  readyBarrelSprite: {fileID: 0}
   sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   engineClip: {fileID: 0}
   turboClip: {fileID: 0}
@@ -558214,11 +558269,17 @@ MonoBehaviour:
   emptyLaneWeight: 10
   fuelCanWeight: 25
   oilSpillWeight: -100
+  obstacleLaneWeight: 1
   oilSlowMultiplier: 0.5
   oilSlowDuration: 2
+  obstacleTag: Obstacle
+  obstacleSlowMultiplier: 0.4
+  obstacleSlowDuration: 1.2
+  obstacleFuelPenalty: 0
   startLane: 0
   boostSpeedMultiplier: 2
   boostDuration: 3
+  maxBoostUses: 3
   boostChancePerSecond: 0.8
   sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   engineClip: {fileID: 8300000, guid: dcce8fe17e131834da513a21b3826752, type: 3}
@@ -558231,6 +558292,7 @@ MonoBehaviour:
   turboCooldownDuration: 0.5
   fuelBarrelsCollected: 0
   oilSpillsHit: 0
+  obstaclesHit: 0
   turbosUsed: 0
 --- !u!114 &1611915974
 MonoBehaviour:
