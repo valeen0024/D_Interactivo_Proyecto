@@ -846,6 +846,58 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157320454}
   m_CullTransparentMesh: 1
+--- !u!1 &171832332
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 171832334}
+  - component: {fileID: 171832333}
+  m_Layer: 0
+  m_Name: GlobalButtonSoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &171832333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171832332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a053700151e0a5a47a3a26791d106c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GlobalButtonSoundManager
+  sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
+  buttonClickClips:
+  - {fileID: 8300000, guid: bc8f9bcc08196ad4180d742374cc61c5, type: 3}
+  - {fileID: 8300000, guid: 867003e45986d5c4d8fedc930f079c38, type: 3}
+  - {fileID: 8300000, guid: ec3f85ca22db0ef4ab0567e1a3e81094, type: 3}
+  volume: 1
+  randomPitchRange: 0.06
+  avoidImmediateRepeat: 1
+--- !u!4 &171832334
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171832332}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.33816388, z: -0, w: 0.94108725}
+  m_LocalPosition: {x: -97.310005, y: 464.18, z: 664.42}
+  m_LocalScale: {x: 0.19357255, y: 0.19357257, z: 0.19357255}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &250394861
 GameObject:
   m_ObjectHideFlags: 0
@@ -6089,3 +6141,4 @@ SceneRoots:
   - {fileID: 1790468859}
   - {fileID: 2097897269}
   - {fileID: 2107520941}
+  - {fileID: 171832334}
