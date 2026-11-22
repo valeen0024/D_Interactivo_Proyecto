@@ -19,7 +19,9 @@ public class UIManager : MonoBehaviour
     [Header("Winner UI")]
     [SerializeField] private GameObject uiPlay;
     [SerializeField] private GameObject uiWin;
+    [SerializeField] private GameObject btnMainMenu;
 
+    [SerializeField] private GameObject imgGanaTitle; // Arrastra aquí "TX WIN" (la imagen de "GANA!")
     [SerializeField] private TMP_Text txtWinJ1; 
     [SerializeField] private TMP_Text txtWinJ2; 
     [SerializeField] private GameObject imgTie; 
@@ -39,8 +41,7 @@ public class UIManager : MonoBehaviour
 
         if (!winnerShown &&
             GameManager.Instance != null &&
-            GameManager.Instance.gameState == GameManager.GameState.Finished &&
-            !GameManager.Instance.AutoAdvanceToNextLevel)
+            GameManager.Instance.gameState == GameManager.GameState.Finished)
         {
             ShowWinnerUI();
         }
@@ -62,7 +63,6 @@ public class UIManager : MonoBehaviour
 
     private void UpdateDistance()
     {
-        // EL TRUCO ESTÁ AQUÍ: Usamos "\n" para que las yardas bajen a la siguiente línea
         if (playerDistanceTracker != null && j1DistanceText != null)
         {
             j1DistanceText.text = GameData.PlayerName + "\n" + playerDistanceTracker.currentDistance.ToString("F1") + " YDS";
@@ -81,13 +81,21 @@ public class UIManager : MonoBehaviour
         uiPlay.SetActive(false);
         uiWin.SetActive(true);
 
+        if (btnMainMenu != null && GameManager.Instance != null)
+        {
+            btnMainMenu.SetActive(!GameManager.Instance.AutoAdvanceToNextLevel);
+        }
+
+        // Apagamos todo al inicio para encender solo lo que corresponde
+        if (imgGanaTitle != null) imgGanaTitle.SetActive(false);
         if (txtWinJ1 != null) txtWinJ1.gameObject.SetActive(false);
         if (txtWinJ2 != null) txtWinJ2.gameObject.SetActive(false);
-        if (imgTie != null) imgTie.gameObject.SetActive(false);
+        if (imgTie != null) imgTie.SetActive(false);
 
         switch (GameManager.Instance.winnerName)
         {
             case "Player":
+                if (imgGanaTitle != null) imgGanaTitle.SetActive(true);
                 if (txtWinJ1 != null)
                 {
                     txtWinJ1.text = GameData.PlayerName; 
@@ -97,6 +105,7 @@ public class UIManager : MonoBehaviour
                 break;
 
             case "CPU":
+                if (imgGanaTitle != null) imgGanaTitle.SetActive(true);
                 if (txtWinJ2 != null)
                 {
                     txtWinJ2.text = "CONTRINCANTE";
@@ -106,6 +115,7 @@ public class UIManager : MonoBehaviour
                 break;
 
             case "Draw":
+                // Oculta "GANA!" y los nombres, y muestra únicamente el objeto de empate
                 if (imgTie != null) imgTie.SetActive(true);
                 PlaySound(tieSound);
                 break;

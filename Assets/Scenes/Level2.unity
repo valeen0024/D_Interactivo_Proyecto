@@ -733226,6 +733226,8 @@ MonoBehaviour:
   cpuDistanceTracker: {fileID: 1611915974}
   uiPlay: {fileID: 541621646}
   uiWin: {fileID: 1544363749}
+  btnMainMenu: {fileID: 0}
+  imgGanaTitle: {fileID: 0}
   txtWinJ1: {fileID: 121819410}
   txtWinJ2: {fileID: 147828291}
   imgTie: {fileID: 912887147}
