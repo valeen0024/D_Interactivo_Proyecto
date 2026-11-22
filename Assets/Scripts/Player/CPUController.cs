@@ -91,6 +91,11 @@ public class CPUController : MonoBehaviour
     private KartFuelSystem fuelSystem;
     private bool isSliding = false;
 
+    [Header("CPU Performance Statistics")]
+    [SerializeField] private int fuelBarrelsCollected = 0;
+    [SerializeField] private int oilSpillsHit = 0;
+    [SerializeField] private int turbosUsed = 0;
+
     // Initial transform
     private Vector3 startPosition;
     private Quaternion startRotation;
@@ -105,7 +110,7 @@ public class CPUController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
 
         // Save the X position where this kart starts.
-        startXPosition = transform.position.x;
+        startXPosition = transform.position.x - (Mathf.Clamp(startLane, minLane, maxLane) * laneOffset);
 
         // Start in the assigned lane.
         currentLane = Mathf.Clamp(startLane, minLane, maxLane);
@@ -210,50 +215,256 @@ public class CPUController : MonoBehaviour
     }
 
     // Chooses a new lane using weights based on nearby objects.
+
+
     private void ChooseLane()
     {
-        // It can only move one lane to the left or to the right.
-        int[] possibleLanes;
+        // Wait until the current lane change is completed.
+        if (currentLane != targetLane)
+            return;
 
-        if (currentLane <= minLane)
+        int bestLane = currentLane;
+        float bestWeight = EvaluateLaneWeight(currentLane);
+
+
+        // Evaluate all four lanes to find the best option.
+        for (int lane = minLane; lane <= maxLane; lane++)
         {
-            possibleLanes = new int[] { currentLane + 1 };
-        }
-        else if (currentLane >= maxLane)
-        {
-            possibleLanes = new int[] { currentLane - 1 };
-        }
-        else
-        {
-            possibleLanes = new int[] { currentLane - 1, currentLane + 1 };
+            if (lane == currentLane)
+                continue;
+
+            float weight = EvaluateLaneWeight(lane);
+
+
+            // Change preference only for a meaningful improvement.
+            float minimumImprovement = 5f;
+
+            if (weight > bestWeight + minimumImprovement)
+            {
+                bestWeight = weight;
+                bestLane = lane;
+            }
         }
 
-        // Choose one of the adjacent lanes.
-        targetLane = possibleLanes[Random.Range(0, possibleLanes.Length)];
+
+        // Move one lane at a time toward the best destination.
+        if (bestLane != currentLane)
+        {
+            int direction = bestLane > currentLane ? 1 : -1;
+            int nextLane = currentLane + direction;
+
+            // Evaluate the intermediate lane before moving.
+            float nextWeight = EvaluateLaneWeight(nextLane);
+
+            // Do not cross a lane with detected oil danger.
+            if (IsLaneSafe(nextLane))
+            {
+                targetLane = nextLane;
+
+                Debug.Log(
+                    "[CPU RUTA] Actual: " + currentLane +
+                    " | Destino deseado: " + bestLane +
+                    " | Siguiente carril: " + targetLane
+                );
+            }
+            else
+            {
+                Debug.Log(
+                    "[CPU RUTA] Ruta bloqueada por peligro en carril "
+                    + nextLane
+                );
+            }
+
+            return;
+        }
+
+
+        // Occasionally explore equally safe empty lanes.
+        if (Mathf.Approximately(bestWeight, emptyLaneWeight)
+            && Random.value < 0.10f)
+        {
+            int[] directions = { -1, 1 };
+
+            // Randomize the direction to avoid always going left.
+            if (Random.value < 0.5f)
+            {
+                directions[0] = 1;
+                directions[1] = -1;
+            }
+
+            foreach (int direction in directions)
+            {
+                int nextLane = currentLane + direction;
+
+                if (nextLane < minLane || nextLane > maxLane)
+                    continue;
+
+                float nextWeight = EvaluateLaneWeight(nextLane);
+
+
+                // Explore only safe empty lanes.
+                if (Mathf.Approximately(nextWeight, emptyLaneWeight)
+                    && IsLaneSafe(nextLane))
+                {
+                    targetLane = nextLane;
+                    break;
+                }
+
+            }
+        }
+
+    Debug.Log(
+        "[CPU CARRIL] Actual: " + currentLane +
+        " | Objetivo: " + targetLane +
+        " | X actual: " + transform.position.x.ToString("F2") +
+        " | X objetivo: " + GetLanePosition(targetLane).ToString("F2")
+    );
+}
+
+
+    private bool IsLaneSafe(int lane)
+    {
+        float targetX = GetLanePosition(lane);
+
+        Vector3 boxOrigin = new Vector3(
+            targetX,
+            transform.position.y + 0.5f,
+            transform.position.z + 1.5f
+        );
+
+        Vector3 halfExtents = new Vector3(
+            0.65f,
+            0.35f,
+            0.25f
+        );
+
+        RaycastHit[] hits = Physics.BoxCastAll(
+            boxOrigin,
+            halfExtents,
+            Vector3.forward,
+            Quaternion.identity,
+            scanDistance,
+            Physics.DefaultRaycastLayers,
+            QueryTriggerInteraction.Collide
+        );
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag("Oil") &&
+                hit.distance <= 20f)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
+
     // Returns a weight for a lane based on what the CPU detects ahead.
+
+
+
     private float EvaluateLaneWeight(int lane)
     {
         float targetX = GetLanePosition(lane);
 
-        Vector3 rayOrigin = new Vector3(
+        Vector3 boxOrigin = new Vector3(
             targetX,
             transform.position.y + 0.5f,
-            transform.position.z
+            transform.position.z + 1.5f
         );
 
-        if (Physics.Raycast(rayOrigin, Vector3.forward, out RaycastHit hit, scanDistance))
-        {
-            if (hit.collider.CompareTag("FuelCan"))
-                return fuelCanWeight;
+        Vector3 halfExtents = new Vector3(
+            0.65f,
+            0.35f,
+            0.25f
+        );
 
-            if (hit.collider.CompareTag("OilSpill"))
-                return oilSpillWeight;
+        RaycastHit[] hits = Physics.BoxCastAll(
+            boxOrigin,
+            halfExtents,
+            Vector3.forward,
+            Quaternion.identity,
+            scanDistance,
+            Physics.DefaultRaycastLayers,
+            QueryTriggerInteraction.Collide
+        );
+
+        float nearestOil = Mathf.Infinity;
+        float nearestFuel = Mathf.Infinity;
+
+        // Find the closest oil and fuel in this lane.
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag("Oil"))
+            {
+                nearestOil = Mathf.Min(
+                    nearestOil,
+                    hit.distance
+                );
+            }
+            else if (hit.collider.CompareTag("Fuel"))
+            {
+                nearestFuel = Mathf.Min(
+                    nearestFuel,
+                    hit.distance
+                );
+            }
+        }
+
+        // Distance at which oil becomes an immediate danger.
+        float dangerDistance = 20f;
+
+        bool oilIsClose = nearestOil <= dangerDistance;
+
+        // Avoid oil when it is too close.
+        if (oilIsClose)
+        {
+            Debug.Log(
+                "[CPU IA] Peligro: aceite cercano en carril "
+                + lane
+            );
+
+            return oilSpillWeight;
+        }
+
+        // Collect fuel only if it can be reached before oil.
+        if (nearestFuel < Mathf.Infinity)
+        {
+            bool fuelIsSafe =
+                nearestOil == Mathf.Infinity ||
+                nearestFuel + 5f < nearestOil;
+
+            if (fuelIsSafe)
+            {
+                float fuelBonus = Mathf.Clamp(
+                    (scanDistance - nearestFuel) * 0.4f,
+                    0f,
+                    10f
+                );
+
+                Debug.Log(
+                    "[CPU IA] Combustible seguro en carril "
+                    + lane
+                );
+
+                return fuelCanWeight + fuelBonus;
+            }
+        }
+
+        // Avoid pursuing fuel located too close to oil.
+        if (nearestOil < Mathf.Infinity &&
+            nearestFuel < Mathf.Infinity)
+        {
+            return oilSpillWeight;
         }
 
         return emptyLaneWeight;
     }
+
+
+
 
     // Picks one lane based on the weights array.
     private int GetWeightedRandomLane(float[] weights)
@@ -307,7 +518,17 @@ public class CPUController : MonoBehaviour
         {
             Debug.Log(
                 "The CPU picked up a fuel barrel."
+
             );
+
+
+            fuelBarrelsCollected++;
+
+            Debug.Log(
+                "[CPU ESTADISTICAS] Bidones recogidos: " +
+                fuelBarrelsCollected
+            );
+
 
             // Checks if the object is a fuel barrel..
             if (fuelSystem != null)
@@ -335,6 +556,15 @@ public class CPUController : MonoBehaviour
             Debug.Log(
                 "The CPU stepped on an oil slick."
             );
+
+
+            oilSpillsHit++;
+
+            Debug.Log(
+                "[CPU ESTADISTICAS] Manchas de aceite pisadas: " +
+                oilSpillsHit
+            );
+
 
             // Reduces fuel consumption.
             if (fuelSystem != null)
@@ -410,6 +640,11 @@ public class CPUController : MonoBehaviour
 
         hasUsedTurbo = false;
 
+        // Reset CPU statistics for the new turn.
+        fuelBarrelsCollected = 0;
+        oilSpillsHit = 0;
+        turbosUsed = 0;
+
         // Restore fuel
         if (fuelSystem != null)
         {
@@ -420,6 +655,14 @@ public class CPUController : MonoBehaviour
     private void ActivateTurbo()
     {
         hasUsedTurbo = true; // Blocks future uses
+
+        turbosUsed++;
+
+        Debug.Log(
+            "[CPU ESTADISTICAS] Turbos utilizados: " +
+            turbosUsed
+        );
+
 
         // Calls the animation trigger
         if (animator != null)
