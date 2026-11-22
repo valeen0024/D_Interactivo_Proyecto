@@ -93018,7 +93018,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 313}
+  m_AnchoredPosition: {x: 4, y: 313}
   m_SizeDelta: {x: 704.12, y: 75.0825}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &251480736
@@ -93041,7 +93041,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: RODA # 1 COMPLETADA
+  m_text: RONDA #1 COMPLETADA
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d5be7b54b2220a543a68cab38282d39f, type: 2}
   m_sharedMaterial: {fileID: 2058850783527977590, guid: d5be7b54b2220a543a68cab38282d39f, type: 2}
