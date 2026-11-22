@@ -1,77 +1,153 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TrackItemSpawner : MonoBehaviour
 {
-    [Header("Prefabs (Arrastrar desde Assets/Prefabs)")]
+    public enum DifficultyPreset
+    {
+        Easy = 0,
+        Normal = 1,
+        Hard = 2,
+        Custom = 3
+    }
+
+    [Serializable]
+    public class ObstacleDefinition
+    {
+        [Tooltip("Nombre descriptivo para identificarlo fácil en el Inspector (ej. Aceite, Cono).")]
+        public string label = "Aceite";
+
+        [Tooltip("Prefab del obstáculo a instanciar.")]
+        public GameObject prefab;
+
+        [Tooltip("Altura Y en la pista para este obstáculo.")]
+        public float heightY = 463.7f;
+
+        [Min(0.01f)]
+        [Tooltip("Peso relativo de aparición frente a otros obstáculos.")]
+        public float weight = 1f;
+
+        [Range(0f, 1f)]
+        [Tooltip("Progreso mínimo de la carrera (0 = inicio, 1 = meta) desde donde puede aparecer.")]
+        public float minTrackProgress = 0f;
+
+        [Range(0f, 1f)]
+        [Tooltip("Progreso máximo de la carrera (0 = inicio, 1 = meta) hasta donde puede aparecer.")]
+        public float maxTrackProgress = 1f;
+    }
+
+    [Header("Combustible (Bidón)")]
     [SerializeField] private GameObject fuelDrumPrefab;
-    [SerializeField] private GameObject oilSpillPrefab;
-
-    [Header("Configuración de los 4 Carriles (Coordenadas X)")]
-    [SerializeField] private float[] laneXPositions = new float[] { -104.9f, -102.9f, -100.9f, -98.9f };
-
-    [Header("Alturas Y de aparición")]
     [SerializeField] private float fuelHeightY = 463.896f;
-    [SerializeField] private float oilHeightY = 463.7f;
 
-    [Header("Parámetros de Generación en Pista (800 Yardas)")]
-    [Tooltip("Distancia por delante del kart donde van apareciendo los objetos.")]
-    [SerializeField] private float spawnAheadDistance = 40f;
+    [Header("Obstáculos (Escalable para nuevos niveles)")]
+    [Tooltip("Agrega aquí el aceite y cualquier obstáculo nuevo.")]
+    [SerializeField] private List<ObstacleDefinition> obstacles = new List<ObstacleDefinition>();
 
-    [Tooltip("Separación base en Z entre cada oleada.")]
-    [SerializeField] private float spawnIntervalZ = 10.5f;
+    [Header("Nivel, Dificultad y Distancia")]
+    [Min(50f)]
+    [SerializeField] private float targetDistanceYards = 800f;
 
-    [Tooltip("Variación máxima en Z (+/-) para que los objetos salgan escalonados.")]
-    [SerializeField] private float zStaggerRange = 3.8f;
+    [SerializeField] private float metersPerYardEstimate = 1.168f;
+    [SerializeField] private DifficultyPreset difficultyPreset = DifficultyPreset.Normal;
 
-    [Tooltip("Metros antes de la meta en los que se dejan de generar ítems.")]
-    [SerializeField] private float safetyMarginBeforeFinish = 15f;
+    [Range(0.25f, 2.5f)]
+    [SerializeField] private float difficultyMultiplier = 1.0f;
 
-    [Tooltip("Si no encuentra el arco de meta, usará este límite Z por defecto.")]
-    [SerializeField] private float fallbackMaxSpawnZ = 195f;
+    [Range(0.25f, 2.5f)]
+    [SerializeField] private float fuelGenerosityMultiplier = 1.15f;
 
-    [Header("Equilibrio de Bidones y Aceite")]
+    [Header("Carriles y Límites de Pista")]
+    [SerializeField] private float[] laneXPositions = new float[] { -104.9f, -102.9f, -100.9f, -98.9f };
+    [SerializeField] private float spawnAheadDistance = 42f;
+    [SerializeField] private float minSpawnIntervalZ = 7.5f;
+    [SerializeField] private float maxSpawnIntervalZ = 14.5f;
+    [SerializeField] private float zStaggerRange = 4.2f;
+    [SerializeField] private float safetyMarginBeforeFinish = 18f;
+    [SerializeField] private float fallbackMaxSpawnZ = 896.78f;
+
+    [Header("Ritmo y Progresividad")]
     [Range(0f, 1f)]
-    [Tooltip("Probabilidad de que aparezca un bidón en la oleada.")]
-    [SerializeField] private float fuelSpawnChance = 0.68f;
+    [SerializeField] private float baseFuelSpawnChance = 0.65f;
 
     [Range(0f, 1f)]
-    [Tooltip("Probabilidad de que aparezca aceite en la oleada.")]
-    [SerializeField] private float oilSpawnChance = 0.85f;
+    [SerializeField] private float baseObstacleSpawnChance = 0.85f;
 
-    [Header("Variedad por Tramo (Inicio vs. Final de Carrera)")]
-    [Range(1, 3)]
-    [Tooltip("Mínimo de manchas de aceite en la primera mitad de la pista.")]
-    [SerializeField] private int earlyMinOilPerRow = 1;
+    [Min(0)]
+    [Tooltip("Oleadas iniciales sin obstáculos (0 para verlos desde el arranque en pruebas).")]
+    [SerializeField] private int warmupWavesWithoutObstacles = 1;
 
     [Range(1, 3)]
-    [Tooltip("Máximo de manchas de aceite en la primera mitad de la pista.")]
-    [SerializeField] private int earlyMaxOilPerRow = 2;
+    [SerializeField] private int startMinObstacles = 1;
 
     [Range(1, 3)]
-    [Tooltip("Mínimo de manchas de aceite en la segunda mitad de la pista.")]
-    [SerializeField] private int lateMinOilPerRow = 1;
+    [SerializeField] private int startMaxObstacles = 1;
 
     [Range(1, 3)]
-    [Tooltip("Máximo de manchas de aceite en la segunda mitad de la pista.")]
-    [SerializeField] private int lateMaxOilPerRow = 3;
+    [SerializeField] private int endMinObstacles = 1;
+
+    [Range(1, 3)]
+    [SerializeField] private int endMaxObstacles = 3;
 
     [Range(1, 2)]
-    [Tooltip("Carriles garantizados libres de aceite por oleada.")]
     [SerializeField] private int guaranteedFreeLanes = 1;
+
+    [Header("Depuración")]
+    [SerializeField] private bool logSpawnDebug = false;
 
     private Transform playerTransform;
     private Transform cpuTransform;
     private float startZ;
     private float nextSpawnZ;
     private float calculatedMaxSpawnZ;
-    private bool isInitialized = false;
+    private int waveIndex;
+    private int lastFuelLane = -1;
+    private int wavesSinceLastFuel;
+    private bool isInitialized;
     private GameManager.GameState lastKnownState = GameManager.GameState.Waiting;
 
     private readonly List<GameObject> spawnedItems = new List<GameObject>();
+    private readonly List<int> lanePool = new List<int>();
+
+    private void OnValidate()
+    {
+        if (maxSpawnIntervalZ < minSpawnIntervalZ)
+        {
+            maxSpawnIntervalZ = minSpawnIntervalZ;
+        }
+
+        if (startMaxObstacles < startMinObstacles) startMaxObstacles = startMinObstacles;
+        if (endMaxObstacles < endMinObstacles) endMaxObstacles = endMinObstacles;
+
+        ApplyPresetIfNeeded();
+    }
+
+    private void ApplyPresetIfNeeded()
+    {
+        if (difficultyPreset == DifficultyPreset.Custom) return;
+
+        switch (difficultyPreset)
+        {
+            case DifficultyPreset.Easy:
+                difficultyMultiplier = 0.85f;
+                fuelGenerosityMultiplier = 1.35f;
+                break;
+            case DifficultyPreset.Normal:
+                difficultyMultiplier = 1.0f;
+                fuelGenerosityMultiplier = 1.15f;
+                break;
+            case DifficultyPreset.Hard:
+                difficultyMultiplier = 1.45f;
+                fuelGenerosityMultiplier = 0.9f;
+                break;
+        }
+    }
 
     private void Start()
     {
+        ApplyPresetIfNeeded();
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) playerTransform = player.transform;
 
@@ -104,9 +180,18 @@ public class TrackItemSpawner : MonoBehaviour
         {
             calculatedMaxSpawnZ = finishTransform.position.z - safetyMarginBeforeFinish;
         }
+        else if (targetDistanceYards > 0f && metersPerYardEstimate > 0f)
+        {
+            calculatedMaxSpawnZ = (startZ + (targetDistanceYards * metersPerYardEstimate)) - safetyMarginBeforeFinish;
+        }
         else
         {
             calculatedMaxSpawnZ = fallbackMaxSpawnZ;
+        }
+
+        if (calculatedMaxSpawnZ <= startZ + 15f)
+        {
+            calculatedMaxSpawnZ = Mathf.Max(fallbackMaxSpawnZ, startZ + 100f);
         }
     }
 
@@ -121,7 +206,10 @@ public class TrackItemSpawner : MonoBehaviour
         }
         spawnedItems.Clear();
 
-        nextSpawnZ = startZ + 12f;
+        waveIndex = 0;
+        lastFuelLane = -1;
+        wavesSinceLastFuel = 0;
+        nextSpawnZ = startZ + UnityEngine.Random.Range(10f, 16f);
     }
 
     private void Update()
@@ -139,8 +227,7 @@ public class TrackItemSpawner : MonoBehaviour
             lastKnownState = currentState;
         }
 
-        if (currentState == GameManager.GameState.Waiting ||
-            currentState == GameManager.GameState.Finished)
+        if (currentState == GameManager.GameState.Waiting || currentState == GameManager.GameState.Finished)
         {
             return;
         }
@@ -149,9 +236,20 @@ public class TrackItemSpawner : MonoBehaviour
 
         while (activeZ + spawnAheadDistance >= nextSpawnZ && nextSpawnZ <= calculatedMaxSpawnZ)
         {
-            SpawnWaveAt(nextSpawnZ);
-            nextSpawnZ += spawnIntervalZ;
+            SpawnWaveAt(nextSpawnZ, waveIndex);
+            waveIndex++;
+
+            float progress = GetTrackProgress(nextSpawnZ);
+            float speedFactor = Mathf.Lerp(1.15f, 0.85f, progress * Mathf.Clamp(difficultyMultiplier, 0.5f, 1.8f));
+            float randomStep = UnityEngine.Random.Range(minSpawnIntervalZ, maxSpawnIntervalZ) * speedFactor;
+            nextSpawnZ += Mathf.Max(4.5f, randomStep);
         }
+    }
+
+    private float GetTrackProgress(float zPos)
+    {
+        float span = Mathf.Max(1f, calculatedMaxSpawnZ - startZ);
+        return Mathf.Clamp01((zPos - startZ) / span);
     }
 
     private float GetActiveKartZ(GameManager.GameState state)
@@ -178,71 +276,168 @@ public class TrackItemSpawner : MonoBehaviour
         return (maxZ == float.MinValue) ? 0f : maxZ;
     }
 
-    private float GetStaggeredZ(float baseZ)
+    private float GetStaggeredZ(float baseZ, float extraOffset = 0f)
     {
-        float randomOffset = Random.Range(-zStaggerRange, zStaggerRange);
+        float randomOffset = UnityEngine.Random.Range(-zStaggerRange, zStaggerRange) + extraOffset;
         return Mathf.Clamp(baseZ + randomOffset, startZ + 10f, calculatedMaxSpawnZ);
     }
 
-    private void SpawnWaveAt(float baseZ)
+    private void SpawnWaveAt(float baseZ, int currentWave)
     {
         if (laneXPositions == null || laneXPositions.Length == 0) return;
 
-        List<int> availableLanes = new List<int>();
-        for (int i = 0; i < laneXPositions.Length; i++)
-        {
-            availableLanes.Add(i);
-        }
+        float progress = GetTrackProgress(baseZ);
+        float diff = Mathf.Clamp(difficultyMultiplier, 0.25f, 2.5f);
+        float fuelMult = Mathf.Clamp(fuelGenerosityMultiplier, 0.25f, 2.5f);
 
-        int safeLanesCount = Mathf.Clamp(guaranteedFreeLanes, 1, laneXPositions.Length - 1);
+        BuildShuffledLanes();
+
+        int safeCount = Mathf.Clamp(guaranteedFreeLanes, 1, laneXPositions.Length - 1);
         List<int> safeLanes = new List<int>();
-
-        for (int i = 0; i < safeLanesCount; i++)
+        for (int i = 0; i < safeCount && lanePool.Count > 0; i++)
         {
-            int idx = Random.Range(0, availableLanes.Count);
-            safeLanes.Add(availableLanes[idx]);
-            availableLanes.RemoveAt(idx);
+            safeLanes.Add(lanePool[0]);
+            lanePool.RemoveAt(0);
         }
 
-        // 1. Bidón de gasolina (priorizando un carril libre de aceite en esa oleada)
-        if (fuelDrumPrefab != null && Random.value <= fuelSpawnChance && safeLanes.Count > 0)
+        // 1. Bidones con compensación si llevamos varias oleadas sin gasolina
+        float pityBoost = Mathf.Clamp01(wavesSinceLastFuel * 0.14f);
+        float fuelChance = Mathf.Clamp01((baseFuelSpawnChance * fuelMult) + pityBoost);
+
+        bool spawnedFuel = false;
+        if (fuelDrumPrefab != null && safeLanes.Count > 0 && UnityEngine.Random.value <= fuelChance)
         {
-            int chosenSafeLane = safeLanes[Random.Range(0, safeLanes.Count)];
-            float staggeredZ = GetStaggeredZ(baseZ);
-            Vector3 fuelPos = new Vector3(laneXPositions[chosenSafeLane], fuelHeightY, staggeredZ);
+            int chosenSafeLane = safeLanes[0];
+            if (safeLanes.Count > 1 && chosenSafeLane == lastFuelLane)
+            {
+                chosenSafeLane = safeLanes[1];
+            }
+
+            Vector3 fuelPos = new Vector3(laneXPositions[chosenSafeLane], fuelHeightY, GetStaggeredZ(baseZ));
             GameObject fuel = Instantiate(fuelDrumPrefab, fuelPos, fuelDrumPrefab.transform.rotation, transform);
             spawnedItems.Add(fuel);
+
+            lastFuelLane = chosenSafeLane;
+            wavesSinceLastFuel = 0;
+            spawnedFuel = true;
         }
 
-        // 2. Aceite con variedad progresiva según qué tan avanzado está el tramo
-        if (oilSpillPrefab != null && Random.value <= oilSpawnChance && availableLanes.Count > 0)
+        if (!spawnedFuel)
         {
-            float trackProgress = Mathf.InverseLerp(startZ, calculatedMaxSpawnZ, baseZ);
+            wavesSinceLastFuel++;
+        }
 
-            int minOil = (trackProgress < 0.5f) ? earlyMinOilPerRow : lateMinOilPerRow;
-            int maxOil = (trackProgress < 0.5f) ? earlyMaxOilPerRow : lateMaxOilPerRow;
+        // 2. Obstáculos dinámicos
+        if (currentWave < warmupWavesWithoutObstacles) return;
 
-            minOil = Mathf.Clamp(minOil, 1, maxOil);
-            int oilCount = Random.Range(minOil, maxOil + 1);
-            oilCount = Mathf.Min(oilCount, availableLanes.Count);
+        if (obstacles == null || obstacles.Count == 0)
+        {
+            if (logSpawnDebug) Debug.LogWarning("[TrackItemSpawner] La lista 'Obstacles' está vacía.");
+            return;
+        }
 
-            float step = (oilCount > 1) ? (zStaggerRange * 2f) / (oilCount - 1) : 0f;
+        float obstacleChance = Mathf.Clamp01(
+            Mathf.Lerp(baseObstacleSpawnChance * 0.8f, 1f, progress) * diff
+        );
 
-            for (int i = 0; i < oilCount; i++)
+        if (lanePool.Count == 0 || UnityEngine.Random.value > obstacleChance) return;
+
+        int minCount = Mathf.RoundToInt(Mathf.Lerp(startMinObstacles, endMinObstacles, progress));
+        int maxCount = Mathf.RoundToInt(Mathf.Lerp(startMaxObstacles, endMaxObstacles, progress));
+
+        if (diff >= 1.35f && progress > 0.45f)
+        {
+            maxCount = Mathf.Min(3, maxCount + 1);
+        }
+
+        maxCount = Mathf.Clamp(maxCount, 1, Mathf.Min(3, lanePool.Count));
+        minCount = Mathf.Clamp(minCount, 1, maxCount);
+
+        int countToSpawn = UnityEngine.Random.Range(minCount, maxCount + 1);
+        float step = (countToSpawn > 1) ? (zStaggerRange * 2f) / (countToSpawn - 1) : 0f;
+        int spawnedObstaclesThisWave = 0;
+
+        for (int i = 0; i < countToSpawn; i++)
+        {
+            ObstacleDefinition chosenObstacle = PickWeightedObstacle(progress);
+            if (chosenObstacle == null || chosenObstacle.prefab == null) continue;
+
+            int lane = lanePool[i];
+            float structuredOffset = (countToSpawn > 1)
+                ? (-zStaggerRange + (step * i)) + UnityEngine.Random.Range(-1.1f, 1.1f)
+                : UnityEngine.Random.Range(-zStaggerRange, zStaggerRange);
+
+            float itemZ = Mathf.Clamp(baseZ + structuredOffset, startZ + 10f, calculatedMaxSpawnZ);
+            Vector3 itemPos = new Vector3(laneXPositions[lane], chosenObstacle.heightY, itemZ);
+            GameObject obj = Instantiate(chosenObstacle.prefab, itemPos, chosenObstacle.prefab.transform.rotation, transform);
+            spawnedItems.Add(obj);
+            spawnedObstaclesThisWave++;
+        }
+
+        if (logSpawnDebug && spawnedObstaclesThisWave == 0)
+        {
+            Debug.LogWarning($"[TrackItemSpawner] Oleada {currentWave} (progress={progress:F2}) no instanció obstáculos: revisa que 'Obstacles' tenga Prefab asignado y MaxTrackProgress >= {progress:F2}.");
+        }
+    }
+
+    private ObstacleDefinition PickWeightedObstacle(float progress)
+    {
+        float totalWeight = 0f;
+
+        for (int i = 0; i < obstacles.Count; i++)
+        {
+            ObstacleDefinition item = obstacles[i];
+            if (item == null || item.prefab == null || item.weight <= 0f) continue;
+
+            float minP = Mathf.Min(item.minTrackProgress, item.maxTrackProgress);
+            float maxP = Mathf.Max(item.minTrackProgress, item.maxTrackProgress);
+
+            if (progress >= minP && progress <= maxP)
             {
-                int randomIndex = Random.Range(0, availableLanes.Count);
-                int chosenLane = availableLanes[randomIndex];
-                availableLanes.RemoveAt(randomIndex);
-
-                float structuredOffset = (oilCount > 1)
-                    ? (-zStaggerRange + (step * i)) + Random.Range(-0.7f, 0.7f)
-                    : Random.Range(-zStaggerRange, zStaggerRange);
-
-                float oilZ = Mathf.Clamp(baseZ + structuredOffset, startZ + 10f, calculatedMaxSpawnZ);
-                Vector3 oilPos = new Vector3(laneXPositions[chosenLane], oilHeightY, oilZ);
-                GameObject oil = Instantiate(oilSpillPrefab, oilPos, oilSpillPrefab.transform.rotation, transform);
-                spawnedItems.Add(oil);
+                totalWeight += item.weight;
             }
+        }
+
+        if (totalWeight <= 0f) return null;
+
+        float roll = UnityEngine.Random.Range(0f, totalWeight);
+        float cumulative = 0f;
+
+        for (int i = 0; i < obstacles.Count; i++)
+        {
+            ObstacleDefinition item = obstacles[i];
+            if (item == null || item.prefab == null || item.weight <= 0f) continue;
+
+            float minP = Mathf.Min(item.minTrackProgress, item.maxTrackProgress);
+            float maxP = Mathf.Max(item.minTrackProgress, item.maxTrackProgress);
+
+            if (progress >= minP && progress <= maxP)
+            {
+                cumulative += item.weight;
+                if (roll <= cumulative)
+                {
+                    return item;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private void BuildShuffledLanes()
+    {
+        lanePool.Clear();
+        for (int i = 0; i < laneXPositions.Length; i++)
+        {
+            lanePool.Add(i);
+        }
+
+        for (int i = lanePool.Count - 1; i > 0; i--)
+        {
+            int j = UnityEngine.Random.Range(0, i + 1);
+            int temp = lanePool[i];
+            lanePool[i] = lanePool[j];
+            lanePool[j] = temp;
         }
     }
 }

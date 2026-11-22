@@ -4,19 +4,32 @@ using UnityEngine.UI;
 public class KartFuelSystem : MonoBehaviour
 {
     [Header("Fuel Configuration")]
-    public float currentFuel = 100f;
+    public float currentFuel = 62f;
     public float maxFuel = 100f;
-    public float fuelConsumptionRate = 10f; // Quantity consumed per second
+    [Tooltip("Initial fuel ratio (0.62 = 62%) when starting/resetting so players don't start overly full.")]
+    [Range(0.2f, 1f)]
+    public float startingFuelRatio = 0.62f;
+    [Tooltip("Base fuel drained per second during active turn.")]
+    public float fuelConsumptionRate = 9f;
 
     [Header("Rewards and Penalties")]
-    public float fuelFromBarrel = 25f;      // Base reward
+    public float fuelFromBarrel = 18f;      // Base reward
     public float fuelLostFromOil = 15f;     // Oil penalty
 
+    [Header("Full Tank Threshold")]
+    [Tooltip("Percentage of maxFuel (0.80 = 80%) considered full enough to unlock boost opportunity.")]
+    [Range(0.5f, 1f)]
+    public float fullFuelRatioThreshold = 0.80f;
+
+    public bool HasCollectedFuel { get; private set; } = false;
     private bool isOutOfFuel = false;
+    public bool IsFuelAtMax => currentFuel >= (maxFuel * fullFuelRatioThreshold);
+    private float consumptionMultiplier = 1f;
 
     private Rigidbody rb;
     private KartLaneController kartController;
     private CPUController cpuController;
+
     [Header("UI")]
     [SerializeField] private Slider fuelBar;
 
@@ -25,10 +38,10 @@ public class KartFuelSystem : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-
         kartController = GetComponent<KartLaneController>();
-
         cpuController = GetComponent<CPUController>();
+
+        currentFuel = Mathf.Clamp(maxFuel * startingFuelRatio, 0f, maxFuel);
 
         if (fuelBar != null)
         {
@@ -43,7 +56,6 @@ public class KartFuelSystem : MonoBehaviour
         if (isOutOfFuel)
             return;
 
-        // Determines whether it is currently this kart's turn.
         bool isMyTurn =
             (
                 gameObject.CompareTag("Player") &&
@@ -57,54 +69,65 @@ public class KartFuelSystem : MonoBehaviour
                 GameManager.GameState.CPUTurn
             );
 
-        // Fuel is consumed only during the corresponding turn.
         if (!isMyTurn)
             return;
 
-        // Consumes fuel gradually while the kart is active.
         if (currentFuel > 0f)
         {
-            currentFuel -=
-                fuelConsumptionRate *
-                Time.deltaTime;
-
-            // Prevents fuel from going below zero or above the maximum.
-            currentFuel =
-                Mathf.Clamp(
-                    currentFuel,
-                    0f,
-                    maxFuel
-                );
+            float activeMultiplier = Mathf.Max(0f, consumptionMultiplier);
+            currentFuel -= fuelConsumptionRate * activeMultiplier * Time.deltaTime;
+            currentFuel = Mathf.Clamp(currentFuel, 0f, maxFuel);
 
             if (fuelBar != null)
             {
                 fuelBar.value = GetFuelNormalized();
             }
 
-            // If fuel reaches zero, the turn ends.
             if (currentFuel <= 0f)
             {
+                SetFuelConsumptionMultiplier(1f);
                 OnFuelEmpty();
             }
         }
     }
 
-    // Returns the current fuel percentage between 0 and 1.
+    public void ResetFuelState()
+    {
+        HasCollectedFuel = false;
+        isOutOfFuel = false;
+        consumptionMultiplier = 1f;
+        currentFuel = Mathf.Clamp(maxFuel * startingFuelRatio, 0f, maxFuel);
+        if (fuelBar != null)
+        {
+            fuelBar.value = GetFuelNormalized();
+        }
+    }
+
+    public void SetFuelConsumptionMultiplier(float multiplier)
+    {
+        consumptionMultiplier = Mathf.Max(0f, multiplier);
+    }
+
     public float GetFuelNormalized()
     {
         return currentFuel / maxFuel;
     }
 
-    // Adds fuel to the kart.
     public void AddFuel(float amount = -1f)
     {
         float amountToAdd = (amount < 0f) ? fuelFromBarrel : amount;
 
         currentFuel = Mathf.Clamp(currentFuel + amountToAdd, 0f, maxFuel);
+        HasCollectedFuel = true;
 
         if (fuelBar != null)
         {
             fuelBar.value = GetFuelNormalized();
+        }
+
+        if (kartController != null)
+        {
+            kartController.RegisterFuelCollected();
         }
 
         if (currentFuel > 0f && isOutOfFuel)
@@ -120,11 +143,10 @@ public class KartFuelSystem : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Fuel refilled (+{amountToAdd})! Total: {currentFuel}");
+            Debug.Log($"Fuel refilled (+{amountToAdd})! Total: {currentFuel:F1}");
         }
     }
 
-    // Fuel is reduced due to the oil slick.
     public void ReduceFuelFromOil()
     {
         currentFuel = Mathf.Clamp(currentFuel - fuelLostFromOil, 0f, maxFuel);
@@ -134,33 +156,31 @@ public class KartFuelSystem : MonoBehaviour
             fuelBar.value = GetFuelNormalized();
         }
 
-        Debug.Log($"Fuel lost because of oil! Total: {currentFuel}");
+        Debug.Log($"Fuel lost because of oil! Total: {currentFuel:F1}");
 
         if (currentFuel <= 0f && !isOutOfFuel)
         {
+            SetFuelConsumptionMultiplier(1f);
             OnFuelEmpty();
         }
     }
 
     private void OnFuelEmpty()
     {
-        // Marks the kart as out of fuel.
         isOutOfFuel = true;
+        SetFuelConsumptionMultiplier(1f);
 
-        // Physically stops the Rigidbody only if it is not kinematic.
         if (rb != null && !rb.isKinematic)
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
 
-        // Blocks player movement.
         if (kartController != null)
         {
             kartController.canMove = false;
         }
 
-        // Blocks CPU movement.
         if (cpuController != null)
         {
             cpuController.canMove = false;
@@ -168,7 +188,6 @@ public class KartFuelSystem : MonoBehaviour
 
         Debug.Log("We've run out of gas! The go-kart comes to a stop.");
 
-        // Notify the GameManager who ran out of fuel.
         if (GameManager.Instance != null)
         {
             if (CompareTag("Player"))
