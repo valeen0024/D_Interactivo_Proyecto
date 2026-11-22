@@ -67,7 +67,7 @@ MonoBehaviour:
   coneConfig:
     slowDuration: 1.5
     speedMultiplier: 0.45
-    fuelLoss: 8
+    fuelLoss: 10
     breakAndDestroyOnHit: 1
     breakEffectPrefab: {fileID: 0}
     brokenVisualObject: {fileID: 0}

@@ -102,6 +102,7 @@ public class KartLaneController : MonoBehaviour
     [SerializeField] private float currentActiveWaitDuration = 0f;
     [SerializeField] private float activationWindowRemaining = 0f;
 
+    public int MaxBoostUses => maxBoostUses;
     public int UsesRemaining => usesRemaining;
     public bool HasRemainingUses => usesRemaining > 0;
     public bool IsWaitingBeforeRecharge => waitTimerRemaining > 0f;
@@ -216,7 +217,6 @@ public class KartLaneController : MonoBehaviour
     private float activeObstacleMultiplier = 0.45f;
     private bool isBoosting = false;
 
-    // Bloqueo físico de valla (sin temporizador: se mantiene mientras el carril esté bloqueado)
     private bool isBarrierBlocked = false;
     private int blockedLane = int.MinValue;
     private float barrierFrontZ = float.MaxValue;
@@ -442,14 +442,12 @@ public class KartLaneController : MonoBehaviour
                     currentActiveWaitDuration = RollNextWaitDuration();
                     waitTimerRemaining = currentActiveWaitDuration;
                     wasWindowOpenLastFrame = false;
-                    Debug.Log($"[Boost] Ventana cerrada sin usar. Espera antes de próxima oportunidad: {currentActiveWaitDuration:F1}s");
                 }
             }
             else if (CanOpenBoostOpportunity())
             {
                 activationWindowRemaining = boostActivationWindow;
                 wasWindowOpenLastFrame = true;
-                Debug.Log($"[Boost] ¡Oportunidad abierta ({boostActivationWindow:F1}s)! Pulsa W o Flecha Arriba. Usos restantes: {usesRemaining}/{maxBoostUses}");
             }
             else
             {
@@ -516,11 +514,6 @@ public class KartLaneController : MonoBehaviour
             (Keyboard.current.upArrowKey.wasPressedThisFrame ||
              Keyboard.current.wKey.wasPressedThisFrame);
 
-        if (pressedBoostKey)
-        {
-            Debug.Log($"[Boost-Test] Kart={gameObject.name} | canMove={canMove} | canUseTurbo={canUseTurbo} | uses={usesRemaining}/{maxBoostUses} | wait={waitTimerRemaining:F1} | win={activationWindowRemaining:F1} | fuel={(fuelSystem != null ? fuelSystem.currentFuel.ToString("F1") : "null")} | fuelMax={(fuelSystem != null ? fuelSystem.IsFuelAtMax.ToString() : "null")} | overlay={(boostOverlayGroup != null ? boostOverlayGroup.name : "NONE")}");
-        }
-
         if (!canMove)
         {
             UpdateBarrelVisual();
@@ -536,16 +529,9 @@ public class KartLaneController : MonoBehaviour
 
         UpdateBoostOpportunityAndVisual();
 
-        if (pressedBoostKey)
+        if (pressedBoostKey && CanTriggerBoostNow())
         {
-            if (CanTriggerBoostNow())
-            {
-                ActivateTurbo();
-            }
-            else
-            {
-                Debug.Log($"[Boost] Tecla pulsada pero no está listo -> uses={usesRemaining}/{maxBoostUses}, isBoosting={isBoosting}, wait={waitTimerRemaining:F1}s, window={activationWindowRemaining:F1}s");
-            }
+            ActivateTurbo();
         }
 
         HandleLaneInput();
@@ -561,7 +547,6 @@ public class KartLaneController : MonoBehaviour
 
         int previousLane = currentLane;
 
-        // El cambio de carril permanece libre incluso al estar detenido frente a una valla.
         if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame)
         {
             if (currentLane > minLane) currentLane--;
@@ -712,7 +697,6 @@ public class KartLaneController : MonoBehaviour
         obstacleSlowCoroutine = StartCoroutine(ObstacleSlowRoutine(safeDuration));
     }
 
-    // Mantiene compatibilidad con firmas anteriores si algo externo llama ApplyBarrierBlock con parámetros.
     public void ApplyBarrierBlock(float duration = 0f, float blockMultiplier = 0f)
     {
         BlockAgainstBarrier(null);
@@ -777,7 +761,7 @@ public class KartLaneController : MonoBehaviour
         {
             if (obstacleFuelPenalty > 0f && fuelSystem != null)
             {
-                fuelSystem.AddFuel(-obstacleFuelPenalty);
+                fuelSystem.ConsumeFuel(obstacleFuelPenalty);
             }
 
             ApplyObstacleSlow(obstacleSlowDuration, obstacleSpeedMultiplier);
@@ -908,8 +892,6 @@ public class KartLaneController : MonoBehaviour
         {
             fuelSystem.SetFuelConsumptionMultiplier(boostFuelConsumptionMultiplier);
         }
-
-        Debug.Log($"[Boost] ¡Usado! Quedan {usesRemaining}/{maxBoostUses} usos. Consumo x{boostFuelConsumptionMultiplier:F1}. Espera: {currentActiveWaitDuration:F1}s");
 
         if (engineAudioSource != null)
         {
