@@ -9,7 +9,7 @@ public class TutorialSlidesController : MonoBehaviour
     [SerializeField] private Image slideDisplayImage;
     [SerializeField] private Sprite[] tutorialSlides;
 
-    [Header("Grupos de Contenido por Página (3 Objetos)")]
+    [Header("Grupos de Contenido por Página")]
     [SerializeField] private GameObject[] pageTextGroups;
 
     [Header("Botones sobre las imágenes")]
@@ -22,8 +22,9 @@ public class TutorialSlidesController : MonoBehaviour
     [SerializeField] private GameObject hudPlayToRestore;
     [SerializeField] private GameObject practicalTutorialUI;
 
-    [Header("Controlador del Kart (Para bloquear flechas durante las diapositivas)")]
+    [Header("Controladores del Juego")]
     [SerializeField] private MonoBehaviour kartLaneController; // Arrastra aquí KartParent -> KartLaneController
+    [SerializeField] private TutorialManager tutorialManager;   // Arrastra aquí TutorialManager
 
     private int currentPage = 0;
 
@@ -31,7 +32,6 @@ public class TutorialSlidesController : MonoBehaviour
     {
         Time.timeScale = 0f;
 
-        // Bloquea el script del kart mientras se leen las 3 diapositivas
         if (kartLaneController != null)
             kartLaneController.enabled = false;
 
@@ -129,7 +129,6 @@ public class TutorialSlidesController : MonoBehaviour
 
         Time.timeScale = 1f;
 
-        // Reactiva el movimiento del kart justo al iniciar la práctica
         if (kartLaneController != null)
             kartLaneController.enabled = true;
 
@@ -141,5 +140,9 @@ public class TutorialSlidesController : MonoBehaviour
 
         if (visualTutorialPanel != null)
             visualTutorialPanel.SetActive(false);
+
+        // Inicia oficialmente los ejercicios del tutorial justo cuando el jugador presiona ENTRENAR
+        if (tutorialManager != null)
+            tutorialManager.BeginTutorialExercises();
     }
 }

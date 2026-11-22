@@ -34,7 +34,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private GameObject tutorialOilSpill;
     [SerializeField] private TutorialOilDetector oilDetector;
     [SerializeField] private float oilSpawnDistance = 18f;
-    [SerializeField] private AudioClip oilSound; // <-- Arrastra aquí "lose sound"
+    [SerializeField] private AudioClip oilSound;
 
     private int selectedOilLane;
 
@@ -54,6 +54,7 @@ public class TutorialManager : MonoBehaviour
     private bool transitioning = false;
     private bool fuelRetryInProgress = false;
     private bool turboRetryInProgress = false;
+    private bool tutorialStarted = false;
     private float fuelBeforeCollection;
 
     private Vector3 fuelExerciseStartPosition;
@@ -68,6 +69,11 @@ public class TutorialManager : MonoBehaviour
 
     private bool turboExerciseCompleted = false;
 
+    private float GetSafeForwardSpeed()
+    {
+        return tutorialForwardSpeed > 0.1f ? tutorialForwardSpeed : 4f;
+    }
+
     private void RefillPlayerFuelForTutorial()
     {
         if (playerFuelSystem != null)
@@ -81,7 +87,16 @@ public class TutorialManager : MonoBehaviour
         if (tutorialFuelBarrel == null || playerController == null)
             return;
 
-        selectedFuelLane = Random.Range(minRandomLane, maxRandomLane + 1);
+        int currentPlayerLane = playerController.CurrentLane;
+        selectedFuelLane = currentPlayerLane;
+
+        if (minRandomLane < maxRandomLane)
+        {
+            while (selectedFuelLane == currentPlayerLane)
+            {
+                selectedFuelLane = Random.Range(minRandomLane, maxRandomLane + 1);
+            }
+        }
 
         float randomX = playerController.GetLaneWorldX(selectedFuelLane);
 
@@ -92,7 +107,7 @@ public class TutorialManager : MonoBehaviour
 
         tutorialFuelBarrel.transform.position = newPosition;
 
-        Debug.Log("TUTORIAL: Fuel barrel placed in random lane: " + selectedFuelLane);
+        Debug.Log("TUTORIAL: Fuel barrel placed in lane: " + selectedFuelLane);
     }
 
     private bool HasMissedFuelBarrel()
@@ -171,8 +186,8 @@ public class TutorialManager : MonoBehaviour
             "PASO 3 DE 5"
         );
 
-        playerController.SetForwardSpeed(tutorialForwardSpeed);
         playerController.canMove = true;
+        playerController.SetForwardSpeed(GetSafeForwardSpeed());
     }
 
     private IEnumerator RetryTurboExercise()
@@ -208,9 +223,10 @@ public class TutorialManager : MonoBehaviour
             "PASO 5 DE 5"
         );
 
+        playerController.enabled = true;
         playerController.canUseTurbo = true;
         playerController.canMove = true;
-        playerController.SetForwardSpeed(tutorialForwardSpeed);
+        playerController.SetForwardSpeed(GetSafeForwardSpeed());
     }
 
     private void Start()
@@ -230,20 +246,19 @@ public class TutorialManager : MonoBehaviour
         {
             hudTutorialPanel.SetActive(true);
         }
-        else
-        {
-            Debug.LogWarning("Tutorial: HUD panel is not assigned.");
-            BeginTutorialExercises();
-        }
     }
 
     public void BeginTutorialExercises()
     {
+        if (tutorialStarted) return;
+        tutorialStarted = true;
+
         if (hudTutorialPanel != null)
         {
             hudTutorialPanel.SetActive(false);
         }
 
+        playerController.enabled = true;
         playerController.canMove = true;
         playerController.canUseTurbo = false;
         playerController.SetForwardSpeed(0f);
@@ -294,8 +309,9 @@ public class TutorialManager : MonoBehaviour
                 tutorialFuelBarrel.SetActive(true);
             }
 
+            playerController.enabled = true;
             playerController.canMove = true;
-            playerController.SetForwardSpeed(tutorialForwardSpeed);
+            playerController.SetForwardSpeed(GetSafeForwardSpeed());
         }
         else if (exercise == 3)
         {
@@ -319,8 +335,9 @@ public class TutorialManager : MonoBehaviour
                 tutorialOilSpill.SetActive(true);
             }
 
+            playerController.enabled = true;
             playerController.canMove = true;
-            playerController.SetForwardSpeed(tutorialForwardSpeed);
+            playerController.SetForwardSpeed(GetSafeForwardSpeed());
         }
         else if (exercise == 4)
         {
@@ -337,15 +354,16 @@ public class TutorialManager : MonoBehaviour
 
             turboExerciseCompleted = false;
 
+            playerController.enabled = true;
             playerController.canUseTurbo = true;
             playerController.canMove = true;
-            playerController.SetForwardSpeed(tutorialForwardSpeed);
+            playerController.SetForwardSpeed(GetSafeForwardSpeed());
         }
     }
 
     private void Update()
     {
-        if (transitioning || currentExercise >= 5)
+        if (!tutorialStarted || transitioning || currentExercise >= 5)
             return;
 
         if (currentExercise == 0)
@@ -378,6 +396,8 @@ public class TutorialManager : MonoBehaviour
         }
         else if (currentExercise == 2)
         {
+            playerController.SetForwardSpeed(GetSafeForwardSpeed());
+
             if (playerFuelSystem != null)
             {
                 float currentFuel =
@@ -401,6 +421,8 @@ public class TutorialManager : MonoBehaviour
             if (tutorialOilSpill == null || oilDetector == null)
                 return;
 
+            playerController.SetForwardSpeed(GetSafeForwardSpeed());
+
             if (oilDetector.PlayerTouchedOil)
             {
                 StartCoroutine(CompleteOilExercise(false));
@@ -417,9 +439,23 @@ public class TutorialManager : MonoBehaviour
         }
         else if (currentExercise == 4)
         {
-            if (!turboExerciseCompleted && playerController.HasUsedTurbo)
+            // Mantiene el avance y los permisos activos mientras espera la flecha arriba
+            playerController.canMove = true;
+            playerController.canUseTurbo = true;
+
+            if (!turboExerciseCompleted)
+            {
+                playerController.SetForwardSpeed(GetSafeForwardSpeed());
+            }
+
+            bool upArrowPressed = Keyboard.current != null && Keyboard.current.upArrowKey.wasPressedThisFrame;
+
+            if (!turboExerciseCompleted && (playerController.HasUsedTurbo || upArrowPressed))
             {
                 turboExerciseCompleted = true;
+
+                // Impulsa el kart hacia adelante para visualizar el propulsor durante el mensaje
+                playerController.SetForwardSpeed(GetSafeForwardSpeed() * 2.5f);
 
                 Debug.Log("TUTORIAL: Turbo activated successfully!");
 
@@ -496,7 +532,6 @@ public class TutorialManager : MonoBehaviour
         }
         else
         {
-            // Reproduce "lose sound" usando el AudioSource de MAT_ OIL SPILL en cada intento
             if (oilSound != null && tutorialOilSpill != null)
             {
                 AudioSource spillAudio = tutorialOilSpill.GetComponentInChildren<AudioSource>();

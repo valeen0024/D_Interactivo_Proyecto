@@ -1423,6 +1423,7 @@ MonoBehaviour:
   obstacleSpeedMultiplier: 0.4
   obstacleSlowDuration: 1.2
   obstacleFuelPenalty: 0
+  barrierStopMarginZ: 0.15
   boostOverlayGroup: {fileID: 0}
   barrelIndicatorObject: {fileID: 0}
   hideBaseIndicatorWhenOverlayActive: 0
@@ -1748,6 +1749,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
   soundVolume: 1
+  force2DSound: 1
+  useAudioManagerPickup: 1
+  barrelAudioSource: {fileID: 0}
+  mixerGroup: {fileID: 0}
+  pickupClips: []
+  audioPlayMode: 0
 --- !u!114 &190335435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7859,6 +7866,7 @@ MonoBehaviour:
   hudPlayToRestore: {fileID: 541621646}
   practicalTutorialUI: {fileID: 2123538185}
   kartLaneController: {fileID: 155260672}
+  tutorialManager: {fileID: 1216743995}
 --- !u!1 &541621646
 GameObject:
   m_ObjectHideFlags: 0
@@ -16408,6 +16416,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FuelBarrel
   fuelAmount: 25
   soundVolume: 1
+  force2DSound: 1
+  useAudioManagerPickup: 1
+  barrelAudioSource: {fileID: 0}
+  mixerGroup: {fileID: 0}
+  pickupClips: []
+  audioPlayMode: 0
 --- !u!135 &1384376943
 SphereCollider:
   m_ObjectHideFlags: 0
