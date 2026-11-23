@@ -1,0 +1,3987 @@
+commit aafe86613efc3d797793e6ff819e1ef63a263484
+Merge: 3ae9f55 3a0a30a
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-22 07:16:42 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-22 07:16:42 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 3ae9f551f83d61268880270aa746f29bea67e01a
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-22 07:14:37 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-22 07:14:37 -0500
+
+    configurar pista, prefabs de obstáculos y resta de combustible
+    
+    - Implementar y configurar la pista del nivel 2 junto con los prefabs y texturas de los obstáculos (aceite, conos y valla STOP).
+    - Separar la resta de combustible de los obstáculos mediante ConsumeFuel en KartFuelSystem para que solo los barriles sumen.
+    - Ajustar ObstacleBehavior para aplicar penalizaciones de combustible, efectos en pista y audio de forma consistente.
+
+A	Assets/Audio/SFX/freesound_community-water-splash-46402.mp3
+A	Assets/Audio/SFX/freesound_community-water-splash-46402.mp3.meta
+A	Assets/Audio/SFX/item.mp3
+A	Assets/Audio/SFX/item.mp3.meta
+A	Assets/Audio/SFX/universfield-water-splash-229315.mp3
+A	Assets/Audio/SFX/universfield-water-splash-229315.mp3.meta
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+A	Assets/Materials/textures/OBSTACULOS.meta
+A	Assets/Materials/textures/OBSTACULOS/1001_Base_Color.png
+A	Assets/Materials/textures/OBSTACULOS/1001_Base_Color.png.meta
+A	Assets/Materials/textures/OBSTACULOS/1001_Height.png
+A	Assets/Materials/textures/OBSTACULOS/1001_Height.png.meta
+A	Assets/Materials/textures/OBSTACULOS/1001_Metallic.png
+A	Assets/Materials/textures/OBSTACULOS/1001_Metallic.png.meta
+A	Assets/Materials/textures/OBSTACULOS/1001_Normal.png
+A	Assets/Materials/textures/OBSTACULOS/1001_Normal.png.meta
+A	Assets/Materials/textures/OBSTACULOS/1001_Normal_OpenGL.png
+A	Assets/Materials/textures/OBSTACULOS/1001_Normal_OpenGL.png.meta
+A	Assets/Materials/textures/OBSTACULOS/1001_Roughness.png
+A	Assets/Materials/textures/OBSTACULOS/1001_Roughness.png.meta
+A	Assets/Materials/textures/OBSTACULOS/ALL_PROPS.png
+A	Assets/Materials/textures/OBSTACULOS/ALL_PROPS.png.meta
+A	Assets/Materials/textures/OBSTACULOS/TX_CONO.mat
+A	Assets/Materials/textures/OBSTACULOS/TX_CONO.mat.meta
+A	Assets/Materials/textures/OBSTACULOS/TX_VALLA.mat
+A	Assets/Materials/textures/OBSTACULOS/TX_VALLA.mat.meta
+A	Assets/Prefabs/Barricada_Concreto__5 1.prefab
+A	Assets/Prefabs/Barricada_Concreto__5 1.prefab.meta
+A	Assets/Prefabs/Barricada_Concreto__5.mesh
+A	Assets/Prefabs/Barricada_Concreto__5.mesh.meta
+A	Assets/Prefabs/CONO_CALLE.blend
+A	Assets/Prefabs/CONO_CALLE.blend.meta
+M	Assets/Prefabs/MAT_ OIL SPILL.prefab
+M	Assets/Prefabs/MD_Oil_Drum.prefab
+A	Assets/Prefabs/Prefab_Conos.prefab
+A	Assets/Prefabs/Prefab_Conos.prefab.meta
+A	Assets/Prefabs/Prefab_Valla_STOP.prefab
+A	Assets/Prefabs/Prefab_Valla_STOP.prefab.meta
+M	Assets/Scenes/Level2.unity
+M	Assets/Scripts/Gameplay/FuelBarrel.cs
+A	Assets/Scripts/Gameplay/ObstacleBehavior.cs
+A	Assets/Scripts/Gameplay/ObstacleBehavior.cs.meta
+M	Assets/Scripts/Gameplay/TrackItemSpawner.cs
+M	Assets/Scripts/Player/KartFuelSystem.cs
+M	Assets/Scripts/Player/KartLaneController.cs
+M	ProjectSettings/TagManager.asset
+
+commit 3a0a30a2ca27ded12909883ba906c0f23b9a6c3a
+Merge: 23b8c09 c4506e7
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-22 01:50:47 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-11-22 01:50:47 -0500
+
+    Merge pull request #5 from valeen0024/David
+    
+    Equilibrio del turbo de la CPU en Gameplay
+
+commit c4506e7b449219881ec61f822e0424126b5fc66f
+Merge: 1ecb83a 23b8c09
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-22 01:44:46 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-22 01:44:46 -0500
+
+    Merge branch 'main' into David
+
+commit 1ecb83aae5b4f9194668cbcf007f4d24c03ef031
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-22 01:38:01 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-22 01:38:01 -0500
+
+    Equilibrio del turbo de la CPU en nivel 1
+    
+    Se ajustó el sistema de turbo de la CPU para equilibrar las reglas con el jugador.
+    
+    - Límite de 3 turbos y duración de 2 segundos.
+    - Comprobación del combustible mínimo antes de activar el turbo.
+    - Espera progresiva según el avance de la carrera.
+    - Consumo adicional de combustible durante el turbo.
+    - Reinicio de temporizadores, estadísticas y audio entre carreras.
+    - Pruebas funcionales realizadas en Gameplay sin errores de compilación.
+
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Player/CPUController.cs
+
+commit 23b8c09150c3b3a99a0f50d9b9a8afc534bc77a1
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-22 00:44:59 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-22 00:44:59 -0500
+
+    Tipografia
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+
+commit a6cf0838662e1658a84c07a584521f400014450e
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-22 00:44:05 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-22 00:44:05 -0500
+
+    Ajustes finales tutorial
+    
+    Se agrego slide para explicar el botón de pause, se ajusto la lógica del sonido de la macha de aceite.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scenes/Gameplay_Tutorial.unity
+M	Assets/Scripts/Tutorial/TutorialManager.cs
+A	Assets/Sprites/Tutorial/Mapa_Tutorial.png
+A	Assets/Sprites/Tutorial/Mapa_Tutorial.png.meta
+A	Assets/Sprites/Tutorial/Pausa 1.png
+A	Assets/Sprites/Tutorial/Pausa 1.png.meta
+A	Assets/Sprites/Tutorial/Pausa.png
+A	Assets/Sprites/Tutorial/Pausa.png.meta
+
+commit 8bc93986b2a249dbf40cacec9e89bad6b4d7de1c
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 23:48:34 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 23:48:34 -0500
+
+    Level 2 base sin modificaciones
+
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+A	Assets/Scenes/Level2.unity
+A	Assets/Scenes/Level2.unity.meta
+
+commit 637ee27af5fd592e264561aacc156cb417e137c4
+Merge: 0c8845a 751f178
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 22:23:21 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-11-21 22:23:21 -0500
+
+    Merge pull request #4 from valeen0024/David
+    
+    Integración final de IA de CPU y mejoras de Gameplay
+
+commit 751f1785ff8e28ad7811decc378f0262f2e57653
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 22:19:28 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-21 22:19:28 -0500
+
+    Ajustes finales de IA e integración de Gameplay
+
+M	Assets/Scenes/Gameplay.unity
+
+commit 4ee6bb795df8bd952784e71281e1cda94862ce03
+Merge: 097f6b0 0c8845a
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 22:09:50 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-21 22:09:50 -0500
+
+    Merge branch 'main' into David
+
+commit 0c8845a7155d1f3aa8f33b428cf3af0891c1cb28
+Merge: c9fee1c c4835a7
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 22:07:58 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 22:07:58 -0500
+
+    Merge branch 'main' into Evenli
+
+commit c9fee1cad088982dcebbf9ff86cdb60a70be72ba
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 22:07:27 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 22:07:27 -0500
+
+    Ajuste lógica de los controles del tutorial
+    
+    Se ajusto la lógica de las manchas y el propulsor.
+
+M	Assets/Scenes/Gameplay_Tutorial.unity
+M	Assets/Scripts/Tutorial/TutorialManager.cs
+M	Assets/Scripts/Tutorial/TutorialSlidesController.cs
+
+commit 097f6b0660556659b0969338f2c027698ee11fdf
+Merge: 2651b65 c4835a7
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 22:07:20 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-21 22:07:20 -0500
+
+    Merge branch 'main' into David
+
+commit 2651b65af7b6a05397e9cb140dfc7fa8a22ded9b
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 21:58:50 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-21 21:58:50 -0500
+
+    Integración de IA mejorada en Gameplay
+    
+    Se integraron las mejoras de inteligencia artificial de la CPU en la escena principal Gameplay.
+    
+    - Optimización de la velocidad y la selección de carriles.
+    - Mejora de la detección de bidones, manchas de aceite y obstáculos.
+    - Implementación de rutas alternativas para evitar peligros.
+    - Actualización de los parámetros de navegación y combustible.
+    - Corrección de la etiqueta Obstacle para eliminar errores de ejecución.
+    - Desactivación del generador duplicado de bidones.
+    - Validación del funcionamiento de la CPU en Gameplay.
+
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Player/CPUController.cs
+M	ProjectSettings/TagManager.asset
+
+commit c4835a7b780be382e8280d566dcbfbc8a627d034
+Merge: 3b82967 4e3c208
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 21:54:32 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 21:54:32 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 3b829672c0802d2f68db6c591a91a0b67fd3d4a6
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 21:53:06 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 21:53:06 -0500
+
+    Avisos animados de propulsores/turno CPU y separación de bidones
+    
+    - Se agregó notificación temporal con efecto máquina de escribir para propulsores restantes en KartLaneController
+    - Se incorporó aviso animado de "Turno de la CPU" en GameManager durante la transición de turno
+    - Se anadio control de separacion minima en Z y probabilidad de solapamiento en TrackItemSpawner para evitar bidones sobre obstaculos
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Gameplay/TrackItemSpawner.cs
+M	Assets/Scripts/Managers/GameManager.cs
+M	Assets/Scripts/Player/KartFuelSystem.cs
+M	Assets/Scripts/Player/KartLaneController.cs
+
+commit 4e3c2089d6ba55e2a16531610703a7df0419d258
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 21:04:17 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 21:04:17 -0500
+
+    Tipografia
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+
+commit 2d07f5c161957c3bec26680f42b2203510e4bbdc
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 21:03:52 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 21:03:52 -0500
+
+    Ajuste tutorial
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay_Tutorial.unity
+
+commit 47d28a0f6a3706afc17d6d348a4e83b964c191fe
+Merge: 34db84d e509cb1
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 20:48:10 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 20:48:10 -0500
+
+    Merge branch 'main' into Valentina
+
+commit e509cb132bc526ec5c9f842901b58f2496b6134c
+Merge: 25caabf 05d8702
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 20:46:45 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 20:46:45 -0500
+
+    Merge branch 'Evenli'
+
+commit 05d87022dcbadd94475c8bc31740d8c0f1c6e32b
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 20:46:02 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 20:46:02 -0500
+
+    Ajuste Gameplay tutorial
+    
+    Se ajusto la cámara y la ubicación del carro en el tutorial.
+
+M	Assets/Scenes/Gameplay_Tutorial.unity
+
+commit 34db84dee0120a6197fa696b5df0c15549322962
+Merge: 5f2a8f9 25caabf
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 20:37:43 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 20:37:43 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 25caabf01324cf3922c0fdfa8eb85ad2a5309d14
+Merge: 79552c8 e1fdcf3
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 20:35:49 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-11-21 20:35:49 -0500
+
+    Merge pull request #3 from valeen0024/David
+    
+    David
+
+commit e1fdcf3e82190792b88f6f6d06d87fb3ee2af04c
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 20:30:41 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-21 20:30:41 -0500
+
+    1
+
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay Prueba iA.unity
+M	Assets/Scripts/Player/CPUController.cs
+
+commit 5f2a8f969c77271f70b8b8f8aee52fe91f490473
+Merge: d562a1d 79552c8
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 20:15:14 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 20:15:14 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 79552c8b4d80121bbde1c99ca5d9c868221cf703
+Merge: a45c791 62d5216
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 20:04:01 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 20:04:01 -0500
+
+    Merge branch 'Evenli'
+
+commit 93d2ec86d64b60f37131a90aef5a5de27b23fdfd
+Merge: a42ce22 62d5216
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 19:58:52 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-21 19:58:52 -0500
+
+    Merge branch 'Evenli' into David
+
+commit a42ce2202210422d77d250635142cf3e86d55163
+Merge: 4460036 d562a1d
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 19:52:06 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-21 19:52:06 -0500
+
+    Merge branch 'Valentina' into David
+
+commit 62d521653509010da9a092460df6b8c62a4f3190
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 19:50:06 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 19:50:06 -0500
+
+    Ajuste organización tutorial
+    
+    Se organizaron las pantallas de instrucciones y entrenamiento, se rediseñaron ambas pantallas, se elimino el apartado de yardas, nombre y gasolina, ya que el jugador va a entrenar.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay_Tutorial.unity
+A	Assets/Sprites/Tutorial/Entrenamiento.png
+A	Assets/Sprites/Tutorial/Entrenamiento.png.meta
+
+commit 4460036c7f3eb8796e9882fd28d0c0146b900d96
+Merge: b84a6be a45c791
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 19:49:46 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-21 19:49:46 -0500
+
+    Merge branch 'main' into David
+
+commit d562a1d2b7511603bab264e3696b05f97fbac880
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 19:49:13 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 19:49:13 -0500
+
+    3
+
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+
+commit a45c791ab15ff0d661010df872c9f12c349c25b7
+Merge: fba8f7e 1dbd35d
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 19:45:03 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 19:45:03 -0500
+
+    Merge branch 'main' into Valentina
+
+commit b84a6be17a2808f7eccc466595e4749b21e2a015
+Merge: 3540a12 1dbd35d
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 19:44:48 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-21 19:44:48 -0500
+
+    Merge branch 'main' into David
+
+commit fba8f7e39dfd9f2e1ab8439e6d37b47c35be0127
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 19:44:40 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 19:44:40 -0500
+
+    oportunidades de turbo, ajuste de gasolina y lógica de obstáculos
+    
+    - Se implementó el sistema de oportunidades de turbo con ventana de activación, espera progresiva y límite de usos por nivel
+    - Se sincronizó la visibilidad de la interfaz del propulsor según disponibilidad y estado activo
+    - Se ajustó el consumo de gasolina, recompensa por barriles, penalización por aceite y umbral del tanque en KartFuelSystem
+    - Se incorporó la lógica de colisión/impacto con obstáculos para frenado y penalización
+
+M	Assets/Prefabs/MAT_ OIL SPILL.prefab
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Gameplay/DistanceTracker.cs
+M	Assets/Scripts/Gameplay/TrackItemSpawner.cs
+M	Assets/Scripts/Player/KartFuelSystem.cs
+M	Assets/Scripts/Player/KartLaneController.cs
+A	Assets/Sprites/Buttons/propulsor_banner_sin_texto_transparente.png
+A	Assets/Sprites/Buttons/propulsor_banner_sin_texto_transparente.png.meta
+A	Assets/Sprites/HUD/UI_FUEL1.png
+A	Assets/Sprites/HUD/UI_FUEL1.png.meta
+A	Assets/Sprites/HUD/UI_FUEL2.png
+A	Assets/Sprites/HUD/UI_FUEL2.png.meta
+A	Assets/Sprites/HUD/barril_rosado_activo_unity.png
+A	Assets/Sprites/HUD/barril_rosado_activo_unity.png.meta
+A	Assets/Sprites/HUD/barril_rosado_unity.png
+A	Assets/Sprites/HUD/barril_rosado_unity.png.meta
+A	Assets/Sprites/Image/IMG_BARREL2.png
+A	Assets/Sprites/Image/IMG_BARREL2.png.meta
+
+commit 3540a12049f129d1fb0759c541e4831161dd7713
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-21 19:44:15 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-21 19:44:15 -0500
+
+    Mejoras en la IA de la CPU: navegación, combustible y evasión de obstáculos
+
+A	Assets/Scenes/Gameplay Prueba iA.unity
+A	Assets/Scenes/Gameplay Prueba iA.unity.meta
+M	Assets/Scripts/Player/CPUController.cs
+
+commit 1dbd35dc59c70bf28a9301c805037679cb1ba409
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 17:14:16 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 17:14:16 -0500
+
+    Ajuste orden tutorial
+    
+    Se ajusto el tutorial para que primero aparezcan las instrucciones y luego el jugador pueda entrenar
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay_Tutorial.unity
+M	Assets/Scripts/Tutorial/TutorialSlidesController.cs
+
+commit 2e0c1327f35566ad14e493698ee41df5ffd03030
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 16:59:50 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 16:59:50 -0500
+
+    Ajuste diseño del tutorial
+    
+    Se ajusto el texto, quedo legible, se ajustaron botones.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay_Tutorial.unity
+M	Assets/Sprites/Tutorial/Bidones.png
+A	Assets/Sprites/Tutorial/Circulo.png
+R098	Assets/Sprites/Tutorial/Mapa_Tutorial-01.png.meta	Assets/Sprites/Tutorial/Circulo.png.meta
+A	Assets/Sprites/Tutorial/Flecha.png
+A	Assets/Sprites/Tutorial/Flecha.png.meta
+A	Assets/Sprites/Tutorial/Fondo_1.png
+A	Assets/Sprites/Tutorial/Fondo_1.png.meta
+A	Assets/Sprites/Tutorial/Fondo_2.png
+A	Assets/Sprites/Tutorial/Fondo_2.png.meta
+A	Assets/Sprites/Tutorial/Fondo_3.png
+A	Assets/Sprites/Tutorial/Fondo_3.png.meta
+A	Assets/Sprites/Tutorial/Fondo_4.png
+A	Assets/Sprites/Tutorial/Fondo_4.png.meta
+A	Assets/Sprites/Tutorial/Mapa_Tutorial-01 1.png
+A	Assets/Sprites/Tutorial/Mapa_Tutorial-01 1.png.meta
+D	Assets/Sprites/Tutorial/Mapa_Tutorial-01.png
+M	Assets/Sprites/Tutorial/Propulsor.png
+A	Assets/Sprites/Tutorial/boton.png
+A	Assets/Sprites/Tutorial/boton.png.meta
+
+commit 1fd6d4df03f5fbc0cd6f19f95744113a67288d14
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 15:04:08 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 15:04:08 -0500
+
+    Tipografias
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+
+commit a2608d6e243de483912315adc5ba143bf748b72b
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 15:01:40 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 15:01:40 -0500
+
+    Creación de la guía o mapa en el tutorial
+    
+    Se ajustaron las indicaciones del tutorial.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay_Tutorial.unity
+A	Assets/Scripts/Tutorial/TutorialSlidesController.cs
+A	Assets/Scripts/Tutorial/TutorialSlidesController.cs.meta
+D	Assets/Sprites/Image/Firefly.jpg
+A	Assets/Sprites/Tutorial.meta
+A	Assets/Sprites/Tutorial/Arriba.png
+R092	Assets/Sprites/Image/Firefly.jpg.meta	Assets/Sprites/Tutorial/Arriba.png.meta
+A	Assets/Sprites/Tutorial/Bidones.png
+A	Assets/Sprites/Tutorial/Bidones.png.meta
+A	Assets/Sprites/Tutorial/Carretera_1.png
+A	Assets/Sprites/Tutorial/Carretera_1.png.meta
+A	Assets/Sprites/Tutorial/Derecha.png
+A	Assets/Sprites/Tutorial/Derecha.png.meta
+A	Assets/Sprites/Tutorial/Izquierda.png
+A	Assets/Sprites/Tutorial/Izquierda.png.meta
+A	Assets/Sprites/Tutorial/Mapa_Tutorial-01.png
+A	Assets/Sprites/Tutorial/Mapa_Tutorial-01.png.meta
+A	Assets/Sprites/Tutorial/Propulsor.png
+A	Assets/Sprites/Tutorial/Propulsor.png.meta
+A	Assets/Sprites/Tutorial/Yardas+.png
+A	Assets/Sprites/Tutorial/Yardas+.png.meta
+
+commit f0552a568b51ba83a9d239aa1aff9bfe4dd58508
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 11:53:17 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 11:53:17 -0500
+
+    Ajuste del diseño botones yardas
+    
+    Se ajusto el botón del nombre del jugador y las yardas.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+
+commit 7debb71dff332f497c95b2beb5b20e8df30cb2f4
+Merge: 1eebb0d a29ada5
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 01:56:38 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 01:56:38 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 1eebb0d989dfbb8e0093ac00dc9656a8c35b5bdf
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-21 01:54:22 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-21 01:54:22 -0500
+
+    ampliar pista a 800 yardas y equilibrar aparición de ítems
+    
+    - Ampliar el largo de la pista y ajustar la posición de la meta para 800 yardas
+    - Eliminar el DistanceTracker duplicado de 200 yardas en MD_kartcharac
+    - Actualizar TrackItemSpawner con dificultad progresiva de aceite y mayor frecuencia de bidones para recorridos de 800 yardas
+    - Restaurar las mallas del pasto/entorno en la pista
+
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Gameplay/DistanceTracker.cs
+M	Assets/Scripts/Gameplay/TrackItemSpawner.cs
+M	Assets/Scripts/Gameplay/TrackItemSpawner.cs.meta
+
+commit a29ada585e69fb65373965490ea52c90587827dc
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 01:43:05 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 01:43:05 -0500
+
+    Ajustes tutorial
+    
+    Botón del jugador y contador de yardas
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay_Tutorial.unity
+A	Assets/Sprites/Image/Firefly.jpg
+A	Assets/Sprites/Image/Firefly.jpg.meta
+
+commit a64a931ec983a13fc62b49c507d6c6333c2211bf
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-21 00:36:19 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-21 00:36:19 -0500
+
+    Ajuste diseño de los contadores de yardas
+    
+    Se cambio el diseño para que se ajustara a la línea grafica del juego.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+A	Assets/Sprites/Image/Tablero yardas.png
+A	Assets/Sprites/Image/Tablero yardas.png.meta
+
+commit 2e6d9218ddef7fbc4e6e06db993507f8d302867c
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-20 22:58:33 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-20 22:58:33 -0500
+
+    Bidones y manchas de aceite aleatorias
+    
+    Se creo la lógica para que los bidones y las manchas de aceite aparezcan aletoriamente, se ajusto el DestroyAfteDistance.cs y se creo un script para el código llamado TrackItemSpawner.
+
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Gameplay/DestroyAfterDistance.cs
+A	Assets/Scripts/Gameplay/TrackItemSpawner.cs
+A	Assets/Scripts/Gameplay/TrackItemSpawner.cs.meta
+
+commit 2bb3ec994ee4bc87751aaf4216394974f6207bc3
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-20 22:24:02 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-20 22:24:02 -0500
+
+    Ajuste nombre del contrincante
+    
+    Se ajusto para que no se dividiera el nombre.
+
+M	Assets/Scenes/Gameplay.unity
+
+commit 1029951df7788e56fe77536f20ed8658d65f7d59
+Merge: d381877 894b938
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-20 22:15:42 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-20 22:15:42 -0500
+
+    Merge branch 'main' into Evenli
+
+commit d38187716da28ccbdbc254b08145dd292629ab3b
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-20 22:14:55 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-20 22:14:55 -0500
+
+    Asignación de prefabs al aceite y bidones
+    
+    Se agrego el prefab MD_Oil_Drum y el prefab MAT_OIL SPILL
+
+A	Assets/Prefabs/MAT_ OIL SPILL.prefab
+A	Assets/Prefabs/MAT_ OIL SPILL.prefab.meta
+A	Assets/Prefabs/MD_Oil_Drum.prefab
+A	Assets/Prefabs/MD_Oil_Drum.prefab.meta
+M	Assets/Scenes/Gameplay.unity
+
+commit 894b938ca267d2461cd2fe7da06d8c91b71518d4
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-20 22:11:36 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-20 22:11:36 -0500
+
+    Menú de pausa con 3 botones y agregar decoración VS en selección de personaje
+    
+    - Completar y habilitar los botones de Continuar, Menú y Reiniciar en el menú de pausa con el nuevo Input System
+    - Ajustar el área de clic y raycasts para permitir pulsar Continuar sin deformar la interfaz
+    - Agregar decoración de tarjetas VS en la pantalla de selección de personaje
+
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Managers/PauseMenuController.cs
+A	Assets/Sprites/Image/1.png
+A	Assets/Sprites/Image/1.png.meta
+A	Assets/Sprites/Image/2.png
+A	Assets/Sprites/Image/2.png.meta
+A	Assets/Sprites/Image/3.png
+A	Assets/Sprites/Image/3.png.meta
+A	Assets/Sprites/Image/4.png
+A	Assets/Sprites/Image/4.png.meta
+
+commit 6b9e7f4e1b05ecc3672f6aa4350283bdba7db6f1
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-20 20:57:43 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-20 20:57:43 -0500
+
+    Ajustes nombres y cámara
+    
+    Se ajusto el cargue de los nombres, de la cámara en la escena gameplay.
+
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Managers/PauseMenuController.cs
+
+commit 3ba744c4cb3135e97e5cb86a1d8fedf87851d746
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-20 19:12:21 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-20 19:12:21 -0500
+
+    Ajustes con escena Gameplay Evenli y menu Pause
+    
+    Se modifica el script de KartLaneController con la lógica del de Evenli y la lógica del Audio de Valentina
+
+M	Assets/Scripts/Player/KartLaneController.cs
+
+commit a82790a489c982dc0c14ec9180ec21a45fbe95f4
+Merge: bfe51b4 1225bfd
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-20 18:42:01 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-20 18:42:01 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 1225bfde381c36e2022d38911653e2ddb266fa0d
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-20 09:01:38 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-20 09:01:38 -0500
+
+    Ajuste en código prueba
+    
+    Se ajustaron código para probar si se pueden activar ambos jugadores al tiempo, genero error entonces se volvieron a dejar como estaba
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Gameplay/DistanceTracker.cs
+M	Assets/Scripts/Managers/CharacterSelectionManager.cs
+M	Assets/Scripts/NameInputManager/NameInputManager.cs
+M	Assets/Scripts/Player/CPUController.cs
+M	Assets/Scripts/Player/DebugClick.cs
+M	Assets/Scripts/Player/KartFuelSystem.cs
+M	Assets/Scripts/Player/KartLaneController.cs
+M	Assets/Scripts/Tutorial/TutorialManager.cs
+M	ProjectSettings/ProjectSettings.asset
+
+commit 1671b7dd7fe27a52aedf512223ec983c686f021b
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-20 07:43:02 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-20 07:43:02 -0500
+
+    Ajuste de nombre en la partida
+    
+    Se agrego nombre del jugador y contrincante en las yardas ye en el ganador.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Managers/UIManager.cs
+A	Assets/UI Toolkit.meta
+A	Assets/UI Toolkit/PanelSettings.asset
+A	Assets/UI Toolkit/PanelSettings.asset.meta
+
+commit bfe51b44552ba4c0c61b2baa770a2e1f962db4be
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-20 00:13:13 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-20 00:13:13 -0500
+
+    Sincronizar slides de musica y efectos entre escenas(MainMenu y Gameplay Pausa)
+    
+    Ajustar MainMenuManager para modificar VolumeMaster en SFXMixer y persistir el volumen en MusicVolumeDB
+    - Alinear el ruteo de salida de MusicManager y los controles de audio con los parametros expuestos de SFXMixer
+    - Unificar claves de PlayerPrefs (MusicVolumeDB y GameMuted) y rangos en dB (-80 a 0) entre el menu principal y el menu de pausa
+    - Separar el control de musica y efectos para evitar cruces entre grupos del mixer
+
+M	Assets/Audio/Music/AudioMixer.mixer
+M	Assets/Audio/SFX/SFXMixer.mixer
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scenes/MainMenu.unity
+M	Assets/Scripts/Gameplay/FuelBarrel.cs
+M	Assets/Scripts/Gameplay/OilSlick.cs
+A	Assets/Scripts/Managers/AudioManager.cs
+A	Assets/Scripts/Managers/AudioManager.cs.meta
+M	Assets/Scripts/Managers/MainMenuManager.cs
+M	Assets/Scripts/Managers/PauseMenuController.cs
+M	Assets/Scripts/Player/CPUController.cs
+M	Assets/Scripts/Player/KartLaneController.cs
+
+commit e01924732aea3a2abb427a7b0a731db074c1c993
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-19 09:11:04 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-19 09:11:04 -0500
+
+    Borde con nombre
+    
+    Se ajusto el borde del jugador y contrincante para que cargue el nombre que escriba el jugador.
+
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/Scenes/NameInput.unity
+M	Assets/Scripts/Managers/CharacterSelectionManager.cs
+M	Assets/Scripts/NameInputManager/NameInputManager.cs
+A	"Assets/Sprites/UI/BORDEe SELECCI\303\223N PLAYER 1.png"
+A	"Assets/Sprites/UI/BORDEe SELECCI\303\223N PLAYER 1.png.meta"
+
+commit 40c91cdcb5b3cedcf30442ddccc849fae069d530
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-19 01:14:00 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-19 01:14:00 -0500
+
+    feat(pause-menu): integrar PauseManager y botón Continuar en Gameplay
+    
+    feat(pause-menu): configurar estructura de PauseManager en Gameplay
+    
+    - Conectar PauseManager al menú de pausa y botón Continuar
+    - Enlazar AudioMixers (VolumeMaster y SFXVolume) y sliders de audio
+    - Pendiente por ajustar: comportamiento de Reiniciar/Menú y respuesta de sliders
+
+A	Assets/Audio/SFX/SFXMixer.mixer
+R052	Assets/Scenes/Gameplay_Backup.unity.meta	Assets/Audio/SFX/SFXMixer.mixer.meta
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Scenes/Gameplay.unity
+D	Assets/Scenes/Gameplay_Backup.unity
+A	Assets/Scripts/Managers/PauseMenuController.cs
+A	Assets/Scripts/Managers/PauseMenuController.cs.meta
+A	Assets/Sprites/Buttons/BTN CONTINUE.png
+A	Assets/Sprites/Buttons/BTN CONTINUE.png.meta
+A	Assets/Sprites/Buttons/BTN MENU.png
+A	Assets/Sprites/Buttons/BTN MENU.png.meta
+A	Assets/Sprites/Buttons/BTN RESTART.png
+A	Assets/Sprites/Buttons/BTN RESTART.png.meta
+A	Assets/Sprites/Icons/12.png
+A	Assets/Sprites/Icons/12.png.meta
+A	Assets/Sprites/UI/BACK_PAUSE.png
+A	Assets/Sprites/UI/BACK_PAUSE.png.meta
+
+commit 7e89c3c8662708687d116c1d95eebea771c4d990
+Merge: 380bba2 22393e8
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-18 22:01:16 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-18 22:01:16 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 22393e80e1e818b12fa8ee7ab95906c22ca1c1db
+Merge: 3eccc7e 6721dd0
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-18 21:54:06 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-11-18 21:54:06 -0500
+
+    Merge pull request #2 from valeen0024/David
+    
+    Mejoras del tutorial: ejercicios, interfaz y navegacion
+
+commit 6721dd0dedd2dbbf9823ee4a93936859735185cd
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-18 21:41:17 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-18 21:41:17 -0500
+
+    Mejoras del tutorial: ejercicios, interfaz y navegacion
+    
+    Generación aleatoria de bidones y manchas de aceite.
+    Reinicio de ejercicios cuando el jugador falla.
+    Botón para omitir el tutorial.
+    Panel informativo de combustible y yardas.
+    Unificación visual de paneles, botones y tipografías.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Scenes/Gameplay_Tutorial.unity
+M	Assets/Scripts/Player/KartLaneController.cs
+M	Assets/Scripts/Tutorial/TutorialManager.cs
+
+commit 380bba261454bebcc30d83eb7c9fdf76425dfa26
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-16 23:18:15 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-16 23:18:15 -0500
+
+    Base Canvas Menu Pausa
+    
+    Se agrego el panel, botones principales y organización, no se modifica código
+
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+D	Assets/Resources.meta
+M	Assets/Scenes/Gameplay.unity
+A	Assets/Sprites/Buttons/BTN_PAUSE.png
+A	Assets/Sprites/Buttons/BTN_PAUSE.png.meta
+A	Assets/Sprites/UI/BACK_GENERAL.png
+A	Assets/Sprites/UI/BACK_GENERAL.png.meta
+
+commit 3eccc7e1e7ac2c51150f0258b957f8426141b254
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-16 22:05:11 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-16 22:05:11 -0500
+
+    Texto
+    
+    Commit de texto que quedo a la espera
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+
+commit 277daae46a06ba6ca37f11d7053ba3941424ce0a
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-16 22:03:06 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-16 22:03:06 -0500
+
+    feat(ui-audio): integrar sprites personalizados, hitboxes y lógica de opciones y créditos
+    
+    - Conexión del selector de Calidad gráfica (Baja, Media, Alta) con QualitySettings (Antialiasing, VSync y FPS)
+    - Implementación de lógica funcional para el slider de volumen, botón de mute y apertura de paneles
+    - Reemplazo de interfaz genérica por sprites personalizados en los menús de Opciones y Créditos
+    - Configuración de 9-slicing y márgenes en Handle Slide Area para evitar desbordamiento de la perilla
+    - Ajuste de Raycast Padding en el toggle de Mute y perilla para delimitar las áreas de clic
+    - Agrupación del fondo de Créditos dentro de su panel principal para controlar su visibilidad
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/MainMenu.unity
+M	Assets/Scripts/Managers/MainMenuManager.cs
+A	Assets/Sprites/Buttons/BTN_NUEVO.png
+A	Assets/Sprites/Buttons/BTN_NUEVO.png.meta
+A	Assets/Sprites/Buttons/BTN_VOLUME.png
+A	Assets/Sprites/Buttons/BTN_VOLUME.png.meta
+A	Assets/Sprites/Buttons/BTR_MUTE.png
+A	Assets/Sprites/Buttons/BTR_MUTE.png.meta
+A	Assets/Sprites/Buttons/BTR_NOMUTE.png
+A	Assets/Sprites/Buttons/BTR_NOMUTE.png.meta
+A	"Assets/Sprites/Buttons/Dise\303\261o sin t\303\255tulo (4).png"
+A	"Assets/Sprites/Buttons/Dise\303\261o sin t\303\255tulo (4).png.meta"
+A	Assets/Sprites/Icons/10.png
+A	Assets/Sprites/Icons/10.png.meta
+A	Assets/Sprites/Icons/11.png
+A	Assets/Sprites/Icons/11.png.meta
+A	Assets/Sprites/Icons/9.png
+A	Assets/Sprites/Icons/9.png.meta
+A	Assets/Sprites/UI/BACK_CREDITS.png
+A	Assets/Sprites/UI/BACK_CREDITS.png.meta
+A	Assets/Sprites/UI/SPR_ BORDE MUSIC.png
+A	Assets/Sprites/UI/SPR_ BORDE MUSIC.png.meta
+A	Assets/Sprites/UI/SPR_BACKGROUND MUSIC.png
+A	Assets/Sprites/UI/SPR_BACKGROUND MUSIC.png.meta
+A	Assets/Sprites/UI/SPR_BACKGROUND.png
+A	Assets/Sprites/UI/SPR_BACKGROUND.png.meta
+M	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+
+commit 6d8655ab624e75286caa5988d86cc3b50bcc9424
+Merge: 314787c 99d6d0c
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-16 14:53:18 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-16 14:53:18 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 99d6d0c5beece1cec78d208934edd969c3835570
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-15 19:50:36 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-15 19:50:36 -0500
+
+    Cargar prueba para el main
+    
+    Se guardo el proyecto en el main
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+
+commit 031b70f925764860576b251abd18de86cc60bf41
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-15 19:47:35 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-15 19:47:35 -0500
+
+    Nombre del usuario en selección del avatar
+    
+    Se ajusto el código characterselection.cs
+
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Scenes/CharacterSelection.unity
+
+commit f8eab9a34b76eb7d7522042c49dc5d341e04325a
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-15 19:46:00 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-15 19:46:00 -0500
+
+    Nombre del jugador y selección por teclado
+    
+    Ajuste de selección por teclado, mínimo y máximo de caracteres para el nombre, ajuste para que el nombre se añada a la escena de los avatares y organizar el diseño de charactersection.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/Scenes/NameInput.unity
+M	Assets/Scripts/Managers/CharacterSelectionManager.cs
+M	Assets/Scripts/NameInputManager/NameInputManager.cs
+A	Assets/Sprites/Image/Vs.png
+A	Assets/Sprites/Image/Vs.png.meta
+
+commit 8d5bd7b96d8de581eb8a8860d08abb8035d21721
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-15 18:39:45 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-15 18:39:45 -0500
+
+    Menú ingresar nombre
+    
+    Se agrego la escena Nameimput, se agrego el script Nameimput y se ajustaron los script MainMenuManager.cs y CharacterSelectionManager.cs
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+A	Assets/Scenes/NameInput.unity
+A	Assets/Scenes/NameInput.unity.meta
+M	Assets/Scripts/Core/GameData.cs
+M	Assets/Scripts/Managers/MainMenuManager.cs
+A	Assets/Scripts/NameInputManager.meta
+A	Assets/Scripts/NameInputManager/NameInputManager.cs
+A	Assets/Scripts/NameInputManager/NameInputManager.cs.meta
+R100	Assets/Scripts/DebugClick.cs	Assets/Scripts/Player/DebugClick.cs
+R100	Assets/Scripts/DebugClick.cs.meta	Assets/Scripts/Player/DebugClick.cs.meta
+A	Assets/Sprites/Image/Nombre_fondo.png
+A	Assets/Sprites/Image/Nombre_fondo.png.meta
+M	ProjectSettings/EditorBuildSettings.asset
+
+commit 67a6b0c68b6907df975b9b228f1af41d4fc1e2f4
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-15 10:10:38 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-15 10:10:38 -0500
+
+    Reajuste organización Character Seletion
+    
+    Se volvio a organizar los elementos de la escena ya que aparecian fuera del canvas
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+
+commit dd9d28484c6720ea382bac6228933437bce690bb
+Merge: c9c5cdb 12d420e
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-14 11:13:29 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-11-14 11:13:29 -0500
+
+    Merge pull request #1 from valeen0024/David
+    
+    Integración del tutorial interactivo de Oil Crisis - 5 ejercicios
+
+commit 12d420ef7c77f48ef42abe153f705fe078a928c0
+Merge: 7729ae9 c9c5cdb
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-14 11:03:36 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-14 11:03:36 -0500
+
+    Merge branch 'main' into David
+
+commit 7729ae97a70b58c46a7b5ccd52dd1c7e463cf8a2
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-14 10:47:32 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-14 10:47:32 -0500
+
+    Update TextMesh Pro font assets after team merge
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+A	Assets/Fonts/SuperMario256 SDF.asset.meta
+
+commit 30d816646d64249076f9a06d73e7057fee2e2cf7
+Merge: 6059b14 fdcd161
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-14 10:38:48 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-14 10:38:48 -0500
+
+    Merge branch 'Evenli' into David
+
+commit 6059b144b42cfbac98201c2fb79fa44ec68748a5
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-14 10:09:30 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-14 10:09:30 -0500
+
+    Implement complete interactive tutorial with 5 exercises
+
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Scenes/Gameplay.unity
+A	Assets/Scenes/Gameplay_Backup.unity
+A	Assets/Scenes/Gameplay_Backup.unity.meta
+A	Assets/Scenes/Gameplay_Tutorial.unity
+A	Assets/Scenes/Gameplay_Tutorial.unity.meta
+M	Assets/Scripts/Managers/CharacterSelectionManager.cs
+M	Assets/Scripts/Managers/GameManager.cs
+M	Assets/Scripts/Player/KartLaneController.cs
+A	Assets/Scripts/Tutorial.meta
+A	Assets/Scripts/Tutorial/TutorialManager.cs
+A	Assets/Scripts/Tutorial/TutorialManager.cs.meta
+A	Assets/Scripts/Tutorial/TutorialOilDetector.cs
+A	Assets/Scripts/Tutorial/TutorialOilDetector.cs.meta
+M	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/LiberationSans SDF - Metalic Green.mat
+M	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+M	ProjectSettings/EditorBuildSettings.asset
+A	UpgradeLog.htm
+
+commit 314787c0f8cf01abf2e463c933a8e24258639de4
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-08 23:38:55 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-08 23:38:55 -0500
+
+    Funcionamiento Mute(Menu_Opciones)
+    
+    Se realizó el código y configuro el audio mixer para el funcionamiento del Mute, pendiente (volumen y calidad)
+
+M	Assets/Audio/Music/AudioMixer.mixer
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/Scenes/MainMenu.unity
+M	Assets/Scripts/Managers/MainMenuManager.cs
+M	Assets/Scripts/Managers/MusicManager.cs
+M	ProjectSettings/QualitySettings.asset
+
+commit 534b400bbdea24287f9f0d9b90c3af2a78e62cb1
+Merge: 85dc8df c9c5cdb
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-08 19:05:32 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-08 19:05:32 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 85dc8df7a640ac363d2605f621ead8dae0db1126
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-08 19:04:52 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-08 19:04:52 -0500
+
+    Versión 1 Menú de opciones
+    
+    Se genero el menú de opciones y se configuro para que desaparezca el Main Panel, además se agrego un Audio Mixer
+
+A	Assets/Audio/Music/AudioMixer.mixer
+A	Assets/Audio/Music/AudioMixer.mixer.meta
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Scenes/MainMenu.unity
+M	Assets/Scripts/Managers/MainMenuManager.cs
+R065	Assets/Scripts/UI/MusicManager.cs	Assets/Scripts/Managers/MusicManager.cs
+R100	Assets/Scripts/UI/MusicManager.cs.meta	Assets/Scripts/Managers/MusicManager.cs.meta
+A	Assets/Scripts/UI/CHARACTER_SELECTION.meta
+A	Assets/Scripts/UI/MAIN_MENU.meta
+A	Assets/Scripts/UI/MAIN_MENU/OptionsMenu.cs
+A	Assets/Scripts/UI/MAIN_MENU/OptionsMenu.cs.meta
+
+commit c9c5cdbd8a4311b5117554ee64968cfcae9a2181
+Merge: 9d4bd2f fdcd161
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-08 18:59:56 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-08 18:59:56 -0500
+
+    Merge branch 'Evenli'
+
+commit fdcd1619742dc93fce68b284df581398506e603d
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-08 18:57:31 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-08 18:57:31 -0500
+
+    Instrucciones botones de la escena CharacterSeletion
+    
+    Se agregaron textos con los botones o comandos para los botones de aleatorio, confirmar y salir.
+
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+A	Assets/Sprites/Image/Captura de pantalla 2026-11-08 184026.png
+A	Assets/Sprites/Image/Captura de pantalla 2026-11-08 184026.png.meta
+
+commit be8b0418423592d13ef5170dc3f6505f139f0592
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-08 18:01:31 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-08 18:01:31 -0500
+
+    Agregar carro por color de avatar
+    
+    Se agrego un carro por cada color de avatar, una base o podio y se ajusto en el script (CharacterSelectionManager.cs)
+
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/Scripts/Managers/CharacterSelectionManager.cs
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (2).png"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (2).png.meta"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (3).png"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (3).png.meta"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (4).png"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (4).png.meta"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (5).png"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (5).png.meta"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (6).png"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (6).png.meta"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (7).png"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia (7).png.meta"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia.png"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente - copia.png.meta"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente.png"
+A	"Assets/Sprites/Image/Cuadr\303\255cula 3x3 de karts coloridos sobre fondo transparente.png.meta"
+A	Assets/Sprites/Image/Podio.png
+A	Assets/Sprites/Image/Podio.png.meta
+
+commit ec3426552157c686d1bf7eb480c277c4664cdb79
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-08 16:12:53 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-08 16:12:53 -0500
+
+    Reorganización de botones de la escena CharacterSelection
+    
+    Se acomodaron y ajustaron los botones de salir y confirmar
+
+M	.vscode/settings.json
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+
+commit 1fc1cf65503ed30237b260c1d27ca08d156336fc
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-08 14:35:29 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-08 14:35:29 -0500
+
+    Corrección de advertencia
+    
+    En código (SuperMario256 SDF.asset.meta)
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset.meta
+
+commit 05e02b7737c13569a05ad2d14ec38761a0062726
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-07 23:08:47 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-07 23:08:47 -0500
+
+    Botón de Opciones
+    
+    Se agrega el botón de opciones sin código
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+A	Assets/Fonts/SuperMario256 SDF.asset.meta
+M	Assets/Scenes/MainMenu.unity
+
+commit 9d4bd2fab475753c80ad0f8279714d3c23ff979c
+Merge: 23f4dcf 79e057a
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-07 21:22:59 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-07 21:22:59 -0500
+
+    Merge branch 'Evenli'
+
+commit 79e057a98955b0a253e805a41b11a753f12c8b70
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-07 20:54:56 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-07 20:54:56 -0500
+
+    Reorganización y asignación de teclas a los botones de aleatorio, confirma y salir
+    
+    Se le asignaron teclas a los botones de aleatorio, confirmar y salir de la siguiente forma:
+    Enter -> Debería confirmar y arrancar la CPU.
+    Esc -> Debería devolverte al menú principal.
+    Shift -> Debería elegir un color al azar.
+    
+    Se ajusto el script (CharacterSelectionManager.cs)
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/Scripts/Managers/CharacterSelectionManager.cs
+M	ProjectSettings/Packages/com.unity.probuilder/Settings.json
+
+commit 407b966d227dafd02a2730b14cd7ef968056c91b
+Merge: 29437e8 23f4dcf
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-07 19:42:47 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-07 19:42:47 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 23f4dcfbfdf284f07f57d4029f83f985be905581
+Merge: e9776a7 891f484
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-07 18:52:19 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-07 18:52:19 -0500
+
+    Merge branch 'Evenli'
+
+commit 891f48462c3df878d2b7d6d58572fe8d9e75911b
+Author:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+AuthorDate: 2026-11-07 18:47:58 -0500
+Commit:     evenliddiaza2003-droid <evenliddiaza2003@gmail.com>
+CommitDate: 2026-11-07 18:47:58 -0500
+
+    Ajuste controles escena selección de personajes con mouse
+    
+    Se ajustaron los controles de los avatares o personajes para que se seleccionen con el mouse. Se agrego un script llamado (DebugClick.cs).
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+A	Assets/Scripts/DebugClick.cs
+A	Assets/Scripts/DebugClick.cs.meta
+M	Assets/Scripts/Managers/CharacterSelectionManager.cs
+
+commit 52b891d6e3905eb713daf97f0b54e1265fc76f0d
+Merge: ed15746 a7a6668
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-03 14:43:17 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-03 14:43:17 -0500
+
+    On David: !!GitHub_Desktop<David>
+
+commit a7a66687d6c83be7fead97f9c7e4df12b76ff71b
+Author:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+AuthorDate: 2026-11-03 14:43:17 -0500
+Commit:     David Silva <davidalfonsosilvaarenas9@gmail.com>
+CommitDate: 2026-11-03 14:43:17 -0500
+
+    index on David: ed15746 Final Correction Typografy
+
+commit 29437e89acadd44927949f3f57e049ad893940da
+Merge: 7189303 e9776a7
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-03 14:42:05 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-03 14:42:05 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 71893038430b26a53334b94224f544ae58583233
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-11-03 14:29:35 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-11-03 14:29:35 -0500
+
+    Ejemplo manejo de rama
+    
+    Agregue una S al titulo de Créditos
+
+M	Assets/Scenes/MainMenu.unity
+
+commit e9776a7aef1e8d6a4b021fa175e05b76ebfe60cc
+Author:     Valentina <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-10-29 20:08:27 -0500
+Commit:     Valentina <valisprenun2401052019@gmail.com>
+CommitDate: 2026-10-29 20:08:27 -0500
+
+    Primer commit
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+D	Assets/Resources/PerformanceTestRunInfo.json
+D	Assets/Resources/PerformanceTestRunInfo.json.meta
+D	Assets/Resources/PerformanceTestRunSettings.json
+D	Assets/Resources/PerformanceTestRunSettings.json.meta
+M	Assets/Scenes/MainMenu.unity
+M	ProjectSettings/Packages/com.unity.probuilder/Settings.json
+
+commit 582014509197a8ac63d6925e8f12fb3d9ba85436
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-08-03 21:50:40 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-08-03 21:50:40 -0500
+
+    Fix GameManager an DestroyAfterDistance
+
+M	Assets/Scripts/Gameplay/DestroyAfterDistance.cs
+M	Assets/Scripts/Managers/GameManager.cs
+
+commit ed15746958fae8ff3b51aff544d1fb740fade049
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-08-03 21:33:19 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-08-03 21:33:19 -0500
+
+    Final Correction Typografy
+
+M	Assets/Scenes/MainMenu.unity
+
+commit 117a81f532ad06d3d7f6956f327c2fb0822438a7
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-08-03 21:24:05 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-08-03 21:24:05 -0500
+
+    Correction final typografy
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF 1.asset
+
+commit 396761cfdc9ea0dd1dd209e2bc7a4d080ab640f4
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-08-03 21:23:22 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-08-03 21:23:22 -0500
+
+    Implement oil spill system and final gameplay updates
+    
+    Correction typografy
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/Montserrat-Regular.ttf.meta
+R066	Assets/Fonts/SuperMario256 SDF.asset	Assets/Fonts/SuperMario256 SDF 1.asset
+R079	Assets/Fonts/SuperMario256 SDF.asset.meta	Assets/Fonts/SuperMario256 SDF 1.asset.meta
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scenes/MainMenu.unity
+
+commit 050d0cbc8514eaa1fe24b815068d32bc4502da23
+Merge: 53ab2d9 2b1ec7f
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-08-03 21:00:21 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-08-03 21:00:21 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 53ab2d94b81248591d38d6675a9f6e53bfdc3fac
+Merge: a418aee 35d0115
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-08-03 20:59:39 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-08-03 20:59:39 -0500
+
+    Implement oil spill system and final gameplay updates
+    
+    - Added oil spill gameplay logic
+    - Added gameplay sound effects
+    - Updated gameplay scene
+    - Applied final gameplay adjustments
+
+commit 2b1ec7fddbd26849dedcf6fd378cd7e0a243d313
+Merge: 35d0115 01ed5be
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-08-03 20:56:55 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-08-03 20:56:55 -0500
+
+    Merge pull request #12 from valeen0024/Ivan
+    
+    Engine and turbo sounds have been added for the kart, including fade-in effects upon starting and fade-out effects upon stopping; additionally, the engine sound becomes louder and more rapid when the turbo is activated.
+
+commit 01ed5becbb4cdbe1b222884e234f3d9cf011c089
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-08-03 20:55:38 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-08-03 20:55:38 -0500
+
+     Final engine and turbo sound adjustment
+    
+    Final engine and turbo sound adjustment
+
+M	Assets/Scenes/Gameplay.unity
+
+commit a418aee3867eb92363effeb95d71b3d52d6d3d0c
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-08-03 20:54:38 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-08-03 20:54:38 -0500
+
+    Finalize Stage 5 project
+    
+    - Added background music system
+    - Final UI improvements
+    - Updated game settings
+    - Fixed build issues
+    - Prepared final executable
+
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+A	Assets/Resources.meta
+A	Assets/Resources/PerformanceTestRunInfo.json
+A	Assets/Resources/PerformanceTestRunInfo.json.meta
+A	Assets/Resources/PerformanceTestRunSettings.json
+A	Assets/Resources/PerformanceTestRunSettings.json.meta
+M	Assets/Settings/DefaultVolumeProfile.asset
+M	Assets/Settings/PC_RPAsset.asset
+M	Assets/Settings/UniversalRenderPipelineGlobalSettings.asset
+M	ProjectSettings/ProjectSettings.asset
+M	ProjectSettings/UnityConnectSettings.asset
+
+commit c36a4f28323d89bbedaf12bab96afa252f9a90b7
+Merge: 6252252 35d0115
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-08-03 20:32:24 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-08-03 20:32:24 -0500
+
+    Merge branch 'main' into Ivan
+
+commit 35d0115ec7973b44cc1faaaefbc44d8dbe829be3
+Merge: 9c66215 934dddb
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-08-03 20:31:16 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-08-03 20:31:16 -0500
+
+    Add Oil Spill
+    
+    Added oil spill effect
+
+commit 934dddbbe84e0564a909894e3e9c1f05f822ca89
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-08-03 20:12:51 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-08-03 20:12:51 -0500
+
+    Add oil spill
+    
+    Added oil spill sound effect and fuel reduction trigger
+
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+
+commit 625225235d9c98b075ab0c89843a6ca5fc65f26a
+Merge: 83b6cc2 9c66215
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-08-03 20:09:20 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-08-03 20:09:20 -0500
+
+    Merge branch 'main' into Ivan
+
+commit 9c6621559554f2424271016f4ae1db5ba38a0192
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-08-03 19:51:24 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-08-03 19:51:24 -0500
+
+    Revise README for final prototype and team details
+    
+    Updated the README.md to reflect final prototype details, project description, team members, and gameplay features.
+
+M	README.md
+
+commit 83b6cc22241f1e6256000ab74bef51e53af5c9a7
+Merge: 36ae092 134b87e
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-08-03 19:45:24 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-08-03 19:45:24 -0500
+
+    Merge branch 'main' into Ivan
+
+commit 134b87eaf8ce0dd638f0218b6c85bbef7ecc6545
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-08-03 19:39:46 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-08-03 19:39:46 -0500
+
+    CameraFollow
+    
+    cameraFollow code update
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Gameplay/CameraFollow.cs
+
+commit 36ae0926ff933a46de321b85e1877e44a26c7c48
+Merge: 0a73565 ec5a932
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-08-03 19:38:05 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-08-03 19:38:05 -0500
+
+    Merge branch 'main' into Ivan
+
+commit ca178022721b7dbddaa492d5e9c83e449f3287f3
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-08-03 17:23:42 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-08-03 17:23:42 -0500
+
+    KartCamera
+    
+    A KartCamera script is added to give the camera dynamism.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+A	Assets/Scripts/Gameplay/KartCamera.cs
+A	Assets/Scripts/Gameplay/KartCamera.cs.meta
+
+commit ad4a550c6ffa7556b6ae1a369f0b5fb394890bce
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-08-03 16:14:59 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-08-03 16:14:59 -0500
+
+    KartLaneController
+    
+    KartLaneController Script Update
+
+M	Assets/Scripts/Player/KartLaneController.cs
+
+commit 08af469de60f3dcb224738b1ca637d54c3c4b206
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-08-03 15:58:21 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-08-03 15:58:21 -0500
+
+    effect volume
+    
+    the volume of the effect is reduced
+
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+
+commit 41ac4351a43ed0a8d368a84ce54cc49b524e80a7
+Merge: 1944ce6 ec5a932
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-08-03 15:41:16 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-08-03 15:41:16 -0500
+
+    Merge branch 'main' into Andres
+
+commit 1944ce6c5a9ff141da338e0b61b7184fcef5c8c1
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-08-03 15:31:52 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-08-03 15:31:52 -0500
+
+     sources
+    
+    Re-import Montserrat and SuperMario256 fonts for TMP
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+
+commit ec5a9327b39ac9bb13f1630564cb38fe253a6af9
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-08-01 18:15:21 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-08-01 18:15:21 -0500
+
+    Implement background music system
+    
+    - Added background music manager.
+    - Implemented persistent music across scenes.
+    - Configured menu and gameplay music.
+    - Removed unused mute button.
+    - Adjusted audio settings and volume.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/Scenes/MainMenu.unity
+A	Assets/Scripts/UI/MusicManager.cs
+A	Assets/Scripts/UI/MusicManager.cs.meta
+
+commit 0a735654d1e81b4656aab32482baba83b5faccac
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-08-01 10:46:13 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-08-01 10:46:13 -0500
+
+    kart engine sound and turbo sound are added.
+    
+    Engine and turbo sounds have been added for the kart, including fade-in effects upon starting and fade-out effects upon stopping; additionally, the engine sound becomes louder and more rapid when the turbo is activated.
+
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Gameplay/DistanceTracker.cs
+M	Assets/Scripts/Gameplay/TrafficLightManager.cs
+M	Assets/Scripts/Managers/GameManager.cs
+M	Assets/Scripts/Player/CPUController.cs
+M	Assets/Scripts/Player/KartFuelSystem.cs
+M	Assets/Scripts/Player/KartLaneController.cs
+
+commit c90235983c6f26626e7ced6286f0cfdb7433adff
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-31 17:05:09 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-31 17:05:09 -0500
+
+    Oil stain effect
+    
+    Add sound effect to the oil stain
+
+A	Assets/Audio/SFX/olenchic.mp3
+A	Assets/Audio/SFX/olenchic.mp3.meta
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+A	Assets/Scripts/Gameplay/OilSpill.cs
+A	Assets/Scripts/Gameplay/OilSpill.cs.meta
+
+commit 2eb80257231ed11a59082824c3bd893736d9dc43
+Merge: 519222e 41289ed
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-29 09:32:15 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-29 09:32:15 -0500
+
+    Merge pull request #11 from valeen0024/Andres
+    
+    Andres
+
+commit 41289edc8068e05d8d8b74587dcc72e7704482a5
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-29 09:19:44 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-29 09:19:44 -0500
+
+    sound of winning and losing
+    
+    Amplify the sound when the player wins the game and when they lose it
+
+A	Assets/Audio/SFX/lose sound.mp3
+A	Assets/Audio/SFX/lose sound.mp3.meta
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Managers/UIManager.cs
+
+commit 59ace1f668b19c3e4a402f4a270c448e70d2d29c
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-29 08:13:48 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-29 08:13:48 -0500
+
+     finish line effect
+    
+    Add the finish line sound effect
+
+A	Assets/Scripts/Gameplay/FinishLine.cs
+A	Assets/Scripts/Gameplay/FinishLine.cs.meta
+
+commit 519222e198a67c28346ce17c8271f901d74db878
+Merge: 2adb62c 82277a8
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-27 20:09:22 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-27 20:09:22 -0500
+
+    Merge pull request #10 from valeen0024/Ivan
+    
+    A speed-boost function was added
+
+commit 82277a805fec0760714284b387b171810ccde414
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-27 20:08:34 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-27 20:08:34 -0500
+
+    The speed-boost function was added.
+    
+    A speed-boost function was added for the player, activated via the W key, and for the CPU, which activates it randomly.
+
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Managers/GameManager.cs
+M	Assets/Scripts/Player/CPUController.cs
+M	Assets/Scripts/Player/KartLaneController.cs
+
+commit 236134f64e9639b148938d7036d88a19b7eb1ab4
+Merge: 9e1ad32 2adb62c
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-27 18:11:57 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-27 18:11:57 -0500
+
+    Merge branch 'main' into Ivan
+
+commit 2adb62ca60f0c6ec4b5d8640c1f4e476ad7b3c5e
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-27 04:23:45 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-27 04:23:45 -0500
+
+    Complete gameplay flow and player-to-CPU transition
+    
+    - Added complete gameplay flow from start to finish
+    - Implemented player and CPU turn transitions
+    - Added camera switch between player and CPU
+    - Reset CPU to the starting position before its turn
+    - Respawned fuel barrels between turns
+    - Improved game state management
+    - Added winner screen flow and replay support
+    - Fixed gameplay transition issues
+    - General code cleanup and stability improvements
+
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+A	Assets/Materials/Color_car/MAT_LightBlue.mat
+A	Assets/Materials/Color_car/MAT_LightBlue.mat.meta
+M	Assets/Materials/Color_car/MAT_Olive.mat
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scenes/MainMenu.unity
+M	Assets/Scripts/Gameplay/CameraFollow.cs
+M	Assets/Scripts/Managers/CharacterSelectionManager.cs
+M	Assets/Scripts/Managers/GameManager.cs
+M	Assets/Scripts/Managers/MainMenuManager.cs
+M	Assets/Scripts/Managers/UIManager.cs
+A	Assets/Scripts/Managers/WinnerUIManager.cs
+A	Assets/Scripts/Managers/WinnerUIManager.cs.meta
+M	Assets/Scripts/Player/CPUController.cs
+A	Assets/Scripts/Player/CharacterMaterialManager.cs
+A	Assets/Scripts/Player/CharacterMaterialManager.cs.meta
+M	Assets/Scripts/Player/KartFuelSystem.cs
+M	Assets/Scripts/Player/KartMovement.cs
+R100	Assets/Sprites/HUD/UI_MIDDLE BAR.png	Assets/Sprites/HUD/RELLENO ATRAS BARRA GASOLINA-1.png
+R098	Assets/Sprites/HUD/UI_MIDDLE BAR.png.meta	Assets/Sprites/HUD/RELLENO ATRAS BARRA GASOLINA-1.png.meta
+
+commit a9bdc84aed7bd936dc4aa3591b5445856b35c0e9
+Merge: fc090a0 9c51d62
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-26 15:27:37 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-26 15:27:37 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 9c51d62a35044fa1260b17a070762e2ae32b3520
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-26 15:26:24 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-26 15:26:24 -0500
+
+    Material
+    
+    Change Material Kart
+
+D	Assets/Materials/Color_car/Blue.meta
+D	Assets/Materials/Color_car/Blue/MAT_BluePaint.mat.meta
+D	Assets/Materials/Color_car/Blue/MAT_Front_Blue.mat
+D	Assets/Materials/Color_car/Blue/MAT_Front_Blue.mat.meta
+D	Assets/Materials/Color_car/Green/Front_Green.mat
+D	Assets/Materials/Color_car/Green/Front_Green.mat.meta
+D	Assets/Materials/Color_car/Green/GreenPaint.mat.meta
+A	Assets/Materials/Color_car/MAT_Blue.mat
+R079	Assets/Materials/Color_car/Yellow/MAT_RedPaint.mat.meta	Assets/Materials/Color_car/MAT_Blue.mat.meta
+R096	Assets/Materials/Color_car/Red/MAT_RedPaint.mat	Assets/Materials/Color_car/MAT_Character.mat
+R052	Assets/Materials/Color_car/Green.meta	Assets/Materials/Color_car/MAT_Character.mat.meta
+R095	Assets/Materials/Color_car/Yellow/MAT_RedPaint.mat	Assets/Materials/Color_car/MAT_Gray.mat
+R052	Assets/Materials/Color_car/Red.meta	Assets/Materials/Color_car/MAT_Gray.mat.meta
+R099	Assets/Materials/Color_car/Green/GreenPaint.mat	Assets/Materials/Color_car/MAT_Green.mat
+R052	Assets/Materials/Color_car/Yellow.meta	Assets/Materials/Color_car/MAT_Green.mat.meta
+A	Assets/Materials/Color_car/MAT_Olive.mat
+A	Assets/Materials/Color_car/MAT_Olive.mat.meta
+A	Assets/Materials/Color_car/MAT_Orange.mat
+A	Assets/Materials/Color_car/MAT_Orange.mat.meta
+R095	Assets/Materials/Color_car/Blue/MAT_BluePaint.mat	Assets/Materials/Color_car/MAT_Red.mat
+A	Assets/Materials/Color_car/MAT_Red.mat.meta
+A	Assets/Materials/Color_car/MAT_Yellow.mat
+A	Assets/Materials/Color_car/MAT_Yellow.mat.meta
+D	Assets/Materials/Color_car/Red/MAT_Front_Red.mat
+D	Assets/Materials/Color_car/Red/MAT_Front_Red.mat.meta
+D	Assets/Materials/Color_car/Red/MAT_RedPaint.mat.meta
+M	Assets/Scenes/Gameplay.unity
+
+commit fc090a0d125bf85c6ed7069ec748885827e302ae
+Merge: 852c880 bf82182
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-26 15:04:31 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-26 15:04:31 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 9e1ad3228e90a9a6a14969e369f2faa0bbddc5b1
+Merge: 02e58c4 2fd1310
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-26 14:22:13 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-26 14:22:13 -0500
+
+    Merge branch 'main' into Ivan
+
+commit bf82182f59cc7024ac06faee3b57cfc13d9ed2a0
+Merge: 2fd1310 02e58c4
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-26 14:17:19 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-26 14:17:19 -0500
+
+    Merge pull request #9 from valeen0024/Ivan
+    
+    CPUCONTROLLER Update
+
+commit 02e58c4bf9b8c8b1bf3fa94c587e8425c1375786
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-26 14:16:54 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-26 14:16:54 -0500
+
+    CPUCONTROLLER Update
+    
+    CPUCONTROLLER Update
+
+M	Assets/Scenes/Gameplay.unity
+
+commit 2fd13106c2a188c2db047ed364fe2adb1db162f9
+Merge: 370a28a 0537f0c
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-26 14:15:26 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-26 14:15:26 -0500
+
+    Merge pull request #8 from valeen0024/Ivan
+    
+    The CPU controller was added, and the logic of the scripts affecting the match was modified to work correctly with both the CPU and the player.
+
+commit 0537f0cdb355bee9b77f72608c875e516aa38139
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-26 14:14:02 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-26 14:14:02 -0500
+
+    The CPU controller was added.
+    
+    The CPU controller was added, and the logic of the scripts affecting the match was modified to work correctly with both the CPU and the player.
+
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Gameplay/CameraFollow.cs
+M	Assets/Scripts/Gameplay/DestroyAfterDistance.cs
+M	Assets/Scripts/Gameplay/DistanceTracker.cs
+M	Assets/Scripts/Gameplay/FuelBarrel.cs
+M	Assets/Scripts/Gameplay/TrafficLightManager.cs
+M	Assets/Scripts/Managers/GameManager.cs
+A	Assets/Scripts/Player/CPUController.cs
+A	Assets/Scripts/Player/CPUController.cs.meta
+M	Assets/Scripts/Player/KartFuelSystem.cs
+M	Assets/Scripts/Player/KartLaneController.cs
+M	ProjectSettings/TagManager.asset
+
+commit 852c880e4af14cfaf5b2130a1a0d270d090b4a6d
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-26 02:26:24 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-26 02:26:24 -0500
+
+    Prepare gameplay UI integration
+    
+    - Create initial UI manager
+    - Prepare HUD references
+    - Set up fuel bar integration
+    - Prepare distance display integration
+
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Gameplay/TrafficLightManager.cs
+M	Assets/Scripts/Managers/CharacterSelectionManager.cs
+A	Assets/Scripts/Managers/UIManager.cs
+A	Assets/Scripts/Managers/UIManager.cs.meta
+M	Assets/Scripts/Player/KartFuelSystem.cs
+
+commit 370a28a2606f6138a8e975cc770479719ccf31e9
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-25 23:59:49 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-25 23:59:49 -0500
+
+    Barrel Sound effects
+    
+    Added sound effects for the barrels
+
+M	Assets/Scenes/Gameplay.unity
+
+commit 65348f27a8fca41d3f5b6a97b52e315dfa63dca0
+Merge: f2797cf 6794d5f
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-25 23:48:27 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-25 23:48:27 -0500
+
+    Merge branch 'main' into Valentina
+
+commit f2797cff6d8b6601ad92fc98303e1a8551942af4
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-25 23:45:46 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-25 23:45:46 -0500
+
+    Implement character selection system
+    
+    - Added player character selection with keyboard navigation
+    - Implemented CPU color selection animation
+    - Added color locking overlays
+    - Stored player and CPU selections using GameData
+    - Prepared transition to Gameplay scene
+
+M	Assets/Scenes/CharacterSelection.unity
+A	Assets/Scripts/Core.meta
+A	Assets/Scripts/Core/GameData.cs
+A	Assets/Scripts/Core/GameData.cs.meta
+A	Assets/Scripts/Managers/CharacterSelectionManager.cs
+A	Assets/Scripts/Managers/CharacterSelectionManager.cs.meta
+M	Assets/Sprites/UI/SPR_NODISPONIBLECH.png.meta
+M	ProjectSettings/ProjectSettings.asset
+
+commit 6794d5f81a25d0d75285a179ddf661adb9dd1796
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-25 23:30:07 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-25 23:30:07 -0500
+
+    configuratión
+    
+    kart configuration in th scene
+
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scripts/Gameplay/CameraFollow.cs
+A	Assets/Scripts/Gameplay/DestroyAfterDistance.cs
+A	Assets/Scripts/Gameplay/DestroyAfterDistance.cs.meta
+M	Assets/Scripts/Gameplay/FuelBarrel.cs
+M	Assets/Scripts/Gameplay/OilSlick.cs
+M	Assets/Scripts/Player/KartLaneController.cs
+M	ProjectSettings/Packages/com.unity.probuilder/Settings.json
+M	ProjectSettings/ProjectSettings.asset
+M	ProjectSettings/TagManager.asset
+
+commit dba69f00a7a2d4e1ba3bdae64171d402e73dc34d
+Merge: cabf15c 363d660
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-25 19:57:13 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-25 19:57:13 -0500
+
+    Merge pull request #7 from valeen0024/Ivan
+    
+     The Start tag was created.
+
+commit 363d660eae6aa6783ccfaae77478efe11fed44bc
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-25 19:56:35 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-25 19:56:35 -0500
+
+     The Start tag was created.
+    
+     The Start tag was created.
+
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	ProjectSettings/TagManager.asset
+
+commit cabf15c12e2cfb7100f124982c6374bebae28fc6
+Merge: 13e36d9 ad8e2c3
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-25 19:51:10 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-25 19:51:10 -0500
+
+    Merge branch 'main' into Ivan
+
+commit 13e36d91744ac322e4965be8222aa0d0e84a67b1
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-25 19:48:52 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-25 19:48:52 -0500
+
+     The GameManager and DistanceTracker scripts are created.
+    
+    The GameManager script controls the flow of the match—such as the game state (Player Turn, CPU Turn, Waiting, Finished)—toggles the visibility of the karts, and compares the distances traveled by the Player and the CPU to determine the winner or declare a draw.
+    
+    DistanceTracker automatically locates the "Start" and "Finish" objects upon startup, measures the distance along the Z-axis traveled by the kart between the start and finish lines, rounds it to two decimal places, and sends it to the game manager.
+
+A	Assets/Scripts/Gameplay/DistanceTracker.cs
+A	Assets/Scripts/Gameplay/DistanceTracker.cs.meta
+A	Assets/Scripts/Managers/GameManager.cs
+A	Assets/Scripts/Managers/GameManager.cs.meta
+
+commit ad8e2c349b12c7a336543a29dc30cd86b94db8d5
+Merge: ca32447 dcf2c32
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-25 19:27:22 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-25 19:27:22 -0500
+
+    Merge branch 'main' into Liliana
+
+commit dcf2c32e4ea1aa8c33fed7cc304524c643f2427d
+Merge: 702ac0f a1adedc
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-25 18:59:58 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-25 18:59:58 -0500
+
+    Merge branch 'Andres'
+
+commit ca3244706116e09ceb9ad3e87af51c1ecc5a679d
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-25 18:45:36 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-25 18:45:36 -0500
+
+    Fuel Bar UI
+    
+    Added the fuel bar UI
+
+M	Assets/Scenes/Gameplay.unity
+A	Assets/Scripts/UI/KartFuelUI.cs
+A	Assets/Scripts/UI/KartFuelUI.cs.meta
+M	ProjectSettings/TagManager.asset
+
+commit a1adedcfb1ff019962248c8a99a17c48ff1558b2
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-25 18:36:09 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-25 18:36:09 -0500
+
+    camera controller
+    
+    The cameracontroller script is uploaded
+
+A	Assets/Scripts/Gameplay/CameraFollow.cs
+A	Assets/Scripts/Gameplay/CameraFollow.cs.meta
+A	Assets/Scripts/Player/KartFuelSystem.cs.meta
+A	Assets/Scripts/Player/KartLaneController.cs.meta
+A	Assets/Scripts/Player/KartMovement.cs.meta
+
+commit 34c686231092a627e36124289d8bf9928f65a120
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-25 18:31:04 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-25 18:31:04 -0500
+
+    Kart Scripts
+    
+    kart script load
+
+D	Assets/Scripts/Player/CameraFollow.cs
+M	Assets/Scripts/Player/KartFuelSystem.cs
+D	Assets/Scripts/Player/KartFuelSystem.cs.meta
+D	Assets/Scripts/Player/KartLaneController.cs.meta
+A	Assets/Scripts/Player/KartMovement.cs
+
+commit 570e0adeb38523b508b5dffe7113a4d3eec13a5d
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-25 16:59:56 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-25 16:59:56 -0500
+
+    CameraFollow
+    
+    The camera script is uploaded
+
+M	Assets/Scenes/Gameplay.unity
+A	Assets/Scripts/Player/CameraFollow.cs
+A	Assets/Scripts/Player/KartFuelSystem.cs.meta
+A	Assets/Scripts/Player/KartLaneController.cs.meta
+
+commit 940988b0b8fcc214494cccac214a260a4cfca782
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-25 16:59:27 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-25 16:59:27 -0500
+
+    Traffic Ligth images
+    
+    Added traffic ligth images for different light states
+
+A	Assets/Sprites/TrafficLight.meta
+A	Assets/Sprites/TrafficLight/Left.meta
+A	Assets/Sprites/TrafficLight/Left/semaforoluzamarilla-01.png
+A	Assets/Sprites/TrafficLight/Left/semaforoluzamarilla-01.png.meta
+A	Assets/Sprites/TrafficLight/Left/semaforoluzroja-01.png
+A	Assets/Sprites/TrafficLight/Left/semaforoluzroja-01.png.meta
+A	Assets/Sprites/TrafficLight/Left/semaforoluzverde-01.png
+A	Assets/Sprites/TrafficLight/Left/semaforoluzverde-01.png.meta
+A	Assets/Sprites/TrafficLight/Left/semaforosin luces-01.png
+A	Assets/Sprites/TrafficLight/Left/semaforosin luces-01.png.meta
+A	Assets/Sprites/TrafficLight/right.meta
+A	Assets/Sprites/TrafficLight/right/semaforoluzamarilladerecha-01.png
+A	Assets/Sprites/TrafficLight/right/semaforoluzamarilladerecha-01.png.meta
+A	Assets/Sprites/TrafficLight/right/semaforoluzrojaderecha-01.png
+A	Assets/Sprites/TrafficLight/right/semaforoluzrojaderecha-01.png.meta
+A	Assets/Sprites/TrafficLight/right/semaforoluzverdederecha-01.png
+A	Assets/Sprites/TrafficLight/right/semaforoluzverdederecha-01.png.meta
+A	Assets/Sprites/TrafficLight/right/semaforosinluzderecha-01.png
+A	Assets/Sprites/TrafficLight/right/semaforosinluzderecha-01.png.meta
+
+commit 710e1268ac554a04ea468375e7f5e95646ddd1e0
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-25 16:49:43 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-25 16:49:43 -0500
+
+    Traffic ligth Script
+    
+    Added the traffic Ligth script implementation
+
+A	Assets/Scripts/Gameplay/TrafficLightManager.cs
+A	Assets/Scripts/Gameplay/TrafficLightManager.cs.meta
+
+commit 797303dda69d2d8f6682ddcee787c93d118b8e5f
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-25 16:48:29 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-25 16:48:29 -0500
+
+    Oil Slick Script
+    
+    Added the oil Slick Script implementation
+
+A	Assets/Scripts/Gameplay/OilSlick.cs
+A	Assets/Scripts/Gameplay/OilSlick.cs.meta
+
+commit 5342cd2c361262e4de73e61bda77963ef88920c2
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-25 16:46:49 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-25 16:46:49 -0500
+
+    Full barrel Script
+    
+    The full-barrel script was uploaded.
+
+A	Assets/Scripts/Gameplay/FuelBarrel.cs
+A	Assets/Scripts/Gameplay/FuelBarrel.cs.meta
+
+commit c083eb4614a8d1e0f6f2763d4098a95baf7e69f5
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-25 16:07:20 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-25 16:07:20 -0500
+
+    kart scripts
+    
+    The KartLaneController and KartFuelSystem are installed
+
+A	Assets/Scripts/Player/KartFuelSystem.cs
+A	Assets/Scripts/Player/KartLaneController.cs
+
+commit 2edd945114c64f308d6744043d662584dd1c3cb2
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-25 03:01:42 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-25 03:01:42 -0500
+
+    Refactor menu manager and update character selection UI
+    
+     Moved MainMenuManager script to the Managers folder
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+R100	Assets/Scripts/UI/MainMenuManager.cs	Assets/Scripts/Managers/MainMenuManager.cs
+R100	Assets/Scripts/UI/MainMenuManager.cs.meta	Assets/Scripts/Managers/MainMenuManager.cs.meta
+
+commit f2b87c344e0948519a7bd7d97ec8d20d003bff7f
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-25 02:37:46 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-25 02:37:46 -0500
+
+    Implement main menu functionality
+    
+    Added the main menu with functional Start, Credits, and Exit buttons. Implemented scene navigation to Character Selection and credits panel visibility.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/MainMenu.unity
+A	Assets/Scripts/UI/MainMenuManager.cs
+A	Assets/Scripts/UI/MainMenuManager.cs.meta
+M	ProjectSettings/EditorBuildSettings.asset
+M	ProjectSettings/Packages/com.unity.probuilder/Settings.json
+
+commit 702ac0febc236dd15f4c7efc778da25a6a978952
+Merge: cb6b34a a6928ca
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-13 21:06:31 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-13 21:06:31 -0500
+
+    Merge pull request #6 from valeen0024/Valentina
+    
+    Adjust Character Selection instruction bar
+
+commit a6928ca3ae31f0495b931cd05d55b7d5fc9c5f32
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-13 21:04:36 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-13 21:04:36 -0500
+
+    Adjust Character Selection instruction bar
+    
+    Update size of the instruction bar in the Character Selection scene to improve the UI layout
+
+M	Assets/Scenes/CharacterSelection.unity
+
+commit cb6b34a055e16ac19b79c7c7c04bf58e0bc3067e
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-13 20:41:56 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-13 20:41:56 -0500
+
+    Revise README with project information and instructions
+    
+    Updated README with project details, team members, technologies, workflow, current status, and getting started instructions.
+
+M	README.md
+
+commit 921fd5460abbc41e9acb8a221440d22bc8102fe0
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-13 20:31:37 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-13 20:31:37 -0500
+
+    Version1
+    
+    Presentation
+
+M	Assets/Scenes/MainMenu.unity
+
+commit ea61efce2c9747ffade0396d71a6c9f1b4416712
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-13 19:21:58 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-13 19:21:58 -0500
+
+    Change
+    
+    Change the name of the effects to English
+
+R100	Assets/Audio/SFX/SFX_APLAUSOS.mp3	Assets/Audio/SFX/SFX_Applause.mp3
+R100	Assets/Audio/SFX/SFX_APLAUSOS.mp3.meta	Assets/Audio/SFX/SFX_Applause.mp3.meta
+R100	Assets/Audio/SFX/SFX_VICTORIA.mp3	Assets/Audio/SFX/SFX_WIN.mp3
+R100	Assets/Audio/SFX/SFX_VICTORIA.mp3.meta	Assets/Audio/SFX/SFX_WIN.mp3.meta
+
+commit ff6d4e653584e48c5a9fe46ff61872c17d1b0ed2
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-13 18:48:02 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-13 18:48:02 -0500
+
+    verification
+    
+    verification of each of the folders in the scenes
+
+A	Assets/Audio/Music/MUS_1 Champion's Race (by juanjo_sound).wav
+A	Assets/Audio/Music/MUS_1 Champion's Race (by juanjo_sound).wav.meta
+A	Assets/Audio/Music/MUS_1 LOOP Champion's Race (by juanjo_sound).wav
+A	Assets/Audio/Music/MUS_1 LOOP Champion's Race (by juanjo_sound).wav.meta
+A	Assets/Audio/Music/MUS_2 Festival Day (by juanjo_sound).wav
+A	Assets/Audio/Music/MUS_2 Festival Day (by juanjo_sound).wav.meta
+A	Assets/Audio/SFX/SFX_Distance_counter.mp3
+A	Assets/Audio/SFX/SFX_Distance_counter.mp3.meta
+A	Assets/Materials/Color_car.meta
+R100	Assets/Materials/Blue.meta	Assets/Materials/Color_car/Blue.meta
+R100	Assets/Materials/Blue/MAT_BluePaint.mat	Assets/Materials/Color_car/Blue/MAT_BluePaint.mat
+R100	Assets/Materials/Blue/MAT_BluePaint.mat.meta	Assets/Materials/Color_car/Blue/MAT_BluePaint.mat.meta
+R100	Assets/Materials/Blue/MAT_Front_Blue.mat	Assets/Materials/Color_car/Blue/MAT_Front_Blue.mat
+R100	Assets/Materials/Blue/MAT_Front_Blue.mat.meta	Assets/Materials/Color_car/Blue/MAT_Front_Blue.mat.meta
+R100	Assets/Materials/Green.meta	Assets/Materials/Color_car/Green.meta
+R100	Assets/Materials/Green/Front_Green.mat	Assets/Materials/Color_car/Green/Front_Green.mat
+R100	Assets/Materials/Green/Front_Green.mat.meta	Assets/Materials/Color_car/Green/Front_Green.mat.meta
+R100	Assets/Materials/Green/GreenPaint.mat	Assets/Materials/Color_car/Green/GreenPaint.mat
+R100	Assets/Materials/Green/GreenPaint.mat.meta	Assets/Materials/Color_car/Green/GreenPaint.mat.meta
+R100	Assets/Materials/Red.meta	Assets/Materials/Color_car/Red.meta
+R100	Assets/Materials/Red/MAT_Front_Red.mat	Assets/Materials/Color_car/Red/MAT_Front_Red.mat
+R100	Assets/Materials/Red/MAT_Front_Red.mat.meta	Assets/Materials/Color_car/Red/MAT_Front_Red.mat.meta
+R100	Assets/Materials/Red/MAT_RedPaint.mat	Assets/Materials/Color_car/Red/MAT_RedPaint.mat
+R100	Assets/Materials/Red/MAT_RedPaint.mat.meta	Assets/Materials/Color_car/Red/MAT_RedPaint.mat.meta
+R100	Assets/Materials/Yellow.meta	Assets/Materials/Color_car/Yellow.meta
+R100	Assets/Materials/Yellow/MAT_RedPaint.mat	Assets/Materials/Color_car/Yellow/MAT_RedPaint.mat
+R100	Assets/Materials/Yellow/MAT_RedPaint.mat.meta	Assets/Materials/Color_car/Yellow/MAT_RedPaint.mat.meta
+M	Assets/Scenes/Gameplay.unity
+R100	Assets/Materials/MAT_ OIL SPILL.png	Assets/Sprites/Image/IMG_ OIL SPILL.png
+R100	Assets/Materials/MAT_ OIL SPILL.png.meta	Assets/Sprites/Image/IMG_ OIL SPILL.png.meta
+R100	Assets/Materials/MAT_BARREL.png	Assets/Sprites/Image/IMG_BARREL.png
+R100	Assets/Materials/MAT_BARREL.png.meta	Assets/Sprites/Image/IMG_BARREL.png.meta
+R100	Assets/Materials/MAT_CONE.png	Assets/Sprites/Image/IMG_CONE.png
+R100	Assets/Materials/MAT_CONE.png.meta	Assets/Sprites/Image/IMG_CONE.png.meta
+R100	Assets/Materials/MAT_PROGRESS BAR.png	Assets/Sprites/Image/IMG_PROGRESS BAR.png
+R100	Assets/Materials/MAT_PROGRESS BAR.png.meta	Assets/Sprites/Image/IMG_PROGRESS BAR.png.meta
+R100	Assets/Materials/Llantas.png	Assets/Sprites/Image/IMG_TIRE.png
+R100	Assets/Materials/Llantas.png.meta	Assets/Sprites/Image/IMG_TIRE.png.meta
+R100	Assets/Materials/MAT_TRAFFIC LIGTH.png	Assets/Sprites/Image/IMG_TRAFFIC LIGTH.png
+R100	Assets/Materials/MAT_TRAFFIC LIGTH.png.meta	Assets/Sprites/Image/IMG_TRAFFIC LIGTH.png.meta
+
+commit 29c5ed0d1d652ee53567d2d06f862cd7bcea8440
+Merge: 779070b 9a97fc7
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-13 18:21:14 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-13 18:21:14 -0500
+
+    Merge pull request #5 from valeen0024/Ivan
+    
+    Rename the objects to English.
+
+commit 9a97fc70f927d5250f8c50ee27bdf392d7387437
+Merge: c0f7567 779070b
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-13 18:01:55 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-13 18:01:55 -0500
+
+    Merge branch 'main' into Ivan
+
+commit c0f7567b8170a9a6f651eb3c0f2755e162bd971a
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-13 17:12:31 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-13 17:12:31 -0500
+
+    Rename the objects to English.
+    
+    Change the names of the objects you previously added from Spanish to English.
+
+R099	Assets/Materials/MAT_Linea de meta.mat	Assets/Materials/MAT_ Finishing _Line.mat
+R100	Assets/Materials/MAT_Linea de meta.mat.meta	Assets/Materials/MAT_ Finishing _Line.mat.meta
+R099	Assets/Materials/MAT_Hoias.mat	Assets/Materials/MAT_ Tree_Leaves.mat
+R100	Assets/Materials/MAT_Hoias.mat.meta	Assets/Materials/MAT_ Tree_Leaves.mat.meta
+R099	Assets/Materials/MAT_Aslfalto.mat	Assets/Materials/MAT_Asphalt.mat
+R100	Assets/Materials/MAT_Aslfalto.mat.meta	Assets/Materials/MAT_Asphalt.mat.meta
+R099	Assets/Materials/MAT_Paleta gradas 8.mat	Assets/Materials/MAT_Bleachers.mat
+R100	Assets/Materials/MAT_Paleta gradas 8.mat.meta	Assets/Materials/MAT_Bleachers.mat.meta
+A	Assets/Materials/MAT_Gantry.mat
+A	Assets/Materials/MAT_Gantry.mat.meta
+A	Assets/Materials/MAT_Gantry_Star_1.mat
+A	Assets/Materials/MAT_Gantry_Star_1.mat.meta
+A	Assets/Materials/MAT_Gantry_Star_2.mat
+A	Assets/Materials/MAT_Gantry_Star_2.mat.meta
+R099	Assets/Materials/MAT_Hierba.mat	Assets/Materials/MAT_Grass.mat
+R100	Assets/Materials/MAT_Hierba.mat.meta	Assets/Materials/MAT_Grass.mat.meta
+R099	Assets/Materials/MAT_Carriles.mat	Assets/Materials/MAT_Lanes.mat
+R100	Assets/Materials/MAT_Carriles.mat.meta	Assets/Materials/MAT_Lanes.mat.meta
+R099	Assets/Materials/MAT_Linea de inicio.mat	Assets/Materials/MAT_Line.mat
+R100	Assets/Materials/MAT_Linea de inicio.mat.meta	Assets/Materials/MAT_Line.mat.meta
+R099	"Assets/Materials/MAT_L\303\255neaS.mat"	Assets/Materials/MAT_Lines.mat
+R100	"Assets/Materials/MAT_L\303\255neaS.mat.meta"	Assets/Materials/MAT_Lines.mat.meta
+R095	Assets/Materials/MAT_Polyverse Skies - Blue Sky.mat	Assets/Materials/MAT_Skybox.mat
+R100	Assets/Materials/MAT_Polyverse Skies - Blue Sky.mat.meta	Assets/Materials/MAT_Skybox.mat.meta
+R099	Assets/Materials/MAT_Estrella.mat	Assets/Materials/MAT_Star.mat
+R100	Assets/Materials/MAT_Estrella.mat.meta	Assets/Materials/MAT_Star.mat.meta
+R099	Assets/Materials/MAT_Linea de inicio 1.mat	Assets/Materials/MAT_Start_Line.mat
+R100	Assets/Materials/MAT_Linea de inicio 1.mat.meta	Assets/Materials/MAT_Start_Line.mat.meta
+R099	Assets/Materials/MAT_Tronco.mat	Assets/Materials/MAT_Tree_Trunk.mat
+R100	Assets/Materials/MAT_Tronco.mat.meta	Assets/Materials/MAT_Tree_Trunk.mat.meta
+R099	Assets/Materials/MAT_Barreras.mat	Assets/Materials/MAT_Wall.mat
+R100	Assets/Materials/MAT_Barreras.mat.meta	Assets/Materials/MAT_Wall.mat.meta
+R099	Assets/Materials/MAT_Barreras2.mat	Assets/Materials/MAT_Wall_2.mat
+R100	Assets/Materials/MAT_Barreras2.mat.meta	Assets/Materials/MAT_Wall_2.mat.meta
+R100	Assets/Materials/textures/T_Aslfalto.png	Assets/Materials/textures/T_Asphalt.png
+R100	Assets/Materials/textures/T_Aslfalto.png.meta	Assets/Materials/textures/T_Asphalt.png.meta
+R100	Assets/Materials/textures/T_Paleta gradas 8.png	Assets/Materials/textures/T_Bleachers_Color_Palette.png
+R100	Assets/Materials/textures/T_Paleta gradas 8.png.meta	Assets/Materials/textures/T_Bleachers_Color_Palette.png.meta
+R100	Assets/Materials/textures/T_Linea de meta.png	Assets/Materials/textures/T_Finishing_line.png
+R100	Assets/Materials/textures/T_Linea de meta.png.meta	Assets/Materials/textures/T_Finishing_line.png.meta
+R100	Assets/Materials/textures/T_Hierba.png	Assets/Materials/textures/T_Grass.png
+R100	Assets/Materials/textures/T_Hierba.png.meta	Assets/Materials/textures/T_Grass.png.meta
+R100	Assets/Materials/textures/T_Carriles.png	Assets/Materials/textures/T_Lanes.png
+R100	Assets/Materials/textures/T_Carriles.png.meta	Assets/Materials/textures/T_Lanes.png.meta
+R100	"Assets/Materials/textures/T_L\303\255neas.png"	Assets/Materials/textures/T_Lines.png
+R100	"Assets/Materials/textures/T_L\303\255neas.png.meta"	Assets/Materials/textures/T_Lines.png.meta
+R100	Assets/Materials/textures/T_Estrella.png	Assets/Materials/textures/T_Star.png
+R100	Assets/Materials/textures/T_Estrella.png.meta	Assets/Materials/textures/T_Star.png.meta
+R100	Assets/Materials/textures/T_Linea de inicio 1.png	Assets/Materials/textures/T_Start Line.png
+R100	Assets/Materials/textures/T_Linea de inicio 1.png.meta	Assets/Materials/textures/T_Start Line.png.meta
+R100	Assets/Materials/textures/T_Tronco.png	Assets/Materials/textures/T_Tree trunk.png
+R100	Assets/Materials/textures/T_Tronco.png.meta	Assets/Materials/textures/T_Tree trunk.png.meta
+R100	Assets/Materials/textures/T_Hojas.png	Assets/Materials/textures/T_Tree_Leaves.png
+R100	Assets/Materials/textures/T_Hojas.png.meta	Assets/Materials/textures/T_Tree_Leaves.png.meta
+R100	Assets/Materials/textures/T_Barreras.png	Assets/Materials/textures/T_Wall.png
+R100	Assets/Materials/textures/T_Barreras.png.meta	Assets/Materials/textures/T_Wall.png.meta
+R100	Assets/Materials/textures/T_Barreras2.png	Assets/Materials/textures/T_Wall_2.png
+R100	Assets/Materials/textures/T_Barreras2.png.meta	Assets/Materials/textures/T_Wall_2.png.meta
+R100	Assets/Models/Environment/MD_Gradas.fbx	Assets/Models/Environment/MD_Bleachers.fbx
+R100	Assets/Models/Environment/MD_Gradas.fbx.meta	Assets/Models/Environment/MD_Bleachers.fbx.meta
+A	Assets/Models/Environment/MD_Finish_Line_Gantry.fbx
+A	Assets/Models/Environment/MD_Finish_Line_Gantry.fbx.meta
+R100	Assets/Models/Environment/MD_Polyverse Skies - Blue Sky.png	Assets/Models/Environment/MD_Skybox.png
+R100	Assets/Models/Environment/MD_Polyverse Skies - Blue Sky.png.meta	Assets/Models/Environment/MD_Skybox.png.meta
+R100	Assets/Models/Environment/MD_Arbol.fbx	Assets/Models/Environment/MD_Tree.fbx
+R100	Assets/Models/Environment/MD_Arbol.fbx.meta	Assets/Models/Environment/MD_Tree.fbx.meta
+R099	Assets/Prefabs/Pista.prefab	Assets/Prefabs/Track.prefab
+R100	Assets/Prefabs/Pista.prefab.meta	Assets/Prefabs/Track.prefab.meta
+R099	Assets/Prefabs/Barrera.prefab	Assets/Prefabs/Wall.prefab
+R100	Assets/Prefabs/Barrera.prefab.meta	Assets/Prefabs/Wall.prefab.meta
+R099	Assets/Prefabs/Barrera estrella.prefab	Assets/Prefabs/Wall_2.prefab
+R100	Assets/Prefabs/Barrera estrella.prefab.meta	Assets/Prefabs/Wall_2.prefab.meta
+M	Assets/Scenes/Gameplay.unity
+M	ProjectSettings/Packages/com.unity.probuilder/Settings.json
+
+commit 779070bcb46a29c78efeb709f3cb8ac400a3d2d2
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-13 15:33:25 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-13 15:33:25 -0500
+
+    Gameplay UI assembly v1
+    
+    Initial assembly of all UI scenes in Unity, including Main Menu, Character Selection, Gameplay HUD, Instruction Panel, and Results Panel. This version contains the UI layout and scene organization only; functionality will be implemented in later stages.
+
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+D	Assets/Scenes/Instructions.unity
+D	Assets/Scenes/Instructions.unity.meta
+D	Assets/Scenes/Results.unity
+D	Assets/Scenes/Results.unity.meta
+A	Assets/Sprites/Buttons/BTN MAIN MENU.png
+R092	Assets/Sprites/HUD/UI_FUEL GAUGE.png.meta	Assets/Sprites/Buttons/BTN MAIN MENU.png.meta
+A	Assets/Sprites/Buttons/BTN_PLAY AGAIN.png
+A	Assets/Sprites/Buttons/BTN_PLAY AGAIN.png.meta
+D	Assets/Sprites/HUD/UI_FUEL GAUGE.png
+R077	Assets/Assets.meta	Assets/Sprites/Image.meta
+A	Assets/Sprites/Image/TX GANA!.png
+A	Assets/Sprites/Image/TX GANA!.png.meta
+A	Assets/Sprites/Image/j1.png
+A	Assets/Sprites/Image/j1.png.meta
+A	Assets/Sprites/Image/j2.png
+A	Assets/Sprites/Image/j2.png.meta
+A	Assets/Sprites/Image/j3.png
+A	Assets/Sprites/Image/j3.png.meta
+A	Assets/Sprites/Image/j4.png
+A	Assets/Sprites/Image/j4.png.meta
+D	Assets/TutorialInfo.meta
+D	Assets/TutorialInfo/Icons.meta
+D	Assets/TutorialInfo/Scripts.meta
+D	Assets/TutorialInfo/Scripts/Editor.meta
+D	Assets/UI.meta
+D	Assets/VFX.meta
+
+commit fe35a3bca1110907fbe67e99719cb6bc5a18b1af
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-13 03:16:16 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-13 03:16:16 -0500
+
+    Complete Gameplay UI
+    
+    Added and organized the Gameplay HUD interface, including the fuel bar, UI elements, and layout structure.
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Sprites/Buttons/BTN_MICROPHONE.png.meta
+A	Assets/Sprites/HUD/UI_ARROWS INSTRUCTIONS.png
+A	Assets/Sprites/HUD/UI_ARROWS INSTRUCTIONS.png.meta
+A	Assets/Sprites/HUD/UI_BACKBAR.png
+A	Assets/Sprites/HUD/UI_BACKBAR.png.meta
+A	Assets/Sprites/HUD/UI_BAR INSTRUCTIONS.png
+A	Assets/Sprites/HUD/UI_BAR INSTRUCTIONS.png.meta
+A	Assets/Sprites/HUD/UI_BARREL.png
+A	Assets/Sprites/HUD/UI_BARREL.png.meta
+A	Assets/Sprites/HUD/UI_FUEL BAR.png
+A	Assets/Sprites/HUD/UI_FUEL BAR.png.meta
+A	Assets/Sprites/HUD/UI_FUEL GAUGE.png
+A	Assets/Sprites/HUD/UI_FUEL GAUGE.png.meta
+A	Assets/Sprites/HUD/UI_MIDDLE BAR.png
+A	Assets/Sprites/HUD/UI_MIDDLE BAR.png.meta
+A	Assets/Sprites/HUD/UI_TEXT PLAYER.png
+A	Assets/Sprites/HUD/UI_TEXT PLAYER.png.meta
+
+commit d81b82b8945e34a23b788040d0e219e9a9b9f0b4
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-13 02:37:24 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-13 02:37:24 -0500
+
+    Complete character selection UI layout
+    
+    Added and organize the character selection
+
+M	Assets/Fonts/Montserrat-Black SDF.asset
+M	Assets/Fonts/Montserrat-Light SDF.asset
+M	Assets/Fonts/Montserrat-Regular SDF.asset
+M	Assets/Fonts/SuperMario256 SDF.asset
+M	Assets/Scenes/CharacterSelection.unity
+M	Assets/Scenes/Gameplay.unity
+A	Assets/Sprites/Backgrounds/BG_SelectionCharacter.png
+A	Assets/Sprites/Backgrounds/BG_SelectionCharacter.png.meta
+A	Assets/Sprites/Buttons/BTN EXIT SC.png
+A	Assets/Sprites/Buttons/BTN EXIT SC.png.meta
+A	Assets/Sprites/Buttons/BTN_ALEATORY SC.png
+A	Assets/Sprites/Buttons/BTN_ALEATORY SC.png.meta
+A	Assets/Sprites/Buttons/BTN_CONFIRM SC.png
+A	Assets/Sprites/Buttons/BTN_CONFIRM SC.png.meta
+A	Assets/Sprites/Buttons/BTN_MICROPHONE.png
+A	Assets/Sprites/Buttons/BTN_MICROPHONE.png.meta
+A	Assets/Sprites/Buttons/BTN_MUSIC.png
+A	Assets/Sprites/Buttons/BTN_MUSIC.png.meta
+A	Assets/Sprites/Icons/SPR_ARROWS SC.png
+A	Assets/Sprites/Icons/SPR_ARROWS SC.png.meta
+A	Assets/Sprites/Icons/SPR_CHARACTERS COLOR.png
+A	Assets/Sprites/Icons/SPR_CHARACTERS COLOR.png.meta
+A	Assets/Sprites/UI.meta
+A	Assets/Sprites/UI/SPR_ BAR NAME.png
+A	Assets/Sprites/UI/SPR_ BAR NAME.png.meta
+A	Assets/Sprites/UI/SPR_ELEMENT.png
+A	Assets/Sprites/UI/SPR_ELEMENT.png.meta
+A	Assets/Sprites/UI/SPR_J1 SELECTION BORDER.png
+A	Assets/Sprites/UI/SPR_J1 SELECTION BORDER.png.meta
+A	Assets/Sprites/UI/SPR_J2 SELECTION BORDER.png
+A	Assets/Sprites/UI/SPR_J2 SELECTION BORDER.png.meta
+A	Assets/Sprites/UI/SPR_J3 SELECTION BORDER.png
+A	Assets/Sprites/UI/SPR_J3 SELECTION BORDER.png.meta
+A	Assets/Sprites/UI/SPR_J4 SELECTION BORDER.png
+A	Assets/Sprites/UI/SPR_J4 SELECTION BORDER.png.meta
+A	Assets/Sprites/UI/SPR_NODISPONIBLECH.png
+A	Assets/Sprites/UI/SPR_NODISPONIBLECH.png.meta
+
+commit fc2c069e1ed9c4775b9d0d1c3f98f366e1c809b2
+Merge: 9126710 8ab7427
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-12 21:14:37 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-12 21:14:37 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 91267105baba4db3c87504f01a0b10d1cebdf740
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-12 21:14:09 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-12 21:14:09 -0500
+
+    Complete Main Menu UI layout
+    
+    Added and organized the main menu interface
+
+A	Assets/Fonts/Montserrat-Black SDF.asset
+A	Assets/Fonts/Montserrat-Black SDF.asset.meta
+A	Assets/Fonts/Montserrat-Light SDF.asset
+A	Assets/Fonts/Montserrat-Light SDF.asset.meta
+A	Assets/Fonts/Montserrat-Regular SDF.asset
+A	Assets/Fonts/Montserrat-Regular SDF.asset.meta
+A	Assets/Fonts/SuperMario256 SDF.asset
+A	Assets/Fonts/SuperMario256 SDF.asset.meta
+M	Assets/Scenes/MainMenu.unity
+M	Assets/Sprites/Backgrounds/BG_LIGHT.png.meta
+M	Assets/Sprites/Buttons/BTN_CREDITS.png.meta
+M	Assets/Sprites/Buttons/BTN_EXIT.png.meta
+M	Assets/Sprites/Logo/LG_OIL CRISIS.png.meta
+A	Assets/Sprites/Logo/TEXTO OIL CRISIS.png
+A	Assets/Sprites/Logo/TEXTO OIL CRISIS.png.meta
+M	ProjectSettings/Packages/com.unity.probuilder/Settings.json
+
+commit 8ab7427003890fae4cb938e2fd111209ad8414ea
+Merge: 7423e66 2fc6787
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 20:14:48 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-12 20:14:48 -0500
+
+    Merge pull request #4 from valeen0024/Liliana
+    
+    Decorative scene assets
+
+commit 2fc67879b3650ba8289e9ec6dc5ae6bfe4bf59e2
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 20:00:17 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 20:00:17 -0500
+
+    Traffic Ligth
+    
+    Add traffic ligth texture
+
+M	Assets/Materials/MAT_Barril.mat
+M	Assets/Scenes/Gameplay.unity
+
+commit a4bd19b0ae90a1351f7dd3ca21e8ca4c2bc57561
+Merge: 02da6bc 7423e66
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 19:19:58 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 19:19:58 -0500
+
+    Merge branch 'main' into Liliana
+
+commit 02da6bc19315f6e648100dfcee350ae7ce8220b7
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 19:14:50 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 19:14:50 -0500
+
+    scena assets
+    
+    Add scene decorative assets
+
+M	Assets/Materials/MAT_Barril.mat
+
+commit bad54c02381d1e25f9430c59e4ab8d711b596710
+Merge: bfc6ef9 7423e66
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-12 19:10:17 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-12 19:10:17 -0500
+
+    Merge branch 'main' into Valentina
+
+commit bfc6ef948e62c994c878ed7f0f7b401c8fa64b39
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-12 19:04:26 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-12 19:04:26 -0500
+
+    Main Menu UI initial
+    
+    Initial structure
+
+M	Assets/Scenes/Gameplay.unity
+M	Assets/Scenes/MainMenu.unity
+M	Assets/Sprites/Buttons/BTN_PLAY.png.meta
+A	Assets/TextMesh Pro.meta
+A	Assets/TextMesh Pro/Examples & Extras.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Anton OFL.txt
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Anton OFL.txt.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Anton.ttf
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Anton.ttf.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Bangers - OFL.txt
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Bangers - OFL.txt.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Bangers.ttf
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Bangers.ttf.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Electronic Highway Sign.TTF
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Electronic Highway Sign.TTF.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Oswald-Bold - OFL.txt
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Oswald-Bold - OFL.txt.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Oswald-Bold.ttf
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Oswald-Bold.ttf.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold - AFL.txt
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold - AFL.txt.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold - License.txt
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold - License.txt.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold.ttf
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold.ttf.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Unity - OFL.txt
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Unity - OFL.txt.meta
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Unity.ttf
+A	Assets/TextMesh Pro/Examples & Extras/Fonts/Unity.ttf.meta
+A	Assets/TextMesh Pro/Examples & Extras/Materials.meta
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Crate - Surface Shader Scene.mat
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Crate - Surface Shader Scene.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Crate - URP.mat
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Crate - URP.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Ground - Logo Scene.mat
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Ground - Logo Scene.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Ground - Surface Shader Scene.mat
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Ground - Surface Shader Scene.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Ground - URP.mat
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Ground - URP.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Small Crate_diffuse.mat
+A	Assets/TextMesh Pro/Examples & Extras/Materials/Small Crate_diffuse.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Prefabs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Prefabs/Text Popup.prefab
+A	Assets/TextMesh Pro/Examples & Extras/Prefabs/Text Popup.prefab.meta
+A	Assets/TextMesh Pro/Examples & Extras/Prefabs/TextMeshPro - Prefab 1.prefab
+A	Assets/TextMesh Pro/Examples & Extras/Prefabs/TextMeshPro - Prefab 1.prefab.meta
+A	Assets/TextMesh Pro/Examples & Extras/Prefabs/TextMeshPro - Prefab 2.prefab
+A	Assets/TextMesh Pro/Examples & Extras/Prefabs/TextMeshPro - Prefab 2.prefab.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Blue to Purple - Vertical.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Blue to Purple - Vertical.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Dark to Light Green - Vertical.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Dark to Light Green - Vertical.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Light to Dark Green - Vertical.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Light to Dark Green - Vertical.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Yellow to Orange - Vertical.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Yellow to Orange - Vertical.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF - Drop Shadow.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF - Drop Shadow.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF - Outline.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF - Outline.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF - Sunny Days.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF - Sunny Days.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF - Drop Shadow - 2 Pass.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF - Drop Shadow - 2 Pass.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF - Drop Shadow.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF - Drop Shadow.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF - Outline.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF - Outline.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF Glow.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF Glow.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF Logo - URP.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF Logo - URP.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF Logo.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF Logo.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Electronic Highway Sign SDF.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Electronic Highway Sign SDF.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/LiberationSans SDF - Metalic Green.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/LiberationSans SDF - Metalic Green.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/LiberationSans SDF - Overlay.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/LiberationSans SDF - Overlay.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/LiberationSans SDF - Soft Mask.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/LiberationSans SDF - Soft Mask.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Oswald Bold SDF.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Oswald Bold SDF.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - Drop Shadow.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - Drop Shadow.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - HDRP Unlit.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - HDRP Unlit.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - Surface.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - Surface.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - URP.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - URP.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Unity SDF - HDRP LIT - Bloom.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Unity SDF - HDRP LIT - Bloom.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Unity SDF - HDRP LIT - Outline.mat
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Unity SDF - HDRP LIT - Outline.mat.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Unity SDF.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Unity SDF.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Sprite Assets.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Sprite Assets/Default Sprite Asset.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Sprite Assets/Default Sprite Asset.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Sprite Assets/DropCap Numbers.asset
+A	Assets/TextMesh Pro/Examples & Extras/Resources/Sprite Assets/DropCap Numbers.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/01-  Single Line TextMesh Pro.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/01-  Single Line TextMesh Pro.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/02 - Multi-line TextMesh Pro.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/02 - Multi-line TextMesh Pro.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/03 - Line Justification.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/03 - Line Justification.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/04 - Word Wrapping.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/04 - Word Wrapping.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/05 - Style Tags.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/05 - Style Tags.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/06 - Extra Rich Text Examples.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/06 - Extra Rich Text Examples.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/07 - Superscript & Subscript Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/07 - Superscript & Subscript Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/08 - Improved Text Alignment.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/08 - Improved Text Alignment.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/09 - Margin Tag Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/09 - Margin Tag Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/10 - Bullets & Numbered List Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/10 - Bullets & Numbered List Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/11 - The Style Tag.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/11 - The Style Tag.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/12 - Link Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/12 - Link Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/12a - Text Interactions.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/12a - Text Interactions.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/13 - Soft Hyphenation.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/13 - Soft Hyphenation.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/14 - Multi Font & Sprites.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/14 - Multi Font & Sprites.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/15 - Inline Graphics & Sprites.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/15 - Inline Graphics & Sprites.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/16 - Linked text overflow mode example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/16 - Linked text overflow mode example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/17 - Old Computer Terminal.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/17 - Old Computer Terminal.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/18 - ScrollRect & Masking & Layout.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/18 - ScrollRect & Masking & Layout.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/19 - Masking Texture & Soft Mask.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/19 - Masking Texture & Soft Mask.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/20 - Input Field with Scrollbar.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/20 - Input Field with Scrollbar.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/21 - Script Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/21 - Script Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/22 - Basic Scripting Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/22 - Basic Scripting Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/23 - Animating Vertex Attributes.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/23 - Animating Vertex Attributes.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/24 - Surface Shader Example URP.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/24 - Surface Shader Example URP.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/24 - Surface Shader Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/24 - Surface Shader Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/25 - Sunny Days Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/25 - Sunny Days Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/26 - Dropdown Placeholder Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/26 - Dropdown Placeholder Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/27 - Double Pass Shader Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/27 - Double Pass Shader Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/28 - HDRP Shader Example.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/28 - HDRP Shader Example.unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/28 - HDRP Shader Example.unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/28 - HDRP Shader Example/Sky and Fog Volume Profile.asset
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/28 - HDRP Shader Example/Sky and Fog Volume Profile.asset.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/Benchmark (Floating Text).unity
+A	Assets/TextMesh Pro/Examples & Extras/Scenes/Benchmark (Floating Text).unity.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01_UGUI.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01_UGUI.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark02.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark02.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark03.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark03.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark04.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark04.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/CameraController.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/CameraController.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/ChatController.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/ChatController.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/DropdownSample.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/DropdownSample.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/EnvMapAnimator.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/EnvMapAnimator.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/ObjectSpin.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/ObjectSpin.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/ShaderPropAnimator.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/ShaderPropAnimator.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/SimpleScript.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/SimpleScript.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/SkewTextExample.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/SkewTextExample.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_DigitValidator.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_DigitValidator.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_ExampleScript_01.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_ExampleScript_01.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_FrameRateCounter.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_FrameRateCounter.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_PhoneNumberValidator.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_PhoneNumberValidator.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextEventCheck.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextEventCheck.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextEventHandler.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextEventHandler.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextInfoDebugTool.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextInfoDebugTool.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextSelector_A.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextSelector_A.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextSelector_B.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextSelector_B.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_UiFrameRateCounter.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_UiFrameRateCounter.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMPro_InstructionOverlay.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TMPro_InstructionOverlay.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TeleType.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TeleType.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TextConsoleSimulator.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TextConsoleSimulator.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TextMeshProFloatingText.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TextMeshProFloatingText.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TextMeshSpawner.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/TextMeshSpawner.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/VertexColorCycler.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/VertexColorCycler.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/VertexJitter.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/VertexJitter.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/VertexShakeA.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/VertexShakeA.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/VertexShakeB.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/VertexShakeB.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/VertexZoom.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/VertexZoom.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/WarpTextExample.cs
+A	Assets/TextMesh Pro/Examples & Extras/Scripts/WarpTextExample.cs.meta
+A	Assets/TextMesh Pro/Examples & Extras/Sprites.meta
+A	Assets/TextMesh Pro/Examples & Extras/Sprites/Default Sprites.png
+A	Assets/TextMesh Pro/Examples & Extras/Sprites/Default Sprites.png.meta
+A	Assets/TextMesh Pro/Examples & Extras/Sprites/DropCap Numbers.psd
+A	Assets/TextMesh Pro/Examples & Extras/Sprites/DropCap Numbers.psd.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Brushed Metal 3.jpg
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Brushed Metal 3.jpg.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Floor Cement.jpg
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Floor Cement.jpg.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Floor Tiles 1 - diffuse.jpg
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Floor Tiles 1 - diffuse.jpg.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Fruit Jelly (B&W).jpg
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Fruit Jelly (B&W).jpg.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Diagonal (Color).jpg
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Diagonal (Color).jpg.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Horizontal (Color).jpg
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Horizontal (Color).jpg.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Vertical (Color).jpg
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Vertical (Color).jpg.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Mask Zig-n-Zag.psd
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Mask Zig-n-Zag.psd.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_diffuse.jpg
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_diffuse.jpg.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_normal.jpg
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_normal.jpg.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Sunny Days - Seamless.jpg
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Sunny Days - Seamless.jpg.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text Image 1.png
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text Image 1.png.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text UI Screenshot.png
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text UI Screenshot.png.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Circle.psd
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Circle.psd.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Diagonal.psd
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Diagonal.psd.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Double.psd
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Double.psd.meta
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Quad.psd
+A	Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Quad.psd.meta
+A	Assets/TextMesh Pro/Fonts.meta
+A	Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt
+A	Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt.meta
+A	Assets/TextMesh Pro/Fonts/LiberationSans.ttf
+A	Assets/TextMesh Pro/Fonts/LiberationSans.ttf.meta
+A	Assets/TextMesh Pro/Resources.meta
+A	Assets/TextMesh Pro/Resources/Fonts & Materials.meta
+A	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Drop Shadow.mat
+A	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Drop Shadow.mat.meta
+A	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+A	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset.meta
+A	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Outline.mat
+A	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Outline.mat.meta
+A	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset
+A	Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset.meta
+A	Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt
+A	Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt.meta
+A	Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt
+A	Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt.meta
+A	Assets/TextMesh Pro/Resources/Sprite Assets.meta
+A	Assets/TextMesh Pro/Resources/Sprite Assets/EmojiOne.asset
+A	Assets/TextMesh Pro/Resources/Sprite Assets/EmojiOne.asset.meta
+A	Assets/TextMesh Pro/Resources/Style Sheets.meta
+A	Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset
+A	Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset.meta
+A	Assets/TextMesh Pro/Resources/TMP Settings.asset
+A	Assets/TextMesh Pro/Resources/TMP Settings.asset.meta
+A	Assets/TextMesh Pro/Shaders.meta
+A	Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl
+A	Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl.meta
+A	Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader
+A	Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader
+A	Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader
+A	Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader
+A	Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader
+A	Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-HDRP LIT.shadergraph
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-HDRP LIT.shadergraph.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-HDRP UNLIT.shadergraph
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-HDRP UNLIT.shadergraph.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile-2-Pass.shader
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile-2-Pass.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-URP Lit.shadergraph
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-URP Lit.shadergraph.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-URP Unlit.shadergraph
+A	Assets/TextMesh Pro/Shaders/TMP_SDF-URP Unlit.shadergraph.meta
+A	Assets/TextMesh Pro/Shaders/TMP_SDF.shader
+A	Assets/TextMesh Pro/Shaders/TMP_SDF.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMP_Sprite.shader
+A	Assets/TextMesh Pro/Shaders/TMP_Sprite.shader.meta
+A	Assets/TextMesh Pro/Shaders/TMPro.cginc
+A	Assets/TextMesh Pro/Shaders/TMPro.cginc.meta
+A	Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc
+A	Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc.meta
+A	Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc
+A	Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc.meta
+A	Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc
+A	Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc.meta
+A	Assets/TextMesh Pro/Sprites.meta
+A	Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt
+A	Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt.meta
+A	Assets/TextMesh Pro/Sprites/EmojiOne.json
+A	Assets/TextMesh Pro/Sprites/EmojiOne.json.meta
+A	Assets/TextMesh Pro/Sprites/EmojiOne.png
+A	Assets/TextMesh Pro/Sprites/EmojiOne.png.meta
+M	ProjectSettings/Packages/com.unity.probuilder/Settings.json
+
+commit 7423e66ce0b1e9a01075eb631ba0c690e8709f82
+Merge: 292d051 292990f
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-12 19:00:34 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-12 19:00:34 -0500
+
+    Merge pull request #3 from valeen0024/Andres
+    
+    Scene
+
+commit 292990ff55f6928fde5b29baefc393acd12b2fed
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-12 18:57:28 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-12 18:57:28 -0500
+
+    Scene
+    
+    integrating models into the scene
+
+M	Assets/Materials/Green/GreenPaint.mat
+A	Assets/Materials/Yellow.meta
+A	Assets/Materials/Yellow/MAT_RedPaint.mat
+A	Assets/Materials/Yellow/MAT_RedPaint.mat.meta
+A	Assets/Models/Vehicles/MD_kartcharac.fbx
+A	Assets/Models/Vehicles/MD_kartcharac.fbx.meta
+M	Assets/Scenes/Gameplay.unity
+M	ProjectSettings/Packages/com.unity.probuilder/Settings.json
+
+commit 794b58929a714e80815b4f453d7fa02a2a446f76
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-12 18:28:49 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-12 18:28:49 -0500
+
+    Integration
+    
+    integration of 3D models
+
+M	Assets/Materials/Textures.meta
+
+commit c5bc826b31a1972f6bc1417378f8aefb992c6d0d
+Merge: 88c4820 292d051
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-12 18:27:43 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-12 18:27:43 -0500
+
+    Merge branch 'main' into Andres
+
+commit fd4abd548985b0abdd7dc0618d39cef276ae7151
+Merge: 87d7dea 292d051
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-12 18:20:11 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-12 18:20:11 -0500
+
+    Merge branch 'main' into Valentina
+
+commit 87d7deadc3985bd184d07920813be594887eb7f8
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-12 18:19:03 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-12 18:19:03 -0500
+
+    Initialize Main Menu UI ASSETS
+    
+    Imported fonts, sprites, buttons, and background por the Main Menu, started organizing the UI assets in Unity
+
+A	Assets/Fonts.meta
+A	Assets/Fonts/Montserrat-Black.ttf
+A	Assets/Fonts/Montserrat-Black.ttf.meta
+A	Assets/Fonts/Montserrat-Light.ttf
+A	Assets/Fonts/Montserrat-Light.ttf.meta
+A	Assets/Fonts/Montserrat-Regular.ttf
+A	Assets/Fonts/Montserrat-Regular.ttf.meta
+A	Assets/Fonts/SuperMario256.ttf
+A	Assets/Fonts/SuperMario256.ttf.meta
+M	Assets/Scenes/MainMenu.unity
+M	Assets/Settings/Mobile_RPAsset.asset
+A	Assets/Sprites/Backgrounds/BG_LIGHT.png
+A	Assets/Sprites/Backgrounds/BG_LIGHT.png.meta
+A	Assets/Sprites/Backgrounds/BG_MainMenu.png
+A	Assets/Sprites/Backgrounds/BG_MainMenu.png.meta
+A	Assets/Sprites/Buttons/BTN_CREDITS.png
+A	Assets/Sprites/Buttons/BTN_CREDITS.png.meta
+A	Assets/Sprites/Buttons/BTN_EXIT.png
+A	Assets/Sprites/Buttons/BTN_EXIT.png.meta
+A	Assets/Sprites/Buttons/BTN_PLAY.png
+A	Assets/Sprites/Buttons/BTN_PLAY.png.meta
+A	Assets/Sprites/Logo.meta
+A	Assets/Sprites/Logo/LG_OIL CRISIS.png
+A	Assets/Sprites/Logo/LG_OIL CRISIS.png.meta
+M	Packages/manifest.json
+M	Packages/packages-lock.json
+
+commit 88c482092575aa459ee3a0f99cfdae29c512f2ff
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-12 18:17:12 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-12 18:17:12 -0500
+
+    Integration
+    
+    integration of 3D models
+
+M	Assets/Materials/Green/Front_Green.mat
+
+commit 292d051f7a35b79173600ca932c0e3d1a43585e4
+Merge: 431bb7e bec2a79
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-12 18:12:36 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-12 18:12:36 -0500
+
+    Merge pull request #2 from valeen0024/Ivan
+    
+    Add track and skybox to Gameplay scene
+
+commit bec2a7997962426f2f742ff4784a8215fc34a20d
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-12 17:57:13 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-12 17:57:13 -0500
+
+    Add track and skybox to Gameplay scene
+    
+    Integrated the race track prefab and configured the skybox in the Gameplay scene.
+
+M	Assets/Materials/MAT_Polyverse Skies - Blue Sky.mat
+M	Assets/Scenes/Gameplay.unity
+
+commit e8d23b273f55f835058a315605f609b81e355241
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-12 17:30:58 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-12 17:30:58 -0500
+
+    Pilot
+    
+    The character Kart is imported
+
+A	Assets/Models/Characters/MD_kartperson.fbx
+A	Assets/Models/Characters/MD_kartperson.fbx.meta
+
+commit 6d0064faa9f6481ff17ddca9463740c17795916f
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 17:29:43 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 17:29:43 -0500
+
+    Tire texture
+    
+    Add tire texture
+
+A	Assets/Materials/Llantas.png
+A	Assets/Materials/Llantas.png.meta
+
+commit b5f4a8c649f55842a25ca71d120991dd34c19f20
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-12 17:28:00 -0500
+Commit:     IvanC117 <castellanosivan2020@outlook.com>
+CommitDate: 2026-07-12 17:28:00 -0500
+
+    Add race track assets and prefab
+    
+    Added 3D models, textures, and materials that make up the race track. Additionally, assembled the pieces and created a complete race track prefab ready for the scene.
+
+A	Assets/Assets.meta
+A	Assets/Materials/MAT_Aslfalto.mat
+A	Assets/Materials/MAT_Aslfalto.mat.meta
+A	Assets/Materials/MAT_Barreras.mat
+A	Assets/Materials/MAT_Barreras.mat.meta
+A	Assets/Materials/MAT_Barreras2.mat
+A	Assets/Materials/MAT_Barreras2.mat.meta
+A	Assets/Materials/MAT_Carriles.mat
+A	Assets/Materials/MAT_Carriles.mat.meta
+A	Assets/Materials/MAT_Estrella.mat
+A	Assets/Materials/MAT_Estrella.mat.meta
+A	Assets/Materials/MAT_Hierba.mat
+A	Assets/Materials/MAT_Hierba.mat.meta
+A	Assets/Materials/MAT_Hoias.mat
+A	Assets/Materials/MAT_Hoias.mat.meta
+A	Assets/Materials/MAT_Linea de inicio 1.mat
+A	Assets/Materials/MAT_Linea de inicio 1.mat.meta
+A	Assets/Materials/MAT_Linea de inicio.mat
+A	Assets/Materials/MAT_Linea de inicio.mat.meta
+A	Assets/Materials/MAT_Linea de meta.mat
+A	Assets/Materials/MAT_Linea de meta.mat.meta
+A	"Assets/Materials/MAT_L\303\255neaS.mat"
+A	"Assets/Materials/MAT_L\303\255neaS.mat.meta"
+A	Assets/Materials/MAT_Paleta gradas 8.mat
+A	Assets/Materials/MAT_Paleta gradas 8.mat.meta
+A	Assets/Materials/MAT_Polyverse Skies - Blue Sky.mat
+A	Assets/Materials/MAT_Polyverse Skies - Blue Sky.mat.meta
+A	Assets/Materials/MAT_Tronco.mat
+A	Assets/Materials/MAT_Tronco.mat.meta
+A	Assets/Materials/textures.meta
+A	Assets/Materials/textures/T_Aslfalto.png
+A	Assets/Materials/textures/T_Aslfalto.png.meta
+A	Assets/Materials/textures/T_Barreras.png
+A	Assets/Materials/textures/T_Barreras.png.meta
+A	Assets/Materials/textures/T_Barreras2.png
+A	Assets/Materials/textures/T_Barreras2.png.meta
+A	Assets/Materials/textures/T_Carriles.png
+A	Assets/Materials/textures/T_Carriles.png.meta
+A	Assets/Materials/textures/T_Estrella.png
+A	Assets/Materials/textures/T_Estrella.png.meta
+A	Assets/Materials/textures/T_Hierba.png
+A	Assets/Materials/textures/T_Hierba.png.meta
+A	Assets/Materials/textures/T_Hojas.png
+A	Assets/Materials/textures/T_Hojas.png.meta
+A	Assets/Materials/textures/T_Linea de inicio 1.png
+A	Assets/Materials/textures/T_Linea de inicio 1.png.meta
+A	Assets/Materials/textures/T_Linea de meta.png
+A	Assets/Materials/textures/T_Linea de meta.png.meta
+A	"Assets/Materials/textures/T_L\303\255neas.png"
+A	"Assets/Materials/textures/T_L\303\255neas.png.meta"
+A	Assets/Materials/textures/T_Paleta gradas 8.png
+A	Assets/Materials/textures/T_Paleta gradas 8.png.meta
+A	Assets/Materials/textures/T_Tronco.png
+A	Assets/Materials/textures/T_Tronco.png.meta
+A	Assets/Models/Environment/MD_Arbol.fbx
+A	Assets/Models/Environment/MD_Arbol.fbx.meta
+A	Assets/Models/Environment/MD_Gradas.fbx
+A	Assets/Models/Environment/MD_Gradas.fbx.meta
+A	Assets/Models/Environment/MD_Polyverse Skies - Blue Sky.png
+A	Assets/Models/Environment/MD_Polyverse Skies - Blue Sky.png.meta
+A	Assets/Prefabs/Barrera estrella.prefab
+A	Assets/Prefabs/Barrera estrella.prefab.meta
+A	Assets/Prefabs/Barrera.prefab
+A	Assets/Prefabs/Barrera.prefab.meta
+A	Assets/Prefabs/Pista.prefab
+A	Assets/Prefabs/Pista.prefab.meta
+M	Assets/Settings/Mobile_RPAsset.asset
+M	Packages/manifest.json
+M	Packages/packages-lock.json
+A	ProjectSettings/Packages/com.unity.probuilder/Settings.json
+
+commit 48c0d97e2adf46462251b9c054f2b39487546688
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-12 17:15:47 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-12 17:15:47 -0500
+
+    Kart animations
+    
+    Kart animations are imported
+
+A	Assets/Animations/AN_Boost.anim
+A	Assets/Animations/AN_Boost.anim.meta
+A	Assets/Animations/AN_Bump.anim
+A	Assets/Animations/AN_Bump.anim.meta
+A	Assets/Animations/AN_ExhaustWobble.anim
+A	Assets/Animations/AN_ExhaustWobble.anim.meta
+A	Assets/Animations/AN_Hop.anim
+A	Assets/Animations/AN_Hop.anim.meta
+A	Assets/Animations/AN_Idle.anim
+A	Assets/Animations/AN_Idle.anim.meta
+A	Assets/Animations/AN_Spinout.anim
+A	Assets/Animations/AN_Spinout.anim.meta
+A	Assets/Animations/AN_Stall.anim
+A	Assets/Animations/AN_Stall.anim.meta
+A	Assets/Animations/KartAnimator.controller
+A	Assets/Animations/KartAnimator.controller.meta
+
+commit 26ede3720c15c6bc17d4d33187d614d786070213
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 17:15:41 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 17:15:41 -0500
+
+    3D Barrel Model
+    
+    Add 3D barrel model
+
+M	Assets/Materials/MAT_ OIL SPILL.png.meta
+M	Assets/Materials/MAT_BARREL.png.meta
+A	Assets/Materials/MAT_Barril.mat
+A	Assets/Materials/MAT_Barril.mat.meta
+M	Assets/Materials/MAT_CONE.png.meta
+A	Assets/Materials/MAT_OilDrum_Normal.png
+A	Assets/Materials/MAT_OilDrum_Normal.png.meta
+M	Assets/Materials/MAT_PROGRESS BAR.png.meta
+M	Assets/Materials/MAT_TRAFFIC LIGTH.png.meta
+A	Assets/Models/Environment/MD_Oil_Drum.fbx
+A	Assets/Models/Environment/MD_Oil_Drum.fbx.meta
+
+commit 77d0a901b46a96d40c8f8b7f02f76b4ddf493729
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-12 16:53:50 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-12 16:53:50 -0500
+
+    Kart Effects
+    
+    The audio effects from the KART are imported
+
+A	Assets/Audio/SFX/SFX_Backfire.wav
+A	Assets/Audio/SFX/SFX_Backfire.wav.meta
+A	Assets/Audio/SFX/SFX_BananaDrop.wav
+A	Assets/Audio/SFX/SFX_BananaDrop.wav.meta
+A	Assets/Audio/SFX/SFX_BoostSFXBlowTorch.wav
+A	Assets/Audio/SFX/SFX_BoostSFXBlowTorch.wav.meta
+A	Assets/Audio/SFX/SFX_Crash.wav
+A	Assets/Audio/SFX/SFX_Crash.wav.meta
+A	Assets/Audio/SFX/SFX_Ding.wav
+A	Assets/Audio/SFX/SFX_Ding.wav.meta
+A	Assets/Audio/SFX/SFX_Error.wav
+A	Assets/Audio/SFX/SFX_Error.wav.meta
+A	Assets/Audio/SFX/SFX_Horn.wav
+A	Assets/Audio/SFX/SFX_Horn.wav.meta
+A	Assets/Audio/SFX/SFX_Relaxed_Pleasing_Alert.wav
+A	Assets/Audio/SFX/SFX_Relaxed_Pleasing_Alert.wav.meta
+A	Assets/Audio/SFX/SFX_Slip.wav
+A	Assets/Audio/SFX/SFX_Slip.wav.meta
+A	Assets/Audio/SFX/SFX_Splash.wav
+A	Assets/Audio/SFX/SFX_Splash.wav.meta
+A	Assets/Audio/SFX/SFX_Success.wav
+A	Assets/Audio/SFX/SFX_Success.wav.meta
+A	Assets/Audio/SFX/SFX_TickItem.wav
+A	Assets/Audio/SFX/SFX_TickItem.wav.meta
+A	Assets/Audio/SFX/SFX_TimerCount.wav
+A	Assets/Audio/SFX/SFX_TimerCount.wav.meta
+A	Assets/Audio/SFX/SFX_TimerCountHigh.wav
+A	Assets/Audio/SFX/SFX_TimerCountHigh.wav.meta
+A	Assets/Audio/SFX/SFX_TireScreech&Gravel.wav
+A	Assets/Audio/SFX/SFX_TireScreech&Gravel.wav.meta
+A	Assets/Audio/SFX/SFX_engine-idle.wav
+A	Assets/Audio/SFX/SFX_engine-idle.wav.meta
+A	Assets/Audio/SFX/SFX_engine-rev.wav
+A	Assets/Audio/SFX/SFX_engine-rev.wav.meta
+A	Assets/Audio/SFX/SFX_engine-running.wav
+A	Assets/Audio/SFX/SFX_engine-running.wav.meta
+A	Assets/Audio/SFX/SFX_engine_start.wav
+A	Assets/Audio/SFX/SFX_engine_start.wav.meta
+A	Assets/Audio/SFX/SFX_gravel_loop.wav
+A	Assets/Audio/SFX/SFX_gravel_loop.wav.meta
+A	Assets/Audio/SFX/SFX_itemCollect.wav
+A	Assets/Audio/SFX/SFX_itemCollect.wav.meta
+A	Assets/Audio/SFX/SFX_itemWaste.wav
+A	Assets/Audio/SFX/SFX_itemWaste.wav.meta
+D	Assets/Materials/Blue/Front_Blue.mat
+R099	Assets/Materials/Blue/BluePaint.mat	Assets/Materials/Blue/MAT_BluePaint.mat
+R100	Assets/Materials/Blue/BluePaint.mat.meta	Assets/Materials/Blue/MAT_BluePaint.mat.meta
+A	Assets/Materials/Blue/MAT_Front_Blue.mat
+R100	Assets/Materials/Blue/Front_Blue.mat.meta	Assets/Materials/Blue/MAT_Front_Blue.mat.meta
+M	Assets/Materials/Green/Front_Green.mat
+R097	Assets/Materials/AxleRim.mat	Assets/Materials/MAT_AxleRim.mat
+R100	Assets/Materials/AxleRim.mat.meta	Assets/Materials/MAT_AxleRim.mat.meta
+R097	Assets/Materials/BlackPaint.mat	Assets/Materials/MAT_BlackPaint.mat
+R100	Assets/Materials/BlackPaint.mat.meta	Assets/Materials/MAT_BlackPaint.mat.meta
+R099	Assets/Materials/Engine.mat	Assets/Materials/MAT_Engine.mat
+R100	Assets/Materials/Engine.mat.meta	Assets/Materials/MAT_Engine.mat.meta
+R099	Assets/Materials/Exhaust.mat	Assets/Materials/MAT_Exhaust.mat
+R100	Assets/Materials/Exhaust.mat.meta	Assets/Materials/MAT_Exhaust.mat.meta
+R099	Assets/Materials/Fabric.mat	Assets/Materials/MAT_Fabric.mat
+R100	Assets/Materials/Fabric.mat.meta	Assets/Materials/MAT_Fabric.mat.meta
+R097	Assets/Materials/FrontTrim.mat	Assets/Materials/MAT_FrontTrim.mat
+R100	Assets/Materials/FrontTrim.mat.meta	Assets/Materials/MAT_FrontTrim.mat.meta
+R099	Assets/Materials/Gold.mat	Assets/Materials/MAT_Gold.mat
+R100	Assets/Materials/Gold.mat.meta	Assets/Materials/MAT_Gold.mat.meta
+R099	Assets/Materials/Grill.mat	Assets/Materials/MAT_Grill.mat
+R100	Assets/Materials/Grill.mat.meta	Assets/Materials/MAT_Grill.mat.meta
+R099	Assets/Materials/SteeringWheel.mat	Assets/Materials/MAT_SteeringWheel.mat
+R100	Assets/Materials/SteeringWheel.mat.meta	Assets/Materials/MAT_SteeringWheel.mat.meta
+R099	Assets/Materials/Tire Clean.mat	Assets/Materials/MAT_Tire Clean.mat
+R100	Assets/Materials/Tire Clean.mat.meta	Assets/Materials/MAT_Tire Clean.mat.meta
+R099	Assets/Materials/Tire Dirty.mat	Assets/Materials/MAT_Tire Dirty.mat
+R100	Assets/Materials/Tire Dirty.mat.meta	Assets/Materials/MAT_Tire Dirty.mat.meta
+R099	Assets/Materials/front_ao.mat	Assets/Materials/MAT_front_ao.mat
+R100	Assets/Materials/front_ao.mat.meta	Assets/Materials/MAT_front_ao.mat.meta
+D	Assets/Materials/Red/Front_Red.mat
+A	Assets/Materials/Red/MAT_Front_Red.mat
+R100	Assets/Materials/Red/Front_Red.mat.meta	Assets/Materials/Red/MAT_Front_Red.mat.meta
+R098	Assets/Materials/Red/RedPaint.mat	Assets/Materials/Red/MAT_RedPaint.mat
+R100	Assets/Materials/Red/RedPaint.mat.meta	Assets/Materials/Red/MAT_RedPaint.mat.meta
+R100	Assets/Materials/Textures/axle_rim_ao.png	Assets/Materials/Textures/T_axle_rim_ao.png
+R100	Assets/Materials/Textures/axle_rim_ao.png.meta	Assets/Materials/Textures/T_axle_rim_ao.png.meta
+R100	Assets/Materials/Textures/engine_ao.png	Assets/Materials/Textures/T_engine_ao.png
+R100	Assets/Materials/Textures/engine_ao.png.meta	Assets/Materials/Textures/T_engine_ao.png.meta
+R100	Assets/Materials/Textures/exhaust_alb.png	Assets/Materials/Textures/T_exhaust_alb.png
+R100	Assets/Materials/Textures/exhaust_alb.png.meta	Assets/Materials/Textures/T_exhaust_alb.png.meta
+R100	Assets/Materials/Textures/exhaust_ao.png	Assets/Materials/Textures/T_exhaust_ao.png
+R100	Assets/Materials/Textures/exhaust_ao.png.meta	Assets/Materials/Textures/T_exhaust_ao.png.meta
+R100	Assets/Materials/Textures/front_ao.png	Assets/Materials/Textures/T_front_ao.png
+R100	Assets/Materials/Textures/front_ao.png.meta	Assets/Materials/Textures/T_front_ao.png.meta
+R100	Assets/Materials/Textures/tread_clean_alb.png	Assets/Materials/Textures/T_tread_clean_alb.png
+R100	Assets/Materials/Textures/tread_clean_alb.png.meta	Assets/Materials/Textures/T_tread_clean_alb.png.meta
+R100	Assets/Materials/Textures/tread_clean_ao.png	Assets/Materials/Textures/T_tread_clean_ao.png
+R100	Assets/Materials/Textures/tread_clean_ao.png.meta	Assets/Materials/Textures/T_tread_clean_ao.png.meta
+R100	Assets/Materials/Textures/tread_clean_bump.png	Assets/Materials/Textures/T_tread_clean_bump.png
+R100	Assets/Materials/Textures/tread_clean_bump.png.meta	Assets/Materials/Textures/T_tread_clean_bump.png.meta
+R100	Assets/Materials/Textures/tread_clean_spec.png	Assets/Materials/Textures/T_tread_clean_spec.png
+R100	Assets/Materials/Textures/tread_clean_spec.png.meta	Assets/Materials/Textures/T_tread_clean_spec.png.meta
+R100	Assets/Materials/Textures/tread_dirty_alb.png	Assets/Materials/Textures/T_tread_dirty_alb.png
+R100	Assets/Materials/Textures/tread_dirty_alb.png.meta	Assets/Materials/Textures/T_tread_dirty_alb.png.meta
+R100	Assets/Materials/Textures/tread_dirty_ao.png	Assets/Materials/Textures/T_tread_dirty_ao.png
+R100	Assets/Materials/Textures/tread_dirty_ao.png.meta	Assets/Materials/Textures/T_tread_dirty_ao.png.meta
+R100	Assets/Materials/Textures/tread_dirty_bump.png	Assets/Materials/Textures/T_tread_dirty_bump.png
+R100	Assets/Materials/Textures/tread_dirty_bump.png.meta	Assets/Materials/Textures/T_tread_dirty_bump.png.meta
+R100	Assets/Materials/Textures/tread_dirty_spec.png	Assets/Materials/Textures/T_tread_dirty_spec.png
+R100	Assets/Materials/Textures/tread_dirty_spec.png.meta	Assets/Materials/Textures/T_tread_dirty_spec.png.meta
+R100	Assets/Materials/Textures/wheel_ao.png	Assets/Materials/Textures/T_wheel_ao.png
+R100	Assets/Materials/Textures/wheel_ao.png.meta	Assets/Materials/Textures/T_wheel_ao.png.meta
+R100	Assets/Materials/Textures/emblem/Fusion.png	Assets/Materials/Textures/emblem/T_Fusion.png
+R100	Assets/Materials/Textures/emblem/Fusion.png.meta	Assets/Materials/Textures/emblem/T_Fusion.png.meta
+R100	Assets/Materials/Textures/emblem/emblem99.png	Assets/Materials/Textures/emblem/T_emblem99.png
+R100	Assets/Materials/Textures/emblem/emblem99.png.meta	Assets/Materials/Textures/emblem/T_emblem99.png.meta
+M	ProjectSettings/QualitySettings.asset
+
+commit cc0b1e3dbb0a7f1dc111872bccee1823bf651596
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-12 16:16:55 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-12 16:16:55 -0500
+
+    KART MATERIALS
+    
+    Kart Materials are Imported
+
+A	Assets/Materials/AxleRim.mat
+A	Assets/Materials/AxleRim.mat.meta
+A	Assets/Materials/BlackPaint.mat
+A	Assets/Materials/BlackPaint.mat.meta
+A	Assets/Materials/Blue.meta
+A	Assets/Materials/Blue/BluePaint.mat
+A	Assets/Materials/Blue/BluePaint.mat.meta
+A	Assets/Materials/Blue/Front_Blue.mat
+A	Assets/Materials/Blue/Front_Blue.mat.meta
+A	Assets/Materials/Engine.mat
+A	Assets/Materials/Engine.mat.meta
+A	Assets/Materials/Exhaust.mat
+A	Assets/Materials/Exhaust.mat.meta
+A	Assets/Materials/Fabric.mat
+A	Assets/Materials/Fabric.mat.meta
+A	Assets/Materials/FrontTrim.mat
+A	Assets/Materials/FrontTrim.mat.meta
+A	Assets/Materials/Gold.mat
+A	Assets/Materials/Gold.mat.meta
+A	Assets/Materials/Green.meta
+A	Assets/Materials/Green/Front_Green.mat
+A	Assets/Materials/Green/Front_Green.mat.meta
+A	Assets/Materials/Green/GreenPaint.mat
+A	Assets/Materials/Green/GreenPaint.mat.meta
+A	Assets/Materials/Grill.mat
+A	Assets/Materials/Grill.mat.meta
+A	Assets/Materials/Red.meta
+A	Assets/Materials/Red/Front_Red.mat
+A	Assets/Materials/Red/Front_Red.mat.meta
+A	Assets/Materials/Red/RedPaint.mat
+A	Assets/Materials/Red/RedPaint.mat.meta
+A	Assets/Materials/SteeringWheel.mat
+A	Assets/Materials/SteeringWheel.mat.meta
+A	Assets/Materials/Textures.meta
+A	Assets/Materials/Textures/axle_rim_ao.png
+A	Assets/Materials/Textures/axle_rim_ao.png.meta
+A	Assets/Materials/Textures/emblem.meta
+A	Assets/Materials/Textures/emblem/Fusion.png
+A	Assets/Materials/Textures/emblem/Fusion.png.meta
+A	Assets/Materials/Textures/emblem/emblem99.png
+A	Assets/Materials/Textures/emblem/emblem99.png.meta
+A	Assets/Materials/Textures/engine_ao.png
+A	Assets/Materials/Textures/engine_ao.png.meta
+A	Assets/Materials/Textures/exhaust_alb.png
+A	Assets/Materials/Textures/exhaust_alb.png.meta
+A	Assets/Materials/Textures/exhaust_ao.png
+A	Assets/Materials/Textures/exhaust_ao.png.meta
+A	Assets/Materials/Textures/front_ao.png
+A	Assets/Materials/Textures/front_ao.png.meta
+A	Assets/Materials/Textures/tread_clean_alb.png
+A	Assets/Materials/Textures/tread_clean_alb.png.meta
+A	Assets/Materials/Textures/tread_clean_ao.png
+A	Assets/Materials/Textures/tread_clean_ao.png.meta
+A	Assets/Materials/Textures/tread_clean_bump.png
+A	Assets/Materials/Textures/tread_clean_bump.png.meta
+A	Assets/Materials/Textures/tread_clean_spec.png
+A	Assets/Materials/Textures/tread_clean_spec.png.meta
+A	Assets/Materials/Textures/tread_dirty_alb.png
+A	Assets/Materials/Textures/tread_dirty_alb.png.meta
+A	Assets/Materials/Textures/tread_dirty_ao.png
+A	Assets/Materials/Textures/tread_dirty_ao.png.meta
+A	Assets/Materials/Textures/tread_dirty_bump.png
+A	Assets/Materials/Textures/tread_dirty_bump.png.meta
+A	Assets/Materials/Textures/tread_dirty_spec.png
+A	Assets/Materials/Textures/tread_dirty_spec.png.meta
+A	Assets/Materials/Textures/wheel_ao.png
+A	Assets/Materials/Textures/wheel_ao.png.meta
+A	Assets/Materials/Tire Clean.mat
+A	Assets/Materials/Tire Clean.mat.meta
+A	Assets/Materials/Tire Dirty.mat
+A	Assets/Materials/Tire Dirty.mat.meta
+A	Assets/Materials/front_ao.mat
+A	Assets/Materials/front_ao.mat.meta
+R100	Assets/Models/Vehicles/Kart1.fbx	Assets/Models/Vehicles/MD_Kart1.fbx
+R098	Assets/Models/Vehicles/Kart1.fbx.meta	Assets/Models/Vehicles/MD_Kart1.fbx.meta
+
+commit d701eeeeb873fcf81c4eed52c0d1730c3c9661bf
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 16:10:09 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 16:10:09 -0500
+
+    Progress bar
+    
+    Add progress bar texture
+
+A	Assets/Materials/MAT_PROGRESS BAR.png
+A	Assets/Materials/MAT_PROGRESS BAR.png.meta
+
+commit 15db2b82f3e473a14bfb5796a0f0aad5a4ef2593
+Author:     caod2189-ai <caod2189@gmail.com>
+AuthorDate: 2026-07-12 16:03:19 -0500
+Commit:     caod2189-ai <caod2189@gmail.com>
+CommitDate: 2026-07-12 16:03:19 -0500
+
+    3D MODEL KART
+    
+    Import kart model
+
+A	.vscode/extensions.json
+A	.vscode/launch.json
+A	.vscode/settings.json
+A	Assets/Models/Vehicles/Kart1.fbx
+A	Assets/Models/Vehicles/Kart1.fbx.meta
+M	Assets/Settings/Mobile_RPAsset.asset
+A	Assets/TutorialInfo.meta
+A	Assets/TutorialInfo/Icons.meta
+A	Assets/TutorialInfo/Scripts.meta
+A	Assets/TutorialInfo/Scripts/Editor.meta
+
+commit 315c7c4a12f37446e0d159dbd19f4b2b7d447cea
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 16:02:34 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 16:02:34 -0500
+
+    Traffic ligth
+    
+    Add traffic light texture
+
+R100	Assets/Materials/MAT_ MANCHA DE ACEITE.png	Assets/Materials/MAT_ OIL SPILL.png
+R100	Assets/Materials/MAT_ MANCHA DE ACEITE.png.meta	Assets/Materials/MAT_ OIL SPILL.png.meta
+R100	Assets/Materials/MAT_BARRIL.png	Assets/Materials/MAT_BARREL.png
+R100	Assets/Materials/MAT_BARRIL.png.meta	Assets/Materials/MAT_BARREL.png.meta
+R100	Assets/Materials/MAT_CONO.png	Assets/Materials/MAT_CONE.png
+R100	Assets/Materials/MAT_CONO.png.meta	Assets/Materials/MAT_CONE.png.meta
+A	Assets/Materials/MAT_TRAFFIC LIGTH.png
+A	Assets/Materials/MAT_TRAFFIC LIGTH.png.meta
+
+commit 404c8e78d16b76f97137c709a5a867168b2f13d1
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 15:58:40 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 15:58:40 -0500
+
+    Oil Spill
+    
+    Add oil spill texture
+
+A	Assets/Materials/MAT_ MANCHA DE ACEITE.png
+A	Assets/Materials/MAT_ MANCHA DE ACEITE.png.meta
+
+commit bd7cbe736f5bfadb01c5a08e5f0a84b7aacca84d
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 15:56:27 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 15:56:27 -0500
+
+    Cone
+    
+    Add cone texture
+
+A	Assets/Materials/MAT_CONO.png
+A	Assets/Materials/MAT_CONO.png.meta
+
+commit 6cb44fb5d62376a5af5fb28adcdea7e2d5cd0d0d
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 15:54:45 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 15:54:45 -0500
+
+    Barrel
+    
+    Add barrel texture
+
+R100	Assets/Audio/SFX/Aplausos Final.mp3	Assets/Audio/SFX/SFX_APLAUSOS.mp3
+R100	Assets/Audio/SFX/Aplausos Final.mp3.meta	Assets/Audio/SFX/SFX_APLAUSOS.mp3.meta
+R100	Assets/Audio/SFX/Victoria final.mp3	Assets/Audio/SFX/SFX_VICTORIA.mp3
+R100	Assets/Audio/SFX/Victoria final.mp3.meta	Assets/Audio/SFX/SFX_VICTORIA.mp3.meta
+A	Assets/Materials/MAT_BARRIL.png
+A	Assets/Materials/MAT_BARRIL.png.meta
+
+commit 20610c5296ba5266e605fdfbafb056ed5a0f06fc
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 15:29:49 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 15:29:49 -0500
+
+    SFX
+    
+    add applause victory sound effect at the end of the game
+
+A	Assets/Audio/SFX/Aplausos Final.mp3
+A	Assets/Audio/SFX/Aplausos Final.mp3.meta
+A	Assets/Audio/SFX/Victoria final.mp3
+A	Assets/Audio/SFX/Victoria final.mp3.meta
+
+commit a8593bbf69e917800c43bbdb037a1371acd45570
+Merge: 59c350e 431bb7e
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 15:15:59 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 15:15:59 -0500
+
+    Merge branch 'main' into Liliana
+
+commit 59c350ed95e1ce46260bb706655e34c64dd31cc2
+Author:     Lilianadaza <liliana.db2612@gmail.com>
+AuthorDate: 2026-07-12 15:15:45 -0500
+Commit:     Lilianadaza <liliana.db2612@gmail.com>
+CommitDate: 2026-07-12 15:15:45 -0500
+
+    Update URPProjectSettings.asset
+
+M	ProjectSettings/URPProjectSettings.asset
+
+commit c9f71f053e3b813f75972c353679fec5e2ac0024
+Merge: ab34da8 431bb7e
+Author:     IvanC117 <castellanosivan2020@outlook.com>
+AuthorDate: 2026-07-12 14:51:53 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-12 14:51:53 -0500
+
+    Merge pull request #1
+    
+    Update Ivan branch
+
+commit 431bb7ec8cac46057dde31815ce14e6f5e24aec8
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-12 12:53:17 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-12 12:53:17 -0500
+
+    Create project structure and initial scenes
+    
+    Added project folders and created the initial game scenes.
+
+R077	Assets/TutorialInfo.meta	Assets/Animations.meta
+A	Assets/Audio.meta
+A	Assets/Audio/Music.meta
+A	Assets/Audio/SFX.meta
+A	Assets/Materials.meta
+A	Assets/Models.meta
+A	Assets/Models/Characters.meta
+A	Assets/Models/Environment.meta
+A	Assets/Models/Vehicles.meta
+A	Assets/Prefabs.meta
+D	Assets/Readme.asset
+M	Assets/Scenes.meta
+A	Assets/Scenes/CharacterSelection.unity
+R074	Assets/Scenes/SampleScene.unity.meta	Assets/Scenes/CharacterSelection.unity.meta
+A	Assets/Scenes/Gameplay.unity
+R054	Assets/Readme.asset.meta	Assets/Scenes/Gameplay.unity.meta
+A	Assets/Scenes/Instructions.unity
+R053	Assets/TutorialInfo/Layout.wlt.meta	Assets/Scenes/Instructions.unity.meta
+R068	Assets/Scenes/SampleScene.unity	Assets/Scenes/MainMenu.unity
+A	Assets/Scenes/MainMenu.unity.meta
+A	Assets/Scenes/Results.unity
+A	Assets/Scenes/Results.unity.meta
+R057	Assets/TutorialInfo/Scripts.meta	Assets/Scripts.meta
+A	Assets/Scripts/Gameplay.meta
+A	Assets/Scripts/Managers.meta
+A	Assets/Scripts/Player.meta
+A	Assets/Scripts/UI.meta
+A	Assets/Settings/Build Profiles.meta
+A	Assets/Sprites.meta
+A	Assets/Sprites/Backgrounds.meta
+A	Assets/Sprites/Buttons.meta
+A	Assets/Sprites/HUD.meta
+R057	Assets/TutorialInfo/Icons.meta	Assets/Sprites/Icons.meta
+D	Assets/TutorialInfo/Icons/URP.png
+D	Assets/TutorialInfo/Icons/URP.png.meta
+D	Assets/TutorialInfo/Layout.wlt
+D	Assets/TutorialInfo/Scripts/Editor.meta
+D	Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs
+D	Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs.meta
+D	Assets/TutorialInfo/Scripts/Readme.cs
+D	Assets/TutorialInfo/Scripts/Readme.cs.meta
+A	Assets/UI.meta
+A	Assets/VFX.meta
+M	ProjectSettings/EditorBuildSettings.asset
+A	ProjectSettings/SceneTemplateSettings.json
+M	ProjectSettings/URPProjectSettings.asset
+
+commit ab34da8a8b6774db65d4a0a8e9b5dbe8555a3533
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-12 11:40:46 -0500
+Commit:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+CommitDate: 2026-07-12 11:40:46 -0500
+
+    Initial Unity project
+    
+    Create the initial Unity 6 project structure.
+
+A	.vsconfig
+A	Assets/InputSystem_Actions.inputactions
+A	Assets/InputSystem_Actions.inputactions.meta
+A	Assets/Readme.asset
+A	Assets/Readme.asset.meta
+A	Assets/Scenes.meta
+A	Assets/Scenes/SampleScene.unity
+A	Assets/Scenes/SampleScene.unity.meta
+A	Assets/Settings.meta
+A	Assets/Settings/DefaultVolumeProfile.asset
+A	Assets/Settings/DefaultVolumeProfile.asset.meta
+A	Assets/Settings/Mobile_RPAsset.asset
+A	Assets/Settings/Mobile_RPAsset.asset.meta
+A	Assets/Settings/Mobile_Renderer.asset
+A	Assets/Settings/Mobile_Renderer.asset.meta
+A	Assets/Settings/PC_RPAsset.asset
+A	Assets/Settings/PC_RPAsset.asset.meta
+A	Assets/Settings/PC_Renderer.asset
+A	Assets/Settings/PC_Renderer.asset.meta
+A	Assets/Settings/SampleSceneProfile.asset
+A	Assets/Settings/SampleSceneProfile.asset.meta
+A	Assets/Settings/UniversalRenderPipelineGlobalSettings.asset
+A	Assets/Settings/UniversalRenderPipelineGlobalSettings.asset.meta
+A	Assets/TutorialInfo.meta
+A	Assets/TutorialInfo/Icons.meta
+A	Assets/TutorialInfo/Icons/URP.png
+A	Assets/TutorialInfo/Icons/URP.png.meta
+A	Assets/TutorialInfo/Layout.wlt
+A	Assets/TutorialInfo/Layout.wlt.meta
+A	Assets/TutorialInfo/Scripts.meta
+A	Assets/TutorialInfo/Scripts/Editor.meta
+A	Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs
+A	Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs.meta
+A	Assets/TutorialInfo/Scripts/Readme.cs
+A	Assets/TutorialInfo/Scripts/Readme.cs.meta
+A	Packages/manifest.json
+A	Packages/packages-lock.json
+A	ProjectSettings/AudioManager.asset
+A	ProjectSettings/ClusterInputManager.asset
+A	ProjectSettings/DynamicsManager.asset
+A	ProjectSettings/EditorBuildSettings.asset
+A	ProjectSettings/EditorSettings.asset
+A	ProjectSettings/GraphicsSettings.asset
+A	ProjectSettings/InputManager.asset
+A	ProjectSettings/MemorySettings.asset
+A	ProjectSettings/MultiplayerManager.asset
+A	ProjectSettings/NavMeshAreas.asset
+A	ProjectSettings/PackageManagerSettings.asset
+A	ProjectSettings/Physics2DSettings.asset
+A	ProjectSettings/PresetManager.asset
+A	ProjectSettings/ProjectSettings.asset
+A	ProjectSettings/ProjectVersion.txt
+A	ProjectSettings/QualitySettings.asset
+A	ProjectSettings/ShaderGraphSettings.asset
+A	ProjectSettings/TagManager.asset
+A	ProjectSettings/TimeManager.asset
+A	ProjectSettings/URPProjectSettings.asset
+A	ProjectSettings/UnityConnectSettings.asset
+A	ProjectSettings/VFXManager.asset
+A	ProjectSettings/VersionControlSettings.asset
+A	ProjectSettings/XRSettings.asset
+
+commit aaab8b8dacc1193d7723b35a985e3dc2d56526b8
+Author:     Valentina Preciado Nuñez <valisprenun2401052019@gmail.com>
+AuthorDate: 2026-07-12 11:28:21 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-07-12 11:28:21 -0500
+
+    Initial commit
+
+A	.gitignore
+A	README.md
