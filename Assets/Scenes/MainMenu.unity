@@ -5293,6 +5293,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1790468859}
   - component: {fileID: 1790468858}
+  - component: {fileID: 1790468860}
   m_Layer: 0
   m_Name: MainMenuManager
   m_TagString: Untagged
@@ -5336,6 +5337,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1790468860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790468857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 796a267e7ec3f604aa33de3ab628e2e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainMenuKeyboard
+  buttonStart: {fileID: 1834712534}
+  buttonExit: {fileID: 290388451}
+  mainPanel: {fileID: 1441389527}
+  optionsMenuPanel: {fileID: 1401792111}
+  creditsPanel: {fileID: 1320958544}
 --- !u!1 &1834712532
 GameObject:
   m_ObjectHideFlags: 0
