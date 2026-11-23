@@ -1377,7 +1377,7 @@ Transform:
   m_GameObject: {fileID: 155260667}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -102.93, y: 463.53, z: 658.81}
+  m_LocalPosition: {x: -102.93, y: 463.53, z: 658.77}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -1489,7 +1489,7 @@ MonoBehaviour:
   sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   engineClip: {fileID: 8300000, guid: dcce8fe17e131834da513a21b3826752, type: 3}
   turboClip: {fileID: 8300000, guid: ed8ecb627d015db47846c71556f1c32f, type: 3}
-  normalEngineVolume: 0.5
+  normalEngineVolume: 0.3
   normalEnginePitch: 1
   turboEngineVolume: 1
   turboEnginePitch: 1.5
@@ -28023,6 +28023,8 @@ MonoBehaviour:
   cpuDistanceTracker: {fileID: 0}
   uiPlay: {fileID: 541621646}
   uiWin: {fileID: 0}
+  btnMainMenu: {fileID: 0}
+  imgGanaTitle: {fileID: 0}
   txtWinJ1: {fileID: 0}
   txtWinJ2: {fileID: 0}
   imgTie: {fileID: 0}

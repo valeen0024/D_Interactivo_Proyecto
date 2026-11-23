@@ -15,14 +15,14 @@ EditorBuildSettings:
     path: Assets/Scenes/CharacterSelection.unity
     guid: 2f57b40c38130cb49bb102fd59007755
   - enabled: 1
+    path: Assets/Scenes/Gameplay_Tutorial.unity
+    guid: c20451842ce1e7445818d2e9fc6ae79b
+  - enabled: 1
     path: Assets/Scenes/Gameplay.unity
     guid: 78e41153d8b81e2418d83ce85689de1b
   - enabled: 1
     path: Assets/Scenes/Level2.unity
     guid: 87ac7386db89e28498e663dc9b69966d
-  - enabled: 1
-    path: Assets/Scenes/Gameplay_Tutorial.unity
-    guid: c20451842ce1e7445818d2e9fc6ae79b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

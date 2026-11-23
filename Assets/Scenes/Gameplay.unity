@@ -103868,7 +103868,7 @@ Transform:
   m_GameObject: {fileID: 304783445}
   serializedVersion: 2
   m_LocalRotation: {x: 0.44282088, y: -0, z: -0, w: 0.89661014}
-  m_LocalPosition: {x: -102.06, y: 469.03, z: 656.74}
+  m_LocalPosition: {x: -102.06, y: 469.03, z: 657.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -357285,8 +357285,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -685.18, y: 148.41867}
-  m_SizeDelta: {x: 144.2987, y: 50}
+  m_AnchoredPosition: {x: -682, y: 143}
+  m_SizeDelta: {x: 176.474, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1116892025
 MonoBehaviour:
@@ -357310,8 +357310,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Ronda 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a3d70c142020ae348862d6b483035f93, type: 2}
-  m_sharedMaterial: {fileID: -8364763990544822539, guid: a3d70c142020ae348862d6b483035f93, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d5be7b54b2220a543a68cab38282d39f, type: 2}
+  m_sharedMaterial: {fileID: 2058850783527977590, guid: d5be7b54b2220a543a68cab38282d39f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -357374,7 +357374,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0.86959076, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -571764,7 +571764,7 @@ MonoBehaviour:
   cpuTurnMessage: TURNO DEL CONTRINCANTE
   useTypewriterForCPUTurn: 1
   cpuTurnTypewriterDelay: 0.035
-  cpuTurnBannerDuration: 5
+  cpuTurnBannerDuration: 3
   gameState: 0
   isGameOver: 0
   playerWon: 0

@@ -5049,7 +5049,7 @@ RectTransform:
   m_Father: {fileID: 800198550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -7.137024, y: -346.7088}
   m_SizeDelta: {x: 400.372, y: 1310.301}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -46020,6 +46020,32 @@ MonoBehaviour:
   baseForwardSpeed: 6
   acceleration: 12
   friction: 2
+  enableProgressiveSpeed: 0
+  maxProgressiveForwardSpeed: 22
+  speedProgressionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   minLane: -1
   maxLane: 2
   canMove: 1
@@ -46040,6 +46066,11 @@ MonoBehaviour:
   waitTimerRemaining: 0
   currentActiveWaitDuration: 0
   activationWindowRemaining: 0
+  obstacleTag: Obstacle
+  obstacleSpeedMultiplier: 0.45
+  obstacleSlowDuration: 1.6
+  obstacleFuelPenalty: 0
+  barrierStopMarginZ: 0.15
   boostOverlayGroup: {fileID: 0}
   barrelIndicatorObject: {fileID: 0}
   hideBaseIndicatorWhenOverlayActive: 0
@@ -46048,6 +46079,12 @@ MonoBehaviour:
   readyBarrelColor: {r: 0.25, g: 1, b: 0.85, a: 1}
   normalBarrelSprite: {fileID: 0}
   readyBarrelSprite: {fileID: 0}
+  enableBoostNotification: 1
+  boostNotificationText: {fileID: 0}
+  boostNotificationContainer: {fileID: 0}
+  typewriterCharDelay: 0.035
+  holdAfterTypingSeconds: 3
+  extraHoldWhenEmptySeconds: 1
   sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   engineClip: {fileID: 8300000, guid: dcce8fe17e131834da513a21b3826752, type: 3}
   turboClip: {fileID: 8300000, guid: ed8ecb627d015db47846c71556f1c32f, type: 3}
@@ -135670,7 +135707,7 @@ RectTransform:
   m_Father: {fileID: 1126927161}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -7.137024, y: -346.7088}
   m_SizeDelta: {x: 400.372, y: 1310.301}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -356555,7 +356592,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1110667693
 RectTransform:
   m_ObjectHideFlags: 0
@@ -485548,6 +485585,7 @@ MonoBehaviour:
   - -102.9
   - -100.9
   - -98.9
+  laneMatchTolerance: 0.35
   spawnAheadDistance: 30
   minSpawnIntervalZ: 7.5
   maxSpawnIntervalZ: 14.5
@@ -485556,6 +485594,10 @@ MonoBehaviour:
   fallbackMaxSpawnZ: 185
   baseFuelSpawnChance: 0.65
   baseObstacleSpawnChance: 0.85
+  minSameLaneGapZ: 8.5
+  minObstacleGapZ: 7
+  maxBlockingBarriersPerWave: 1
+  rareFuelNearObstacleChance: 0
   warmupWavesWithoutObstacles: 1
   startMinObstacles: 1
   startMaxObstacles: 1
@@ -505271,8 +505313,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2118006754}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -101, y: -435}
   m_SizeDelta: {x: 238.08, y: 2096.837}
   m_Pivot: {x: 0.49999887, y: 0.5}
@@ -558143,6 +558185,32 @@ MonoBehaviour:
   baseForwardSpeed: 6
   acceleration: 12
   friction: 2
+  enableProgressiveSpeed: 0
+  maxProgressiveForwardSpeed: 22
+  speedProgressionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   minLane: -1
   maxLane: 2
   canMove: 1
@@ -558163,6 +558231,11 @@ MonoBehaviour:
   waitTimerRemaining: 0
   currentActiveWaitDuration: 0
   activationWindowRemaining: 0
+  obstacleTag: Obstacle
+  obstacleSpeedMultiplier: 0.45
+  obstacleSlowDuration: 1.6
+  obstacleFuelPenalty: 0
+  barrierStopMarginZ: 0.15
   boostOverlayGroup: {fileID: 0}
   barrelIndicatorObject: {fileID: 0}
   hideBaseIndicatorWhenOverlayActive: 0
@@ -558171,6 +558244,12 @@ MonoBehaviour:
   readyBarrelColor: {r: 0.25, g: 1, b: 0.85, a: 1}
   normalBarrelSprite: {fileID: 0}
   readyBarrelSprite: {fileID: 0}
+  enableBoostNotification: 1
+  boostNotificationText: {fileID: 0}
+  boostNotificationContainer: {fileID: 0}
+  typewriterCharDelay: 0.035
+  holdAfterTypingSeconds: 3
+  extraHoldWhenEmptySeconds: 1
   sfxMixerGroup: {fileID: -42608784159253498, guid: 7b4fad3d3093ff34188db5eafb3bffa8, type: 2}
   engineClip: {fileID: 0}
   turboClip: {fileID: 0}
@@ -558260,23 +558339,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CPUController
   laneOffset: 2
   laneChangeSpeed: 8
+  maxLaneStepPerDecision: 1
+  minTimeBetweenLaneChanges: 0.22
   cpuSpeed: 6
+  speedVariancePerRun: 0.12
+  enableProgressiveSpeed: 0
+  maxProgressiveCpuSpeed: 13.8
   minLane: -2
   maxLane: 1
   canMove: 0
   laneChangeInterval: 1
-  scanDistance: 25
+  viewDistance: 24
+  useMainCameraFOV: 1
+  lowFuelThresholdRatio: 0.5
+  riskForFuelWhenLow: 1
   emptyLaneWeight: 10
   fuelCanWeight: 25
   oilSpillWeight: -100
   obstacleLaneWeight: 1
   oilSlowMultiplier: 0.5
   oilSlowDuration: 2
+  oilFuelLoss: 10
   obstacleTag: Obstacle
   obstacleSlowMultiplier: 0.4
   obstacleSlowDuration: 1.2
   obstacleFuelPenalty: 0
+  barrierBlockDuration: 0.85
+  barrierSpeedMultiplier: 0.05
+  barrierFuelPenalty: 12
   startLane: 0
+  playerKartController: {fileID: 0}
+  syncMaxBoostUsesWithPlayer: 1
   boostSpeedMultiplier: 2
   boostDuration: 3
   maxBoostUses: 3
@@ -570609,6 +570702,16 @@ MonoBehaviour:
   uiInstructions: {fileID: 2028467918}
   uiPlay: {fileID: 541621646}
   uiWin: {fileID: 1544363749}
+  nextLevelSceneName: Level2
+  autoAdvanceToNextLevel: 0
+  autoAdvanceDelay: 1.5
+  enableCPUTurnBanner: 1
+  cpuTurnBannerText: {fileID: 0}
+  cpuTurnBannerContainer: {fileID: 0}
+  cpuTurnMessage: Turno de la CPU
+  useTypewriterForCPUTurn: 1
+  cpuTurnTypewriterDelay: 0.035
+  cpuTurnBannerDuration: 2.5
   gameState: 0
   isGameOver: 0
   playerWon: 0
@@ -606390,8 +606493,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2132236952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -101, y: -435}
   m_SizeDelta: {x: 238.08, y: 2096.837}
   m_Pivot: {x: 0.49999887, y: 0.5}
@@ -671829,6 +671932,8 @@ MonoBehaviour:
   cpuDistanceTracker: {fileID: 1611915974}
   uiPlay: {fileID: 541621646}
   uiWin: {fileID: 1544363749}
+  btnMainMenu: {fileID: 0}
+  imgGanaTitle: {fileID: 0}
   txtWinJ1: {fileID: 121819410}
   txtWinJ2: {fileID: 147828291}
   imgTie: {fileID: 912887147}

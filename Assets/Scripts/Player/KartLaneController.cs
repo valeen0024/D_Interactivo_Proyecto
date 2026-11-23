@@ -226,6 +226,27 @@ public class KartLaneController : MonoBehaviour
 
     private float startXPosition;
 
+    private bool IsPlayerTurnActive()
+    {
+        return GameManager.Instance == null || GameManager.Instance.gameState == GameManager.GameState.PlayerTurn;
+    }
+
+    public void HideBoostNotification()
+    {
+        if (notificationCoroutine != null)
+        {
+            StopCoroutine(notificationCoroutine);
+            notificationCoroutine = null;
+        }
+
+        if (boostNotificationText != null)
+        {
+            boostNotificationText.text = string.Empty;
+        }
+
+        SetBoostNotificationVisible(false);
+    }
+
     private void Start()
     {
         fuelSystem = GetComponent<KartFuelSystem>();
@@ -269,6 +290,11 @@ public class KartLaneController : MonoBehaviour
             turboAudioSource.playOnAwake = false;
             turboAudioSource.outputAudioMixerGroup = sfxMixerGroup;
         }
+
+        if (engineAudioSource != null)
+        {
+            StartEngineSound();
+        }
     }
 
     public void ConfigureForLevel(
@@ -294,12 +320,7 @@ public class KartLaneController : MonoBehaviour
         wasWindowOpenLastFrame = false;
         ClearBarrierBlock();
 
-        if (notificationCoroutine != null)
-        {
-            StopCoroutine(notificationCoroutine);
-            notificationCoroutine = null;
-        }
-        SetBoostNotificationVisible(false);
+        HideBoostNotification();
 
         UpdateBarrelVisual();
     }
@@ -323,6 +344,11 @@ public class KartLaneController : MonoBehaviour
     private void ShowBoostRemainingNotification()
     {
         if (!enableBoostNotification || boostNotificationText == null) return;
+        if (!IsPlayerTurnActive())
+        {
+            HideBoostNotification();
+            return;
+        }
 
         string message;
         float extraHold = 0f;
@@ -351,25 +377,52 @@ public class KartLaneController : MonoBehaviour
 
     private IEnumerator TypewriterNotificationRoutine(string fullMessage, float extraHold)
     {
+        if (!IsPlayerTurnActive())
+        {
+            HideBoostNotification();
+            yield break;
+        }
+
         SetBoostNotificationVisible(true);
         boostNotificationText.text = string.Empty;
 
         float charDelay = Mathf.Max(0.005f, typewriterCharDelay);
         for (int i = 0; i < fullMessage.Length; i++)
         {
+            if (!IsPlayerTurnActive())
+            {
+                HideBoostNotification();
+                yield break;
+            }
+
             boostNotificationText.text += fullMessage[i];
             yield return new WaitForSeconds(charDelay);
         }
 
         float totalHold = Mathf.Max(0.2f, holdAfterTypingSeconds + extraHold);
-        yield return new WaitForSeconds(totalHold);
+        float elapsed = 0f;
+        while (elapsed < totalHold)
+        {
+            if (!IsPlayerTurnActive())
+            {
+                HideBoostNotification();
+                yield break;
+            }
 
-        SetBoostNotificationVisible(false);
-        notificationCoroutine = null;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        HideBoostNotification();
     }
 
     private void SetBoostNotificationVisible(bool visible)
     {
+        if (visible && !IsPlayerTurnActive())
+        {
+            visible = false;
+        }
+
         if (boostNotificationContainer != null)
         {
             boostNotificationContainer.SetActive(visible);
@@ -499,6 +552,9 @@ public class KartLaneController : MonoBehaviour
 
     private bool CanTriggerBoostNow()
     {
+        if (!IsPlayerTurnActive())
+            return false;
+
         if (!canUseTurbo || !HasRemainingUses || isBoosting || waitTimerRemaining > 0f || activationWindowRemaining <= 0f)
             return false;
 
@@ -510,6 +566,11 @@ public class KartLaneController : MonoBehaviour
 
     private void Update()
     {
+        if (!IsPlayerTurnActive())
+        {
+            HideBoostNotification();
+        }
+
         bool pressedBoostKey = Keyboard.current != null &&
             (Keyboard.current.upArrowKey.wasPressedThisFrame ||
              Keyboard.current.wKey.wasPressedThisFrame);
