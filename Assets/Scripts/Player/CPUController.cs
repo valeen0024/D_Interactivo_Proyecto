@@ -8,18 +8,31 @@ public class CPUController : MonoBehaviour
     [Tooltip("Horizontal distance between each lane center.")]
     [SerializeField] private float laneOffset = 2f;
 
-    [Tooltip("Speed at which the kart transitions horizontally between lanes.")]
-    [SerializeField] private float laneChangeSpeed = 15f;
+    [Tooltip("Velocidad lateral al cambiar de carril (fluida y visible en cámara).")]
+    [Range(4f, 16f)]
+    [SerializeField] private float laneChangeSpeed = 9.5f;
 
-    [Tooltip("Forward speed of the CPU kart.")]
-    [SerializeField] private float cpuSpeed = 6f;
+    [Tooltip("Máximo de carriles que puede avanzar por decisión.")]
+    [Range(1, 2)]
+    [SerializeField] private int maxLaneStepPerDecision = 1;
+
+    [Tooltip("Tiempo mínimo entre cambios de carril para evitar movimientos bruscos.")]
+    [Min(0.1f)]
+    [SerializeField] private float minTimeBetweenLaneChanges = 0.22f;
+
+    [Tooltip("Base forward speed of the CPU kart.")]
+    [SerializeField] private float cpuSpeed = 7.6f;
+
+    [Tooltip("Variación aleatoria de ritmo por partida (ej. 0.12 = entre -12% y +12% de velocidad base).")]
+    [Range(0f, 0.35f)]
+    [SerializeField] private float speedVariancePerRun = 0.12f;
 
     [Header("Progressive Speed (Level 2+)")]
     [Tooltip("Activa el aumento gradual de velocidad de la CPU según el avance.")]
     [SerializeField] private bool enableProgressiveSpeed = false;
 
     [Tooltip("Velocidad máxima que alcanzará la CPU al final de la pista.")]
-    [SerializeField] private float maxProgressiveCpuSpeed = 12f;
+    [SerializeField] private float maxProgressiveCpuSpeed = 13.8f;
 
     [Header("Lane Limits (4 Lanes Setup)")]
     [Tooltip("Minimum lane index (leftmost lane).")]
@@ -28,69 +41,95 @@ public class CPUController : MonoBehaviour
     [Tooltip("Maximum lane index (rightmost lane).")]
     [SerializeField] private int maxLane = 1;
 
-    [Header("AI Control")]
+    [Header("AI Control & Camera Vision")]
     [Tooltip("Allows the CPU kart to move.")]
     public bool canMove = false;
 
     private bool cpuTurnStarted = false;
 
+    [Tooltip("Qué tan seguido revisa lo que hay en pantalla frente a ella.")]
+    [SerializeField] private float laneChangeInterval = 0.25f;
 
-    [Tooltip("How often the CPU chooses a new lane.")]
-    [SerializeField] private float laneChangeInterval = 2f;
+    [Tooltip("Distancia máxima hacia adelante dentro del campo de visión.")]
+    [SerializeField] private float viewDistance = 24f;
 
-    [Tooltip("How far ahead the CPU scans for objects.")]
-    [SerializeField] private float scanDistance = 20f;
+    [Tooltip("Evalúa objetos que estén dentro del encuadre de la Main Camera.")]
+    [SerializeField] private bool useMainCameraFOV = true;
+
+    [Header("Fuel & Risk Taking")]
+    [Tooltip("Umbral de combustible (0 a 1) a partir del cual prioriza aún más los bidones.")]
+    [Range(0.2f, 0.9f)]
+    [SerializeField] private float lowFuelThresholdRatio = 0.5f;
+
+    [Tooltip("Si está activo, cuando necesita gasolina puede aceptar un pequeño roce/riesgo por alcanzar un bidón.")]
+    [SerializeField] private bool riskForFuelWhenLow = true;
 
     [Header("Lane Weights")]
     [Tooltip("Weight for an empty lane.")]
     [SerializeField] private float emptyLaneWeight = 10f;
 
-    [Tooltip("Weight for a lane with a fuel can.")]
-    [SerializeField] private float fuelCanWeight = 50f;
+    [Tooltip("Weight base for a lane with a fuel barrel.")]
+    [SerializeField] private float fuelCanWeight = 60f;
 
     [Tooltip("Weight for a lane with oil.")]
     [SerializeField] private float oilSpillWeight = 2f;
 
-    [Tooltip("Weight for a lane with a solid/hazard obstacle.")]
-    [SerializeField] private float obstacleLaneWeight = 1f;
+    [Tooltip("Weight for a lane with a solid/hazard obstacle or barrier.")]
+    [SerializeField] private float obstacleLaneWeight = 0f;
 
     [Header("Oil Effect")]
-    [SerializeField] private float oilSlowMultiplier = 0.5f;
-    [SerializeField] private float oilSlowDuration = 2f;
+    [SerializeField] private float oilSlowMultiplier = 0.55f;
+    [SerializeField] private float oilSlowDuration = 1.6f;
+    [SerializeField] private float oilFuelLoss = 10f;
 
-    [Header("Obstacle Effect (New Hazards / Barriers)")]
-    [Tooltip("Tag used by obstacle objects in the scene.")]
+    [Header("Obstacle & Barrier Effect")]
+    [Tooltip("Optional extra tag used by obstacle objects in the scene.")]
     [SerializeField] private string obstacleTag = "Obstacle";
 
-    [Tooltip("Speed multiplier when hitting an obstacle.")]
+    [Tooltip("Speed multiplier when hitting a cone/obstacle.")]
     [Range(0f, 1f)]
-    [SerializeField] private float obstacleSlowMultiplier = 0.4f;
+    [SerializeField] private float obstacleSlowMultiplier = 0.45f;
 
     [Tooltip("Duration in seconds of the obstacle slowdown.")]
     [Min(0.1f)]
-    [SerializeField] private float obstacleSlowDuration = 1.2f;
+    [SerializeField] private float obstacleSlowDuration = 1.0f;
 
-    [Tooltip("Optional fuel penalty when hitting an obstacle (0 if only slows).")]
+    [Tooltip("Fuel penalty when hitting a cone/obstacle.")]
     [Min(0f)]
-    [SerializeField] private float obstacleFuelPenalty = 0f;
+    [SerializeField] private float obstacleFuelPenalty = 6f;
+
+    [Tooltip("Bloqueo al chocar contra una valla STOP para que no la atraviese.")]
+    [SerializeField] private float barrierBlockDuration = 0.85f;
+
+    [Range(0f, 0.3f)]
+    [SerializeField] private float barrierSpeedMultiplier = 0.05f;
+
+    [Min(0f)]
+    [SerializeField] private float barrierFuelPenalty = 12f;
 
     [Header("Start Lane")]
     [Tooltip("Initial lane of the CPU kart. Example: -1, 0, 1, 2.")]
     [SerializeField] private int startLane = 1;
 
     [Header("Turbo / Boost Settings")]
+    [Tooltip("Opcional: arrastra el KartLaneController del jugador para copiar su Max Boost Uses. Si queda vacío, se busca automáticamente en la escena.")]
+    [SerializeField] private KartLaneController playerKartController;
+
+    [Tooltip("Copia automáticamente Max Boost Uses desde KartLaneController del jugador.")]
+    [SerializeField] private bool syncMaxBoostUsesWithPlayer = true;
+
     [Tooltip("Speed multiplier during the boost.")]
-    [SerializeField] private float boostSpeedMultiplier = 2f;
+    [SerializeField] private float boostSpeedMultiplier = 1.85f;
 
     [Tooltip("Duration of the boost in seconds.")]
-    [SerializeField] private float boostDuration = 2f;
+    [SerializeField] private float boostDuration = 2.0f;
 
-    [Tooltip("Maximum number of times the CPU can use boost in this level.")]
+    [Tooltip("Maximum number of times the CPU can use boost in this level (usado si no se sincroniza con el jugador).")]
     [Min(0)]
     [SerializeField] private int maxBoostUses = 3;
 
     [Tooltip("Chance per second (0.0 to 1.0) for the CPU to activate boost when eligible.")]
-    [SerializeField] private float boostChancePerSecond = 0.25f;
+    [SerializeField] private float boostChancePerSecond = 0.35f;
 
     [Header("Audio Settings")]
     [Tooltip("Grupo SFX de tu AudioMixer para que el slider de efectos controle motor y turbo.")]
@@ -119,10 +158,10 @@ public class CPUController : MonoBehaviour
     private bool isBoosting = false;
     private float nextBoostAllowedTime = 0f;
 
-    private float boostWaitMin = 2.5f;
-    private float boostWaitMax = 4.5f;
-    private float boostWaitEndMin = 6f;
-    private float boostWaitEndMax = 9.5f;
+    private float boostWaitMin = 2.6f;
+    private float boostWaitMax = 4.8f;
+    private float boostWaitEndMin = 6.2f;
+    private float boostWaitEndMax = 10.2f;
 
     private Coroutine activeBoostCoroutine;
     private Animator animator;
@@ -130,13 +169,17 @@ public class CPUController : MonoBehaviour
     private int currentLane;
     private int targetLane;
     private float laneChangeTimer;
+    private float lastLaneChangeTime = -999f;
     private float startXPosition;
 
+    private float runSpeedMultiplier = 1f;
     private float currentForwardSpeed;
     private KartFuelSystem fuelSystem;
     private DistanceTracker distanceTracker;
+    private Camera mainCam;
     private bool isSliding = false;
     private bool isObstacleSlowed = false;
+    private bool isBarrierBlocked = false;
 
     [Header("CPU Performance Statistics")]
     [SerializeField] private int fuelBarrelsCollected = 0;
@@ -155,15 +198,17 @@ public class CPUController : MonoBehaviour
         fuelSystem = GetComponent<KartFuelSystem>();
         distanceTracker = GetComponent<DistanceTracker>();
         animator = GetComponentInChildren<Animator>();
+        mainCam = Camera.main;
 
         startXPosition = transform.position.x - (Mathf.Clamp(startLane, minLane, maxLane) * laneOffset);
 
+        RollHumanRunProfile();
         currentLane = Mathf.Clamp(startLane, minLane, maxLane);
         targetLane = currentLane;
 
-        currentForwardSpeed = cpuSpeed;
-        usesRemaining = Mathf.Max(0, maxBoostUses);
-        laneChangeTimer = laneChangeInterval;
+        currentForwardSpeed = GetCurrentBaseCpuSpeed();
+        SyncBoostUsesFromPlayer();
+        laneChangeTimer = 0.05f;
 
         nextBoostAllowedTime = Time.time + CalculateBoostWait();
 
@@ -188,22 +233,66 @@ public class CPUController : MonoBehaviour
         }
     }
 
+    private void SyncBoostUsesFromPlayer()
+    {
+        if (syncMaxBoostUsesWithPlayer)
+        {
+            if (playerKartController == null)
+            {
+                playerKartController = FindAnyObjectByType<KartLaneController>();
+            }
+
+            if (playerKartController != null)
+            {
+                maxBoostUses = Mathf.Max(0, playerKartController.MaxBoostUses);
+            }
+        }
+
+        usesRemaining = Mathf.Max(0, maxBoostUses);
+    }
+
+    private void RollHumanRunProfile()
+    {
+        float variance = Mathf.Clamp(speedVariancePerRun, 0f, 0.35f);
+        runSpeedMultiplier = 1f + Random.Range(-variance, variance);
+    }
+
+    private float GetFuelRatio()
+    {
+        if (fuelSystem == null || fuelSystem.maxFuel <= 0f)
+            return 0.6f;
+
+        return Mathf.Clamp01(fuelSystem.currentFuel / fuelSystem.maxFuel);
+    }
+
+    private float GetFuelUrgency()
+    {
+        float ratio = GetFuelRatio();
+        if (ratio >= lowFuelThresholdRatio)
+            return 0.25f;
+
+        return Mathf.Clamp01((lowFuelThresholdRatio - ratio) / Mathf.Max(0.05f, lowFuelThresholdRatio)) + 0.25f;
+    }
+
     private float GetCurrentBaseCpuSpeed()
     {
+        float baseSpeed = cpuSpeed * runSpeedMultiplier;
+
         if (!enableProgressiveSpeed || distanceTracker == null || distanceTracker.maxDistance <= 0f)
         {
-            return cpuSpeed;
+            return baseSpeed;
         }
 
         float progress = Mathf.Clamp01(distanceTracker.currentDistance / distanceTracker.maxDistance);
-        return Mathf.Lerp(cpuSpeed, maxProgressiveCpuSpeed, progress);
+        float targetMax = maxProgressiveCpuSpeed * runSpeedMultiplier;
+        return Mathf.Lerp(baseSpeed, targetMax, progress);
     }
 
     public void ConfigureForLevel(float difficulty, int boostUsesForLevel)
     {
         maxBoostUses = Mathf.Max(0, boostUsesForLevel);
-        usesRemaining = maxBoostUses;
-        boostChancePerSecond = Mathf.Clamp(0.25f / Mathf.Max(0.5f, difficulty), 0.08f, 0.5f);
+        SyncBoostUsesFromPlayer();
+        boostChancePerSecond = Mathf.Clamp(0.35f * Mathf.Max(0.75f, difficulty), 0.14f, 0.58f);
     }
 
     private void Update()
@@ -220,21 +309,31 @@ public class CPUController : MonoBehaviour
         if (!cpuTurnStarted)
         {
             cpuTurnStarted = true;
+            SyncBoostUsesFromPlayer();
+            RollHumanRunProfile();
             nextBoostAllowedTime = Time.time + CalculateBoostWait();
-
-            Debug.Log("[CPU TURBO] Turno iniciado. Espera inicial programada.");
+            StartEngineSound();
+            ChooseLane();
         }
 
         if (fuelSystem != null && fuelSystem.IsOutOfFuel)
             return;
 
-        if (!isBoosting && !isSliding && !isObstacleSlowed)
+        if (!isBoosting && !isSliding && !isObstacleSlowed && !isBarrierBlocked)
         {
             currentForwardSpeed = GetCurrentBaseCpuSpeed();
         }
 
         MoveCPU();
 
+        bool isSettledInLane = currentLane == targetLane;
+        bool cooldownReady = (Time.time - lastLaneChangeTime) >= minTimeBetweenLaneChanges;
+
+        if (isSettledInLane && cooldownReady && HasImmediateHazard(currentLane, 7f))
+        {
+            ChooseLane();
+            laneChangeTimer = laneChangeInterval;
+        }
 
         if (!isBoosting &&
             usesRemaining > 0 &&
@@ -252,8 +351,11 @@ public class CPUController : MonoBehaviour
         laneChangeTimer -= Time.deltaTime;
         if (laneChangeTimer <= 0f)
         {
-            ChooseLane();
             laneChangeTimer = laneChangeInterval;
+            if (isSettledInLane && cooldownReady)
+            {
+                ChooseLane();
+            }
         }
     }
 
@@ -276,230 +378,223 @@ public class CPUController : MonoBehaviour
 
         transform.position = new Vector3(newX, currentPos.y, newZ);
 
-        if (Mathf.Abs(transform.position.x - targetX) < 0.05f)
+        if (Mathf.Abs(transform.position.x - targetX) < 0.08f)
         {
             currentLane = targetLane;
         }
     }
 
-    private bool HasObstacleTag(Collider col)
+    private bool IsVisibleInCamera(Vector3 worldPoint)
     {
-        return !string.IsNullOrEmpty(obstacleTag) && col.CompareTag(obstacleTag);
+        if (!useMainCameraFOV)
+            return true;
+
+        if (mainCam == null)
+        {
+            mainCam = Camera.main;
+        }
+
+        if (mainCam == null)
+            return true;
+
+        Vector3 vp = mainCam.WorldToViewportPoint(worldPoint);
+        return vp.z > 0f && vp.x >= -0.08f && vp.x <= 1.08f && vp.y >= -0.08f && vp.y <= 1.08f;
+    }
+
+    private string ResolveObstacleTag(Collider col)
+    {
+        if (col.CompareTag("Oil") || col.CompareTag("Cone") || col.CompareTag("Barrier"))
+        {
+            return col.tag;
+        }
+
+        if (!string.IsNullOrEmpty(obstacleTag) && col.CompareTag(obstacleTag))
+        {
+            return obstacleTag;
+        }
+
+        Transform root = col.transform.root;
+        if (root != null)
+        {
+            if (root.CompareTag("Oil") || root.CompareTag("Cone") || root.CompareTag("Barrier"))
+            {
+                return root.tag;
+            }
+            if (!string.IsNullOrEmpty(obstacleTag) && root.CompareTag(obstacleTag))
+            {
+                return obstacleTag;
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private bool IsHazardTag(string tagName)
+    {
+        return tagName == "Oil" ||
+               tagName == "Cone" ||
+               tagName == "Barrier" ||
+               (!string.IsNullOrEmpty(obstacleTag) && tagName == obstacleTag);
+    }
+
+    private bool IsFuelCollider(Collider col)
+    {
+        if (col.CompareTag("Fuel"))
+            return true;
+
+        Transform root = col.transform.root;
+        return root != null && root.CompareTag("Fuel");
     }
 
     private void ChooseLane()
     {
-        if (currentLane != targetLane)
-            return;
-
+        float urgency = GetFuelUrgency();
         int bestLane = currentLane;
-        float bestWeight = EvaluateLaneWeight(currentLane);
-
-        bool currentLaneIsSafe = IsLaneSafe(currentLane);
+        float bestWeight = EvaluateLaneWeight(currentLane, urgency);
 
         for (int lane = minLane; lane <= maxLane; lane++)
         {
             if (lane == currentLane)
                 continue;
 
-            float weight = EvaluateLaneWeight(lane);
-            float minimumImprovement = 5f;
-
-            if (IsLaneSafe(lane) &&
-                ((!currentLaneIsSafe && bestLane == currentLane) ||
-                 weight > bestWeight + minimumImprovement))
+            float weight = EvaluateLaneWeight(lane, urgency);
+            if (weight > bestWeight + 2f)
             {
                 bestWeight = weight;
                 bestLane = lane;
             }
         }
 
-
         if (bestLane != currentLane)
         {
-            int direction = bestLane > currentLane ? 1 : -1;
-            int nextLane = currentLane + direction;
+            int dir = bestLane > currentLane ? 1 : -1;
+            int stepCount = Mathf.Clamp(Mathf.Abs(bestLane - currentLane), 1, maxLaneStepPerDecision);
+            int nextLane = Mathf.Clamp(currentLane + (dir * stepCount), minLane, maxLane);
 
-            if (IsLaneSafe(nextLane))
+            if (!HasImmediateHazard(nextLane, 5f))
             {
                 targetLane = nextLane;
-
-                Debug.Log(
-                    "[CPU RUTA] Actual: " + currentLane +
-                    " | Destino deseado: " + bestLane +
-                    " | Siguiente carril: " + targetLane
-                );
-
+                lastLaneChangeTime = Time.time;
                 return;
             }
 
-            // Try the opposite direction when the planned route is blocked.
-            int alternativeLane = currentLane - direction;
-
-            if (alternativeLane >= minLane &&
-                alternativeLane <= maxLane &&
-                IsLaneSafe(alternativeLane))
+            int singleStepLane = Mathf.Clamp(currentLane + dir, minLane, maxLane);
+            if (singleStepLane != nextLane && !HasImmediateHazard(singleStepLane, 5f))
             {
-                targetLane = alternativeLane;
-
-                Debug.Log(
-                    "[CPU RUTA] Ruta alternativa segura: " + targetLane
-                );
-            }
-            else
-            {
-                Debug.Log("[CPU RUTA] No hay una ruta alternativa segura.");
+                targetLane = singleStepLane;
+                lastLaneChangeTime = Time.time;
+                return;
             }
 
-            return;
-        }
-
-
-        if (Mathf.Approximately(bestWeight, emptyLaneWeight) && Random.value < 0.10f)
-        {
-            int[] directions = { -1, 1 };
-
-            if (Random.value < 0.5f)
+            int altLane = Mathf.Clamp(currentLane - dir, minLane, maxLane);
+            if (altLane != currentLane && !HasImmediateHazard(altLane, 5f))
             {
-                directions[0] = 1;
-                directions[1] = -1;
-            }
-
-            foreach (int direction in directions)
-            {
-                int nextLane = currentLane + direction;
-
-                if (nextLane < minLane || nextLane > maxLane)
-                    continue;
-
-                float nextWeight = EvaluateLaneWeight(nextLane);
-
-                if (Mathf.Approximately(nextWeight, emptyLaneWeight) && IsLaneSafe(nextLane))
-                {
-                    targetLane = nextLane;
-                    break;
-                }
+                targetLane = altLane;
+                lastLaneChangeTime = Time.time;
             }
         }
-
-        Debug.Log(
-            "[CPU CARRIL] Actual: " + currentLane +
-            " | Objetivo: " + targetLane +
-            " | X actual: " + transform.position.x.ToString("F2") +
-            " | X objetivo: " + GetLanePosition(targetLane).ToString("F2")
-        );
     }
 
-    private bool IsLaneSafe(int lane)
+    private bool HasImmediateHazard(int lane, float checkDistance)
     {
         float targetX = GetLanePosition(lane);
-
-        Vector3 boxOrigin = new Vector3(
-            targetX,
-            transform.position.y + 0.5f,
-            transform.position.z + 1.5f
-        );
-
-        Vector3 halfExtents = new Vector3(
-            0.65f,
-            0.35f,
-            0.25f
-        );
+        Vector3 boxOrigin = new Vector3(targetX, transform.position.y + 0.5f, transform.position.z + 1.0f);
+        Vector3 halfExtents = new Vector3(0.65f, 0.4f, 0.3f);
 
         RaycastHit[] hits = Physics.BoxCastAll(
             boxOrigin,
             halfExtents,
             Vector3.forward,
             Quaternion.identity,
-            scanDistance,
+            checkDistance,
             Physics.DefaultRaycastLayers,
             QueryTriggerInteraction.Collide
         );
 
         foreach (RaycastHit hit in hits)
         {
-            if ((hit.collider.CompareTag("Oil") || HasObstacleTag(hit.collider)) &&
-                hit.distance <= 20f)
+            if (!IsVisibleInCamera(hit.point))
+                continue;
+
+            string tagName = ResolveObstacleTag(hit.collider);
+            if (IsHazardTag(tagName) && hit.distance <= checkDistance)
             {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
-    private float EvaluateLaneWeight(int lane)
+    private float EvaluateLaneWeight(int lane, float urgency)
     {
         float targetX = GetLanePosition(lane);
-
-        Vector3 boxOrigin = new Vector3(
-            targetX,
-            transform.position.y + 0.5f,
-            transform.position.z + 1.5f
-        );
-
-        Vector3 halfExtents = new Vector3(
-            0.65f,
-            0.35f,
-            0.25f
-        );
+        Vector3 boxOrigin = new Vector3(targetX, transform.position.y + 0.5f, transform.position.z + 1.0f);
+        Vector3 halfExtents = new Vector3(0.65f, 0.4f, 0.3f);
 
         RaycastHit[] hits = Physics.BoxCastAll(
             boxOrigin,
             halfExtents,
             Vector3.forward,
             Quaternion.identity,
-            scanDistance,
+            viewDistance,
             Physics.DefaultRaycastLayers,
             QueryTriggerInteraction.Collide
         );
 
         float nearestHazard = Mathf.Infinity;
+        string nearestHazardTag = string.Empty;
         float nearestFuel = Mathf.Infinity;
 
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.CompareTag("Oil") || HasObstacleTag(hit.collider))
+            if (!IsVisibleInCamera(hit.point))
+                continue;
+
+            string tagName = ResolveObstacleTag(hit.collider);
+            if (IsHazardTag(tagName) && hit.distance < nearestHazard)
             {
-                nearestHazard = Mathf.Min(nearestHazard, hit.distance);
+                nearestHazard = hit.distance;
+                nearestHazardTag = tagName;
             }
-            else if (hit.collider.CompareTag("Fuel"))
+            else if (IsFuelCollider(hit.collider) && hit.distance < nearestFuel)
             {
-                nearestFuel = Mathf.Min(nearestFuel, hit.distance);
-            }
-        }
-
-        float dangerDistance = 20f;
-        bool hazardIsClose = nearestHazard <= dangerDistance;
-
-        if (hazardIsClose)
-        {
-            Debug.Log("[CPU IA] Peligro (aceite u obstáculo) cercano en carril " + lane);
-            return Mathf.Min(oilSpillWeight, obstacleLaneWeight);
-        }
-
-        if (nearestFuel < Mathf.Infinity)
-        {
-            bool fuelIsSafe =
-                nearestHazard == Mathf.Infinity ||
-                nearestFuel + 5f < nearestHazard;
-
-            if (fuelIsSafe)
-            {
-                float fuelBonus = Mathf.Clamp(
-                    (scanDistance - nearestFuel) * 0.4f,
-                    0f,
-                    10f
-                );
-
-                Debug.Log("[CPU IA] Combustible seguro en carril " + lane);
-                return fuelCanWeight + fuelBonus;
+                nearestFuel = hit.distance;
             }
         }
 
-        if (nearestHazard < Mathf.Infinity && nearestFuel < Mathf.Infinity)
+        bool seesFuelAhead = nearestFuel < Mathf.Infinity && nearestFuel <= viewDistance;
+
+        if (seesFuelAhead)
         {
-            return Mathf.Min(oilSpillWeight, obstacleLaneWeight);
+            float urgencyBoost = urgency * 35f;
+            float proximityBoost = Mathf.Clamp((viewDistance - nearestFuel) * 0.75f, 0f, 18f);
+            float fuelScore = fuelCanWeight + urgencyBoost + proximityBoost;
+
+            if (nearestHazard < Mathf.Infinity)
+            {
+                bool isBarrier = nearestHazardTag == "Barrier";
+                bool hazardRightInFront = nearestHazard < (isBarrier ? 7.5f : 4.5f);
+
+                if (!hazardRightInFront && (riskForFuelWhenLow || nearestFuel < nearestHazard))
+                {
+                    return fuelScore;
+                }
+
+                if (nearestFuel >= nearestHazard)
+                {
+                    float hazardUrgency = 1f - (nearestHazard / Mathf.Max(0.1f, viewDistance));
+                    return Mathf.Min(oilSpillWeight, obstacleLaneWeight) - (hazardUrgency * 12f);
+                }
+            }
+
+            return fuelScore;
+        }
+
+        if (nearestHazard < Mathf.Infinity && nearestHazard <= viewDistance)
+        {
+            float hazardUrgency = 1f - (nearestHazard / Mathf.Max(0.1f, viewDistance));
+            return Mathf.Min(oilSpillWeight, obstacleLaneWeight) - (hazardUrgency * 12f);
         }
 
         return emptyLaneWeight;
@@ -512,52 +607,75 @@ public class CPUController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(
-            "The CPU came into contact with: "
-            + other.gameObject.name
-            + " | Tag: "
-            + other.gameObject.tag
-        );
+        HandleObstacleOrFuelContact(other);
+    }
 
-        if (other.CompareTag("Fuel"))
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider != null)
+        {
+            HandleObstacleOrFuelContact(collision.collider);
+        }
+    }
+
+    private void HandleObstacleOrFuelContact(Collider other)
+    {
+        if (IsFuelCollider(other))
         {
             fuelBarrelsCollected++;
-            Debug.Log("[CPU ESTADISTICAS] Bidones recogidos: " + fuelBarrelsCollected);
-
             if (fuelSystem != null)
             {
                 fuelSystem.AddFuel();
             }
-
             other.gameObject.SetActive(false);
             return;
         }
 
-        if (other.CompareTag("Oil"))
+        string resolvedTag = ResolveObstacleTag(other);
+        if (string.IsNullOrEmpty(resolvedTag))
+            return;
+
+        if (resolvedTag == "Oil")
         {
             oilSpillsHit++;
-            Debug.Log("[CPU ESTADISTICAS] Manchas de aceite pisadas: " + oilSpillsHit);
-
-            if (fuelSystem != null)
+            if (fuelSystem != null && oilFuelLoss > 0f)
             {
-                fuelSystem.ReduceFuelFromOil();
+                fuelSystem.ConsumeFuel(oilFuelLoss);
             }
-
             ApplyOilSlow(oilSlowDuration);
             return;
         }
 
-        if (HasObstacleTag(other))
+        if (resolvedTag == "Barrier")
         {
             obstaclesHit++;
-            Debug.Log("[CPU ESTADISTICAS] Obstáculos golpeados: " + obstaclesHit);
-
-            if (obstacleFuelPenalty > 0f && fuelSystem != null)
+            if (fuelSystem != null && barrierFuelPenalty > 0f)
             {
-                fuelSystem.currentFuel = Mathf.Max(0f, fuelSystem.currentFuel - obstacleFuelPenalty);
+                fuelSystem.ConsumeFuel(barrierFuelPenalty);
             }
+            StartCoroutine(BarrierBlockRoutine(barrierBlockDuration, barrierSpeedMultiplier));
+            return;
+        }
 
-            ApplyObstacleSlow(obstacleSlowDuration, obstacleSlowMultiplier);
+        obstaclesHit++;
+        if (fuelSystem != null && obstacleFuelPenalty > 0f)
+        {
+            fuelSystem.ConsumeFuel(obstacleFuelPenalty);
+        }
+        ApplyObstacleSlow(obstacleSlowDuration, obstacleSlowMultiplier);
+    }
+
+    private IEnumerator BarrierBlockRoutine(float duration, float multiplier)
+    {
+        isBarrierBlocked = true;
+        currentForwardSpeed = GetCurrentBaseCpuSpeed() * Mathf.Clamp(multiplier, 0f, 0.3f);
+
+        yield return new WaitForSeconds(duration);
+
+        isBarrierBlocked = false;
+        if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isBoosting && !isSliding && !isObstacleSlowed)
+        {
+            currentForwardSpeed = GetCurrentBaseCpuSpeed();
         }
     }
 
@@ -573,17 +691,15 @@ public class CPUController : MonoBehaviour
     {
         isSliding = true;
         currentForwardSpeed = GetCurrentBaseCpuSpeed() * oilSlowMultiplier;
-        Debug.Log("CPU slipped on oil. Speed reduced.");
 
         yield return new WaitForSeconds(duration);
 
-        if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isBoosting && !isObstacleSlowed)
+        if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isBoosting && !isObstacleSlowed && !isBarrierBlocked)
         {
             currentForwardSpeed = GetCurrentBaseCpuSpeed();
         }
 
         isSliding = false;
-        Debug.Log("CPU speed recovered.");
     }
 
     private void ApplyObstacleSlow(float duration, float multiplier)
@@ -595,18 +711,15 @@ public class CPUController : MonoBehaviour
     {
         isObstacleSlowed = true;
         currentForwardSpeed = GetCurrentBaseCpuSpeed() * Mathf.Clamp01(multiplier);
-        Debug.Log("CPU hit an obstacle! Speed reduced.");
 
         yield return new WaitForSeconds(duration);
 
         isObstacleSlowed = false;
 
-        if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isBoosting && !isSliding)
+        if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isBoosting && !isSliding && !isBarrierBlocked)
         {
             currentForwardSpeed = GetCurrentBaseCpuSpeed();
         }
-
-        Debug.Log("CPU recovered from obstacle impact.");
     }
 
     public void ResetForNewTurn()
@@ -617,19 +730,21 @@ public class CPUController : MonoBehaviour
         transform.position = startPosition;
         transform.rotation = startRotation;
 
+        SyncBoostUsesFromPlayer();
+        RollHumanRunProfile();
         currentLane = Mathf.Clamp(startLane, minLane, maxLane);
         targetLane = currentLane;
+        lastLaneChangeTime = -999f;
 
-        currentForwardSpeed = cpuSpeed;
-        laneChangeTimer = laneChangeInterval;
+        currentForwardSpeed = GetCurrentBaseCpuSpeed();
+        laneChangeTimer = 0.05f;
 
         isSliding = false;
         isObstacleSlowed = false;
+        isBarrierBlocked = false;
         isBoosting = false;
-        usesRemaining = Mathf.Max(0, maxBoostUses);
         nextBoostAllowedTime = Time.time + CalculateBoostWait();
         cpuTurnStarted = false;
-
 
         fuelBarrelsCollected = 0;
         oilSpillsHit = 0;
@@ -648,7 +763,6 @@ public class CPUController : MonoBehaviour
             engineAudioSource.volume = normalEngineVolume;
             engineAudioSource.pitch = normalEnginePitch;
         }
-
     }
 
     private float CalculateBoostWait()
@@ -680,8 +794,6 @@ public class CPUController : MonoBehaviour
 
         nextBoostAllowedTime = Time.time + boostDuration + CalculateBoostWait();
 
-        Debug.Log("[CPU ESTADISTICAS] Turbos utilizados: " + turbosUsed + " | Restantes: " + usesRemaining);
-
         if (animator != null)
         {
             animator.SetTrigger("Boost");
@@ -711,8 +823,6 @@ public class CPUController : MonoBehaviour
             fuelSystem.SetFuelConsumptionMultiplier(2.2f);
         }
 
-        Debug.Log("CPU activated Boost!");
-
         if (engineAudioSource != null)
         {
             engineAudioSource.volume = turboEngineVolume;
@@ -726,7 +836,7 @@ public class CPUController : MonoBehaviour
             fuelSystem.SetFuelConsumptionMultiplier(1f);
         }
 
-        if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isSliding && !isObstacleSlowed)
+        if ((fuelSystem == null || !fuelSystem.IsOutOfFuel) && !isSliding && !isObstacleSlowed && !isBarrierBlocked)
         {
             currentForwardSpeed = GetCurrentBaseCpuSpeed();
         }
@@ -751,7 +861,6 @@ public class CPUController : MonoBehaviour
 
         isBoosting = false;
         activeBoostCoroutine = null;
-        Debug.Log("CPU Boost finished. Normal speed restored.");
     }
 
     public void StartEngineSound()
